@@ -36,15 +36,15 @@
           <span class="text-[15px] ml-4 text-gray-200">Menu</span>
         </a>
         <a href="{{ route('processo') }}"  class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer  hover:bg-blue-600">
-          <i class="bi bi-house-door-fill"></i>
+          <i class="bi bi-inboxes-fill"></i>
           <span class="text-[15px] ml-4 text-gray-200">Processos</span>
         </a>
         <a href="{{ route('orcamentos') }}" class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer  hover:bg-blue-600">
-          <i class="bi bi-clipboard2-fill"></i>
+          <i class="bi bi-file-earmark-ruled-fill"></i>
           <span class="text-[15px] ml-4 text-gray-200">Orçamentos</span>
         </a>
         <a href="{{ route('manutencao') }}" class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer  hover:bg-blue-600">
-          <i class="bi bi-envelope-fill"></i>
+          <i class="bi bi-hammer"></i>
           <span class="text-[15px] ml-4 text-gray-200">Manutenção</span>
         </a>
         <div class="p-2.5 mt-2 flex items-center rounded-md px-4 duration-300 cursor-pointer  hover:bg-blue-600">
@@ -60,10 +60,10 @@
           <a href="{{ route('financeiro.contas-pagar') }}" class="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">Contas a pagar</a>
           <a href="{{ route('financeiro.contas-receber') }}" class="cursor-pointer p-2 hover:bg-gray-700 rounded-md mt-1">Contas a receber</a>
         </div>
-        <div class="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer  hover:bg-blue-600">
+        <a href="{{ route('login') }}" class="p-2.5 mt-3 flex items-center rounded-md px-4 duration-300 cursor-pointer  hover:bg-blue-600">
           <i class="bi bi-box-arrow-in-right"></i>
           <span class="text-[15px] ml-4 text-gray-200">Logout</span>
-        </div>
+        </a>
 
       </div>
     </div>
