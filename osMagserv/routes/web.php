@@ -33,3 +33,7 @@ Route::get('/auth/login', function () {
 Route::get('/auth/cadastrar', function () {
     return view('auth.cadastrar');
 })->name('cadastrar');
+
+Route::get('/clientes', function () {
+    return view('cliente.cliente');
+})->name('clientes');
