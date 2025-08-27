@@ -12,3 +12,4 @@ footer{
     white-space: nowrap; /* Impede que o texto quebre a linha durante a transição */
     overflow: hidden; /* Esconde o texto que transborda */
 }
+
