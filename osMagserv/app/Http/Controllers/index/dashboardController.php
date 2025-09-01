@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\orcamento;
+namespace App\Http\Controllers\index;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class orcamentoController extends Controller
+class dashboardController extends Controller
 {
     /**
      * Display a listing of the resource.

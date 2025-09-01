@@ -1,5 +1,5 @@
 <?php
-
+use App\Http\Controllers\cliente\ClienteController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -37,3 +37,9 @@ Route::get('/auth/cadastrar', function () {
 Route::get('/clientes', function () {
     return view('cliente.cliente');
 })->name('clientes');
+
+Route::get('/clientes/cadastrar', function () {
+    return view('cliente.cadastrarCliente');
+})->name('clientes.cadastrar');
+
+Route::resource('clientes', clienteController::class);

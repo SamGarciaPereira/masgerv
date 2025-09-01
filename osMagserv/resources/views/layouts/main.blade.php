@@ -50,7 +50,7 @@
                 <i class="bi bi-hammer text-lg"></i>
                 <span class="sidebar-text text-sm font-medium ml-4 w-0 opacity-0">Manutenção</span>
             </a> 
-            <a href="{{ route('clientes') }}" class="p-2.5 flex items-center rounded-md hover:bg-blue-600 group">
+            <a href="{{ route('clientes.index') }}" class="p-2.5 flex items-center rounded-md hover:bg-blue-600 group">
                 <i class="bi bi-people-fill text-lg"></i>
                 <span class="sidebar-text text-sm font-medium ml-4 w-0 opacity-0">Clientes</span>
             </a>
