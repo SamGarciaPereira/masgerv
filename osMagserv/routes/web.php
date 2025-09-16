@@ -1,45 +1,31 @@
 <?php
-use App\Http\Controllers\cliente\ClienteController;
+
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\index\DashboardController;
+use App\Http\Controllers\cliente\ClienteController;
+use App\Http\Controllers\orcamento\OrcamentoController;
+use App\Http\Controllers\processo\ProcessoController;
+use App\Http\Controllers\manutencao\ManutencaoController;
+use App\Http\Controllers\financeiro\contasPagarController;
+use App\Http\Controllers\financeiro\contasReceberController;
+use App\Http\Controllers\authController;
 
-Route::get('/', function () {
-    return view('index');
-})->name('home');
+// --- ROTA PRINCIPAL ---
+Route::get('/', [DashboardController::class, 'index'])->name('home');
 
-Route::get('/financeiro/contas-pagar', function () {
-    return view('financeiro.contaPagar');
-})->name('financeiro.contas-pagar');
+// --- ROTAS DOS MÓDULOS (CRUD) ---
+// O comando 'resource' cria automaticamente as rotas (index, create, store, etc.)
+Route::resource('clientes', ClienteController::class);
+Route::resource('orcamentos', OrcamentoController::class);
+Route::resource('processos', ProcessoController::class);
+Route::resource('manutencoes', ManutencaoController::class);
 
-Route::get('/financeiro/contas-receber', function () {
-    return view('financeiro.contaReceber');
-})->name('financeiro.contas-receber');
+// --- ROTAS DO MÓDULO FINANCEIRO ---
+Route::resource('financeiro/contas-pagar', contasPagarController::class)
+     ->names('financeiro.contas-pagar');
+Route::resource('financeiro/contas-receber', contasReceberController::class)
+     ->names('financeiro.contas-receber');
 
-Route::get('/orcamentos', function () {
-    return view('orcamento.orcamento');
-})->name('orcamentos');
+// --- ROTAS DE AUTENTICAÇÃO ---
+Route::get('/login', function() { return 'Página de Login'; })->name('login');
 
-Route::get('/manutencao', function () {
-    return view('manutencao.manutencao');
-})->name('manutencao');
-
-Route::get('/processo', function () {
-    return view('processo.processo');
-})->name('processo' );
-
-Route::get('/auth/login', function () {
-    return view('auth.login');
-})->name('login');
-
-Route::get('/auth/cadastrar', function () {
-    return view('auth.cadastrar');
-})->name('cadastrar');
-
-Route::get('/clientes', function () {
-    return view('cliente.cliente');
-})->name('clientes');
-
-Route::get('/clientes/cadastrar', function () {
-    return view('cliente.cadastrarCliente');
-})->name('clientes.cadastrar');
-
-Route::resource('clientes', clienteController::class);

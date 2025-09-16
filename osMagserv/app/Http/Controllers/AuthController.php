@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\orcamento;
+namespace App\Http\Controllers\auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class orcamentoController extends Controller
+class AuthController extends Controller
 {
     /**
      * Display a listing of the resource.

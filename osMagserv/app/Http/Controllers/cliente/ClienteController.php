@@ -4,24 +4,21 @@ namespace App\Http\Controllers\cliente;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Cliente;
 
 class ClienteController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+      public function index()
     {
-        //$clientes = \App\Models\Cliente::all();
-        return view('cliente.cliente'); 
+        $clientes = Cliente::all();
+        // Alterado de 'cliente.cliente' para 'cliente.index'
+        return view('cliente.index', compact('clientes'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        // Alterado de 'cliente.cadastrarCliente' para 'cliente.create'
+        return view('cliente.create');
     }
 
     /**

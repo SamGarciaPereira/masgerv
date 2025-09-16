@@ -38,15 +38,15 @@
                 <i class="bi bi-house-door-fill text-lg"></i>
                 <span class="sidebar-text text-sm font-medium ml-4 w-0 opacity-0">Menu</span>
             </a>
-            <a href="{{ route('processo') }}" class="p-2.5 flex items-center rounded-md hover:bg-blue-600 group">
+            <a href="{{ route('processos.index') }}" class="p-2.5 flex items-center rounded-md hover:bg-blue-600 group">
                 <i class="bi bi-inboxes-fill text-lg"></i>
                 <span class="sidebar-text text-sm font-medium ml-4 w-0 opacity-0">Processos</span>
             </a>
-            <a href="{{ route('orcamentos') }}" class="p-2.5 flex items-center rounded-md hover:bg-blue-600 group">
+            <a href="{{ route('orcamentos.index') }}" class="p-2.5 flex items-center rounded-md hover:bg-blue-600 group">
                 <i class="bi bi-file-earmark-ruled-fill text-lg"></i>
                 <span class="sidebar-text text-sm font-medium ml-4 w-0 opacity-0">Orçamentos</span>
             </a>
-            <a href="manutencao" class="p-2.5 flex items-center rounded-md hover:bg-blue-600 group">
+            <a href="{{ route('manutencoes.index') }}" class="p-2.5 flex items-center rounded-md hover:bg-blue-600 group">
                 <i class="bi bi-hammer text-lg"></i>
                 <span class="sidebar-text text-sm font-medium ml-4 w-0 opacity-0">Manutenção</span>
             </a> 
@@ -64,8 +64,8 @@
                     <i class="sidebar-text bi bi-chevron-down text-xs w-0 opacity-0" id="arrow"></i>
                 </button>
                 <div id="submenu" class="hidden flex-col mt-1 pl-10">
-                    <a href="{{ route('financeiro.contas-pagar') }}" class="sidebar-text text-sm text-gray-300 p-2 rounded-md hover:bg-gray-700 w-full opacity-0">Contas a pagar</a>
-                    <a href="{{ route('financeiro.contas-receber') }}" class="sidebar-text text-sm text-gray-300 p-2 rounded-md hover:bg-gray-700 w-full opacity-0">Contas a receber</a>
+                    <a href="{{ route('financeiro.contas-pagar.index') }}" class="sidebar-text text-sm text-gray-300 p-2 rounded-md hover:bg-gray-700 w-full opacity-0">Contas a pagar</a>
+                    <a href="{{ route('financeiro.contas-receber.index') }}" class="sidebar-text text-sm text-gray-300 p-2 rounded-md hover:bg-gray-700 w-full opacity-0">Contas a receber</a>
                 </div>
             </div>
         </nav>

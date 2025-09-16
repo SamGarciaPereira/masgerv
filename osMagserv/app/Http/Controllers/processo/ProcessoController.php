@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\financeiro;
+namespace App\Http\Controllers\processo;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class contasPagarController extends Controller
+class ProcessoController extends Controller
 {
     /**
      * Display a listing of the resource.

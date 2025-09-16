@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\financeiro;
+namespace App\Http\Controllers\orcamento;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class contasReceberController extends Controller
+class OrcamentoController extends Controller
 {
     /**
      * Display a listing of the resource.

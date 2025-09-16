@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\auth;
+namespace App\Http\Controllers\financeiro;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class authController extends Controller
+class ContasReceberController extends Controller
 {
     /**
      * Display a listing of the resource.
