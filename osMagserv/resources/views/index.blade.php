@@ -61,27 +61,25 @@
     <div class="bg-white p-6 rounded-lg shadow-md">
         <h3 class="font-bold text-lg mb-4">Atividades Recentes</h3>
         <ul class="space-y-4">
-            <li class="flex items-start">
-                <div class="bg-blue-100 text-blue-600 p-2 rounded-full mr-3"><i class="bi bi-plus-lg"></i></div>
-                <div>
-                    <p class="font-medium"></p>
-                    <p class="text-sm text-gray-500"></p>
-                </div>
-            </li>
-            <li class="flex items-start">
-                <div class="bg-green-100 text-green-600 p-2 rounded-full mr-3"><i class="bi bi-check-lg"></i></div>
-                <div>
-                    <p class="font-medium">.</p>
-                    <p class="text-sm text-gray-500"></p>
-                </div>
-            </li>
-            <li class="flex items-start">
-                <div class="bg-yellow-100 text-yellow-600 p-2 rounded-full mr-3"><i class="bi bi-pencil-fill"></i></div>
-                <div>
-                    <p class="font-medium"></p>
-                    <p class="text-sm text-gray-500"></p>
-                </div>
-            </li>
+            @forelse ($atividades as $atividade)
+                <li class="flex items-start">
+                    @if (str_contains($atividade->description, 'cadastrado'))
+                        <div class="bg-blue-100 text-blue-600 p-2 rounded-full mr-3"><i class="bi bi-plus-lg"></i></div>
+                    @elseif (str_contains($atividade->description, 'atualizado'))
+                        <div class="bg-yellow-100 text-yellow-600 p-2 rounded-full mr-3"><i class="bi bi-pencil-fill"></i></div>
+                    @elseif (str_contains($atividade->description, 'removido'))
+                        <div class="bg-red-100 text-red-600 p-2 rounded-full mr-3"><i class="bi bi-trash-fill"></i></div>
+                    @else
+                        <div class="bg-gray-100 text-gray-600 p-2 rounded-full mr-3"><i class="bi bi-info-lg"></i></div>
+                    @endif
+                    <div>
+                        <p class="font-medium text-sm">{{ $atividade->description }}</p>
+                        <p class="text-xs text-gray-500">{{ $atividade->created_at->diffForHumans() }}</p>
+                    </div>
+                </li>
+            @empty
+                <li class="text-sm text-gray-500">Nenhuma atividade recente.</li>
+            @endforelse
         </ul>
     </div>
 </div>
