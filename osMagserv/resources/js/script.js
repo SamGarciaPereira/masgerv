@@ -6,8 +6,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const submenu = document.getElementById("submenu");
     const arrow = document.getElementById("arrow");
     const submenuLinks = submenu.querySelectorAll("a");
-    const cadastrarClienteBtn = document.getElementById("cadastrarClienteBtn");
-    const voltarClienteBtn = document.getElementById("voltarClienteBtn");
 
     submenuLinks.forEach((link) => {
         link.classList.add("w-0", "opacity-0");
@@ -78,16 +76,4 @@ document.addEventListener("DOMContentLoaded", function () {
             }, 10);
         }
     });
-
-    if (cadastrarClienteBtn) {
-        cadastrarClienteBtn.addEventListener("click", function () {
-            window.location.href = "/clientes/cadastrar";
-        });
-    }
-
-    if (voltarClienteBtn) {
-        voltarClienteBtn.addEventListener("click", function () {
-            window.location.href = "/clientes";
-        });
-    }
 });

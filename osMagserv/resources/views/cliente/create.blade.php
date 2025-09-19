@@ -10,9 +10,9 @@
                     <h1 class="text-3xl font-bold text-gray-900">Cadastrar Novo Cliente</h1>
                     <p class="text-gray-600 mt-1">Preencha os dados abaixo para adicionar um novo cliente ao sistema.</p>
                 </div>
-                <button id="voltarClienteBtn" class="bg-gray-200 text-gray-700 hover:bg-gray-300 font-medium py-2 px-4 rounded-lg">
+                <a href="{{ route('clientes.index') }}" class="bg-gray-200 text-gray-700 hover:bg-gray-300 font-medium py-2 px-4 rounded-lg">
                     Voltar para a Lista
-                </button>
+                </a>
             </div>
 
             <div class="bg-white p-8 rounded-lg shadow-md">
