@@ -57,13 +57,15 @@
             <p class="text-gray-500">[Aqui entraria um gráfico de barras - ex: Chart.js]</p>
         </div>
     </div>
+    
     <!-- Atividades Recentes -->
     <div class="bg-white p-6 rounded-lg shadow-md">
         <h3 class="font-bold text-lg mb-4">Atividades Recentes</h3>
         <ul class="space-y-4">
             @forelse ($atividades as $atividade)
                 <li class="flex items-start">
-                    @if (str_contains($atividade->description, 'cadastrado'))
+                    {{-- Define o ícone e a cor com base na descrição --}}
+                    @if (str_contains($atividade->description, 'adicionado'))
                         <div class="bg-blue-100 text-blue-600 p-2 rounded-full mr-3"><i class="bi bi-plus-lg"></i></div>
                     @elseif (str_contains($atividade->description, 'atualizado'))
                         <div class="bg-yellow-100 text-yellow-600 p-2 rounded-full mr-3"><i class="bi bi-pencil-fill"></i></div>
@@ -74,6 +76,7 @@
                     @endif
                     <div>
                         <p class="font-medium text-sm">{{ $atividade->description }}</p>
+                        {{-- diffForHumans() mostra "há 5 minutos", "há 2 dias", etc. --}}
                         <p class="text-xs text-gray-500">{{ $atividade->created_at->diffForHumans() }}</p>
                     </div>
                 </li>
@@ -85,4 +88,3 @@
 </div>
 
 @endsection
-
