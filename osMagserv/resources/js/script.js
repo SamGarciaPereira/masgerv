@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const submenu = document.getElementById("submenu");
     const arrow = document.getElementById("arrow");
     const submenuLinks = submenu.querySelectorAll("a");
+    const toggleButtons = document.querySelectorAll(".toggle-details-btn");
 
     submenuLinks.forEach((link) => {
         link.classList.add("w-0", "opacity-0");
@@ -75,5 +76,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
             }, 10);
         }
+    });
+
+    // --- LÓGICA PARA EXPANDIR/RECOLHER DETALHES DA TABELA ---
+    toggleButtons.forEach((button) => {
+        button.addEventListener("click", function () {
+            const targetId = this.dataset.targetId;
+            const detailsRow = document.getElementById(`details-${targetId}`);
+            const icon = this.querySelector("i");
+
+            if (detailsRow) {
+                detailsRow.classList.toggle("hidden");
+                icon.classList.toggle("rotate-180"); // Gira o ícone da seta
+            }
+        });
     });
 });
