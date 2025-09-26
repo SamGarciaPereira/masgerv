@@ -27,12 +27,11 @@ class OrcamentoController extends Controller
         $validatedData = $request->validate([
             'cliente_id' => 'required|exists:clientes,id',
             'numero_proposta' => 'required|string|max:255|unique:orcamentos',
-            'data_envio' => 'nullable|date', // Já está correto
+            'data_envio' => 'nullable|date', 
             'valor' => 'required|numeric|min:0',
             'status' => 'required|string|in:Pendente,Em Andamento,Enviado,Aprovado',
             'revisao' => 'required|integer|min:0',
             'escopo' => 'required|string',
-            // Adicione aqui a validação para os outros campos de data se necessário
             'data_limite_envio' => 'nullable|date',
             'data_aprovacao' => 'nullable|date',
         ]);

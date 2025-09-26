@@ -2,7 +2,6 @@
 
 @section('content')
 
-<!-- Conteúdo do Formulário de Edição -->
 <div class="flex justify-between items-center mb-8">
     <div>
         <h1 class="text-3xl font-bold text-gray-900">Editar Cliente</h1>
@@ -16,7 +15,7 @@
 <div class="bg-white p-8 rounded-lg shadow-md">
     <form action="{{ route('clientes.update', $cliente->id) }}" method="POST">
         @csrf
-        @method('PUT') <!-- Importante para indicar que é uma atualização -->
+        @method('PUT') 
         
         <h2 class="text-xl font-semibold text-gray-800 border-b pb-4 mb-6">Informações Pessoais</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
