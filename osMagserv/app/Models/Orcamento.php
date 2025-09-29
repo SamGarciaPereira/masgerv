@@ -10,11 +10,9 @@ class Orcamento extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+    // Se a tabela não for 'orcamentos', descomente e ajuste:
+    // protected $table = 'nome_da_tabela';
+
     protected $fillable = [
         'cliente_id',
         'numero_proposta',
@@ -24,7 +22,14 @@ class Orcamento extends Model
         'escopo',
         'valor',
         'revisao',
-        'status', 
+        'status',
+    ];
+
+    protected $casts = [
+        'data_envio' => 'date',
+        'data_limite_envio' => 'date',
+        'data_aprovacao' => 'date',
+        'valor' => 'decimal:2',
     ];
 
     /**

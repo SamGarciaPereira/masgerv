@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Models\Cliente;
+use App\Models\Orcamento;
 use App\Observers\ClienteObserver;
+use App\Observers\OrcamentoObserver;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -21,7 +23,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Adicione esta linha para registar o observer
         Cliente::observe(ClienteObserver::class);
+
+        Orcamento::observe(OrcamentoObserver::class);
     }
 }

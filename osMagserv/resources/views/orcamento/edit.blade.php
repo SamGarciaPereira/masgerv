@@ -18,49 +18,85 @@
             @csrf
             @method('PUT')
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2">
                     <label for="cliente_id" class="block text-sm font-medium text-gray-700 mb-2">Cliente</label>
                     <select id="cliente_id" name="cliente_id"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                         required>
                         <option value="">Selecione um cliente</option>
                         @foreach($clientes as $cliente)
-                            <option value="{{ $cliente->id }}" {{ $orcamento->cliente_id == $cliente->id ? 'selected' : '' }}>
-                                {{ $cliente->nome }}
-                            </option>
+                            <option value="{{ $cliente->id }}" {{ old('cliente_id', $orcamento->cliente_id) == $cliente->id ? 'selected' : '' }}>
+                                {{ $cliente->nome }}</option>
                         @endforeach
                     </select>
+                    @error('cliente_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
+
                 <div>
                     <label for="numero_proposta" class="block text-sm font-medium text-gray-700 mb-2">Nº da Proposta</label>
-                    <input type="text" id="numero_proposta" name="numero_proposta" value="{{ $orcamento->numero_proposta }}"
+                    <input type="text" id="numero_proposta" name="numero_proposta" value="{{ old('numero_proposta', $orcamento->numero_proposta) }}"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                         required>
+                    @error('numero_proposta') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
+
                 <div>
                     <label for="data_envio" class="block text-sm font-medium text-gray-700 mb-2">Data de Envio</label>
-                    <input type="date" id="data_envio" name="data_envio" value="{{ $orcamento->data_envio }}"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                        >
+                    <input type="date" id="data_envio" name="data_envio" value="{{ old('data_envio', optional($orcamento->data_envio)->format('Y-m-d')) }}"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                    @error('data_envio') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
+
                 <div>
                     <label for="valor" class="block text-sm font-medium text-gray-700 mb-2">Valor (R$)</label>
-                    <input type="number" step="0.01" id="valor" name="valor" value="{{ $orcamento->valor }}"
+                    <input type="number" step="0.01" id="valor" name="valor" value="{{ old('valor', $orcamento->valor) }}"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                         required>
+                    @error('valor') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
-                <div class="md:col-span-2">
+
+                <div>
+                    <label for="data_limite_envio" class="block text-sm font-medium text-gray-700 mb-2">Data Limite para Resposta</label>
+                    <input type="date" id="data_limite_envio" name="data_limite_envio" value="{{ old('data_limite_envio', optional($orcamento->data_limite_envio)->format('Y-m-d')) }}"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                    @error('data_limite_envio') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                </div>
+
+                <div>
+                    <label for="data_aprovacao" class="block text-sm font-medium text-gray-700 mb-2">Data de Aprovação</label>
+                    <input type="date" id="data_aprovacao" name="data_aprovacao" value="{{ old('data_aprovacao', optional($orcamento->data_aprovacao)->format('Y-m-d')) }}"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                    @error('data_aprovacao') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                </div>
+
+                <div>
+                    <label for="status" class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                    <select id="status" name="status"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                        required>
+                        <option value="Pendente" {{ old('status', $orcamento->status) == 'Pendente' ? 'selected' : '' }}>Pendente</option>
+                        <option value="Em Andamento" {{ old('status', $orcamento->status) == 'Em Andamento' ? 'selected' : '' }}>Em Andamento</option>
+                        <option value="Enviado" {{ old('status', $orcamento->status) == 'Enviado' ? 'selected' : '' }}>Enviado</option>
+                        <option value="Aprovado" {{ old('status', $orcamento->status) == 'Aprovado' ? 'selected' : '' }}>Aprovado</option>
+                    </select>
+                    @error('status') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                </div>
+
+                <div>
+                    <label for="revisao" class="block text-sm font-medium text-gray-700 mb-2">Revisão</label>
+                    <input type="number" id="revisao" name="revisao" value="{{ old('revisao', $orcamento->revisao) }}"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                        required>
+                    @error('revisao') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                </div>
+
+                <div class="lg:col-span-3">
                     <label for="escopo" class="block text-sm font-medium text-gray-700 mb-2">Escopo / Descrição</label>
                     <textarea id="escopo" name="escopo" rows="4"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                        required>{{ $orcamento->escopo }}</textarea>
-                </div>
-                <div>
-                    <label for="revisao" class="block text-sm font-medium text-gray-700 mb-2">Revisão</label>
-                    <input type="number" id="revisao" name="revisao" value="{{ $orcamento->revisao }}"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                        required>
+                        required>{{ old('escopo', $orcamento->escopo) }}</textarea>
+                    @error('escopo') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>
 
