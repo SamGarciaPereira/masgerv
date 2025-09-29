@@ -19,9 +19,12 @@ class Orcamento extends Model
         'cliente_id',
         'numero_proposta',
         'data_envio',
+        'data_limite_envio',
+        'data_aprovacao',
         'escopo',
         'valor',
         'revisao',
+        'status', 
     ];
 
     /**
