@@ -10,9 +10,6 @@ class Orcamento extends Model
 {
     use HasFactory;
 
-    // Se a tabela não for 'orcamentos', descomente e ajuste:
-    // protected $table = 'nome_da_tabela';
-
     protected $fillable = [
         'cliente_id',
         'numero_proposta',
