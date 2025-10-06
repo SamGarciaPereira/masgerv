@@ -1,9 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\manutencao;
 
+use App\Http\Controllers\Controller;
+use App\Models\Cliente;
 use App\Models\Manutencao;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ManutencaoController extends Controller
 {
@@ -12,7 +15,8 @@ class ManutencaoController extends Controller
      */
     public function index()
     {
-        //
+        $manutencoes = Manutencao::with('cliente')->latest()->get();
+        return view('manutencao.index', compact('manutencoes'));
     }
 
     /**
@@ -20,7 +24,8 @@ class ManutencaoController extends Controller
      */
     public function create()
     {
-        //
+        $clientes = Cliente::orderBy('nome')->get();
+        return view('manutencao.create', compact('clientes'));
     }
 
     /**
@@ -44,7 +49,8 @@ class ManutencaoController extends Controller
      */
     public function edit(Manutencao $manutencao)
     {
-        //
+        $clientes = Cliente::orderBy('nome')->get();
+        return view('manutencao.edit', compact('manutencao', 'clientes'));
     }
 
     /**
@@ -60,6 +66,7 @@ class ManutencaoController extends Controller
      */
     public function destroy(Manutencao $manutencao)
     {
-        //
+        $manutencao->delete();
+        return redirect()->route('manutencao.index')->with('success', 'Manutenção agendada removida com sucesso!');
     }
 }

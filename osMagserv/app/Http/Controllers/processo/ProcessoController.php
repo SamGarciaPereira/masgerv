@@ -12,7 +12,7 @@ class ProcessoController extends Controller
      */
     public function index()
     {
-        //
+        return view('processo.index');
     }
 
     /**

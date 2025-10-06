@@ -6,9 +6,9 @@ use App\Http\Controllers\cliente\ClienteController;
 use App\Http\Controllers\orcamento\OrcamentoController;
 use App\Http\Controllers\processo\ProcessoController;
 use App\Http\Controllers\manutencao\ManutencaoController;
-use App\Http\Controllers\financeiro\contasPagarController;
-use App\Http\Controllers\financeiro\contasReceberController;
-use App\Http\Controllers\authController;
+use App\Http\Controllers\financeiro\ContasPagarController;
+use App\Http\Controllers\financeiro\ContasReceberController;
+use App\Http\Controllers\AuthController;
 
 // --- ROTA PRINCIPAL ---
 Route::get('/', [DashboardController::class, 'index'])->name('home');
@@ -21,9 +21,9 @@ Route::resource('processos', ProcessoController::class);
 Route::resource('manutencoes', ManutencaoController::class);
 
 // --- ROTAS DO MÓDULO FINANCEIRO ---
-Route::resource('financeiro/contas-pagar', contasPagarController::class)
+Route::resource('financeiro/contas-pagar', ContasPagarController::class)
      ->names('financeiro.contas-pagar');
-Route::resource('financeiro/contas-receber', contasReceberController::class)
+Route::resource('financeiro/contas-receber', ContasReceberController::class)
      ->names('financeiro.contas-receber');
 
 // --- ROTAS DE AUTENTICAÇÃO ---
