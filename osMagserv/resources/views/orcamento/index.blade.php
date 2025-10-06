@@ -37,7 +37,7 @@
                     <tr class="hover:bg-gray-50">
                         <td class="px-6 py-4">
                             <button class="toggle-details-btn text-gray-500 hover:text-gray-800" data-target-id="{{ $orcamento->id }}">
-                                <i class="bi bi-chevron-down transition-transform duration-300"></i>
+                                <i class="bi bi-chevron-down toggle-arrow inline-block transition-transform duration-300"></i>
                             </button>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $orcamento->numero_proposta }}</td>
@@ -50,7 +50,7 @@
                                     @case('Enviado') bg-blue-100 text-blue-800 @break
                                     @case('Em Andamento') bg-yellow-100 text-yellow-800 @break
                                     @default bg-gray-100 text-gray-800
-                                @endswitch">
+                                @endswitch>
                                 {{ $orcamento->status }}
                             </span>
                         </td>

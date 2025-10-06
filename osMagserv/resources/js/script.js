@@ -5,12 +5,16 @@ document.addEventListener("DOMContentLoaded", function () {
     const dropdownBtn = document.getElementById("dropdown-btn");
     const submenu = document.getElementById("submenu");
     const arrow = document.getElementById("arrow");
-    const submenuLinks = submenu.querySelectorAll("a");
+    const submenuLinks = submenu ? submenu.querySelectorAll("a") : [];
     const toggleButtons = document.querySelectorAll(".toggle-details-btn");
 
-    submenuLinks.forEach((link) => {
-        link.classList.add("w-0", "opacity-0");
-    });
+    try {
+        submenuLinks.forEach((link) => {
+            link.classList.add("w-0", "opacity-0");
+        });
+    } catch (e) {
+        console.debug("submenu links init skipped:", e);
+    }
 
     let isExpanded = false;
 
@@ -46,49 +50,73 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    toggleBtn.addEventListener("click", () => setExpanded(!isExpanded));
+    if (toggleBtn) {
+        toggleBtn.addEventListener("click", () => setExpanded(!isExpanded));
+    } else {
+        console.debug("sidebar-toggle not found");
+    }
 
-    dropdownBtn.addEventListener("click", function (e) {
-        if (!isExpanded) {
-            setExpanded(true);
-            return;
-        }
+    if (dropdownBtn) {
+        dropdownBtn.addEventListener("click", function (e) {
+            try {
+                if (!isExpanded) {
+                    setExpanded(true);
+                    return;
+                }
 
-        const isSubmenuVisible = !submenu.classList.contains("hidden");
-        if (arrow) {
-            arrow.classList.toggle("rotate-180");
-        }
+                const isSubmenuVisible = submenu
+                    ? !submenu.classList.contains("hidden")
+                    : false;
+                if (arrow) {
+                    arrow.classList.toggle("rotate-180");
+                }
 
-        if (isSubmenuVisible) {
-            submenuLinks.forEach((link) => {
-                link.classList.add("w-0", "opacity-0");
-                link.classList.remove("w-full", "opacity-100");
-            });
-            setTimeout(() => {
-                submenu.classList.add("hidden");
-            }, 300);
-        } else {
-            submenu.classList.remove("hidden");
-            setTimeout(() => {
-                submenuLinks.forEach((link) => {
-                    link.classList.remove("w-0", "opacity-0");
-                    link.classList.add("w-full", "opacity-100");
-                });
-            }, 10);
-        }
-    });
-
-    // --- LÓGICA PARA EXPANDIR/RECOLHER DETALHES DA TABELA ---
-    toggleButtons.forEach((button) => {
-        button.addEventListener("click", function () {
-            const targetId = this.dataset.targetId;
-            const detailsRow = document.getElementById(`details-${targetId}`);
-            const icon = this.querySelector("i");
-
-            if (detailsRow) {
-                detailsRow.classList.toggle("hidden");
-                icon.classList.toggle("rotate-180"); // Gira o ícone da seta
+                if (isSubmenuVisible) {
+                    submenuLinks.forEach((link) => {
+                        link.classList.add("w-0", "opacity-0");
+                        link.classList.remove("w-full", "opacity-100");
+                    });
+                    setTimeout(() => {
+                        if (submenu) submenu.classList.add("hidden");
+                    }, 300);
+                } else {
+                    if (submenu) submenu.classList.remove("hidden");
+                    setTimeout(() => {
+                        submenuLinks.forEach((link) => {
+                            link.classList.remove("w-0", "opacity-0");
+                            link.classList.add("w-full", "opacity-100");
+                        });
+                    }, 10);
+                }
+            } catch (err) {
+                console.error("dropdown click error", err);
             }
         });
-    });
+    } else {
+        console.debug("dropdown-btn not found");
+    }
+
+    // --- LÓGICA PARA EXPANDIR/RECOLHER DETALHES DA TABELA ---
+    if (toggleButtons && toggleButtons.length) {
+        toggleButtons.forEach((button) => {
+            button.addEventListener("click", function () {
+                try {
+                    const targetId = this.dataset.targetId;
+                    const detailsRow = document.getElementById(
+                        `details-${targetId}`
+                    );
+                    const icon = this.querySelector("i");
+
+                    if (detailsRow) {
+                        detailsRow.classList.toggle("hidden");
+                        if (icon) icon.classList.toggle("rotate-180"); // Gira o ícone da seta
+                    }
+                } catch (err) {
+                    console.error("toggle details error", err);
+                }
+            });
+        });
+    } else {
+        console.debug("no toggle-details-btn elements found");
+    }
 });
