@@ -4,6 +4,7 @@ namespace App\Http\Controllers\processo;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Processo;
 
 class ProcessoController extends Controller
 {
@@ -12,7 +13,8 @@ class ProcessoController extends Controller
      */
     public function index()
     {
-        return view('processo.index');
+        $processos = Processo::with('orcamento.cliente')->latest()->get();
+        return view('processo.index', compact('processos'));
     }
 
     /**
@@ -42,9 +44,9 @@ class ProcessoController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Processo $processo)
     {
-        //
+        return view('processo.edit', compact('processo'));
     }
 
     /**
@@ -52,7 +54,14 @@ class ProcessoController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validatedData = $request->validate([
+            'status' => 'required|in:Em Aberto,Finalizado,Faturado',
+            'numero_nota_fiscal' => 'nullable|string|max:255',
+        ]);
+
+        $processo->update($validatedData);
+
+        return redirect()->route('processos.index')->with('success', 'Status do processo atualizado com sucesso!');
     }
 
     /**
