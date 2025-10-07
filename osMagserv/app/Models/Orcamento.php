@@ -36,4 +36,8 @@ class Orcamento extends Model
     {
         return $this->belongsTo(Cliente::class);
     }
+
+    public function processo(){
+        return $this->hasOne(Processo::class);
+    }
 }

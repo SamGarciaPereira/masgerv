@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\Activity;
 use App\Models\Orcamento;
+use App\Models\Processo;
 
 class OrcamentoObserver
 {
@@ -12,6 +13,12 @@ class OrcamentoObserver
      */
     public function created(Orcamento $orcamento): void
     {
+
+        Processo::create([
+            'orcamento_id' => $orcamento->id,
+            'status' => 'Em aberto',
+        ]);
+
         Activity::create([
             'description' => "Orçamento '{$orcamento->numero_proposta}' foi cadastrado."
         ]);

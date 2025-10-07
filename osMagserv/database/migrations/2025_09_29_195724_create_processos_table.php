@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('processos', function (Blueprint $table) {
             $table->id();
+
+            $table->foreignId('orcamento_id')->unique()->constrained('orcamentos')->onDelete('cascade');
+            $table->string('nf')->nullable();
+            $table->enum('status', ['Em aberto', 'Finalizado', 'Faturado'])->default('Em aberto');
+
             $table->timestamps();
         });
     }
