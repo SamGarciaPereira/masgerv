@@ -1,5 +1,7 @@
 @extends('layouts.main')
 
+@section('title', 'Editar Orçamento')
+
 @section('content')
 
     <div class="flex justify-between items-center mb-8">

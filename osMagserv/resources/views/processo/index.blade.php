@@ -1,5 +1,7 @@
 @extends('layouts.main')
 
+@section('title', 'Gestão de Processos')
+
 @section('content')
 
     <div class="flex justify-between items-center mb-8">

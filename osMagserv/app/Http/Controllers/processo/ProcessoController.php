@@ -52,11 +52,11 @@ class ProcessoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Processo $processo)
     {
         $validatedData = $request->validate([
             'status' => 'required|in:Em Aberto,Finalizado,Faturado',
-            'numero_nota_fiscal' => 'nullable|string|max:255',
+            'nf' => 'nullable|string|max:255',
         ]);
 
         $processo->update($validatedData);
