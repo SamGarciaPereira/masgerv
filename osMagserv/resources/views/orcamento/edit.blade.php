@@ -38,8 +38,7 @@
                 <div>
                     <label for="numero_proposta" class="block text-sm font-medium text-gray-700 mb-2">Nº da Proposta</label>
                     <input type="text" id="numero_proposta" name="numero_proposta" value="{{ old('numero_proposta', $orcamento->numero_proposta) }}"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                        required>
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                     @error('numero_proposta') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
 
@@ -53,8 +52,7 @@
                 <div>
                     <label for="valor" class="block text-sm font-medium text-gray-700 mb-2">Valor (R$)</label>
                     <input type="number" step="0.01" id="valor" name="valor" value="{{ old('valor', $orcamento->valor) }}"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                        required>
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                     @error('valor') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
 
@@ -88,8 +86,7 @@
                 <div>
                     <label for="revisao" class="block text-sm font-medium text-gray-700 mb-2">Revisão</label>
                     <input type="number" id="revisao" name="revisao" value="{{ old('revisao', $orcamento->revisao) }}"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                        required>
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                     @error('revisao') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
 
@@ -97,12 +94,12 @@
                     <label for="escopo" class="block text-sm font-medium text-gray-700 mb-2">Escopo / Descrição</label>
                     <textarea id="escopo" name="escopo" rows="4"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                        required>{{ old('escopo', $orcamento->escopo) }}</textarea>
+                        >{{ old('escopo', $orcamento->escopo) }}</textarea>
                     @error('escopo') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>
 
-            <div class="flex justify-end mt-10 pt-6 border-t">
+            <div class="flex justify-end mt-10 pt-6">
                 <a href="{{ route('orcamentos.index') }}"
                     class="bg-gray-200 text-gray-700 hover:bg-gray-300 font-medium py-2 px-6 rounded-lg mr-4">
                     Cancelar

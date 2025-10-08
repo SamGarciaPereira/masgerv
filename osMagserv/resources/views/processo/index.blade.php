@@ -22,6 +22,7 @@
             <table class="w-full table-auto">
                 <thead class="bg-gray-50">
                     <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NF</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Proposta
                         </th>
@@ -37,6 +38,11 @@
                 <tbody class="bg-white divide-y divide-gray-200">
                    @forelse ($processos as $processo)
                     <tr>
+                        <td class="px-6 py-4">
+                            <button class="toggle-details-btn text-gray-500 hover:text-gray-800" data-target-id="{{ $processo->id }}">
+                                <i class="bi bi-chevron-down toggle-arrow inline-block transition-transform duration-300"></i>
+                            </button>
+                        </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600">{{ $processo->nf ?? 'N/A' }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ $processo->orcamento->numero_proposta ?? 'N/A' }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $processo->orcamento->cliente->nome ?? 'N/A' }} </td>
@@ -56,6 +62,16 @@
                                 <i class="bi bi-pencil-fill"></i>
                             </a>
                         </td>
+                    </tr>
+                    <tr id="details-{{ $processo->id }}" class="hidden details-row">
+                            <td colspan="6" class="px-6 py-2 bg-gray-50">
+                                <div
+                                    class="p-2 text-sm text-gray-700 grid grid-cols-1 md:grid-cols-2 gap-2 max-h-40 overflow-auto">
+                                    <div class="space-y-1">
+                                        <p class="mb-0"><strong>Escopo: </strong> {{ $processo->orcamento->escopo }}</p>
+                                    </div>
+                                </div>
+                            </td>
                     </tr>
                 @empty
                     <tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">Nenhum processo iniciado.</td></tr>

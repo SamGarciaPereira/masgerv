@@ -83,7 +83,7 @@
                     <tr id="details-{{ $orcamento->id }}" class="hidden details-row">
                         <td colspan="6" class="px-6 py-4 bg-gray-50">
                             <div class="p-4 text-sm text-gray-700 grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <p><strong>Escopo:</strong><br>{{ $orcamento->escopo }}</p>
+                                <p><strong>Escopo:</strong><br>{{ $orcamento->escopo ? : 'Não definido'}} </p>
                                 <div>
                                     <p><strong>Data de Envio:</strong> {{ $orcamento->data_envio ? \Carbon\Carbon::parse($orcamento->data_envio)->format('d/m/Y') : 'Não definida' }}</p>
                                     <p><strong>Data Limite p/ Resposta:</strong> {{ $orcamento->data_limite_envio ? \Carbon\Carbon::parse($orcamento->data_limite_envio)->format('d/m/Y') : 'Não definida' }}</p>

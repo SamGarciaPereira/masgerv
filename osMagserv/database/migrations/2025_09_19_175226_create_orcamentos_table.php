@@ -13,12 +13,12 @@ return new class extends Migration {
         Schema::create('orcamentos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('cliente_id')->constrained('clientes')->onDelete('cascade');
-            $table->string('numero_proposta')->unique();
+            $table->string('numero_proposta')->unique()->nullable();
             $table->date('data_envio')->nullable();
             $table->date('data_limite_envio')->nullable();
             $table->date('data_aprovacao')->nullable();
-            $table->text('escopo');
-            $table->decimal('valor', 10, 2);
+            $table->text('escopo')->nullable();
+            $table->decimal('valor', 10, 2)->nullable();
             $table->integer('revisao')->default(0);
             $table->enum('status', ['Pendente', 'Em Andamento', 'Enviado', 'Aprovado'])->default('Pendente');
             $table->timestamps();

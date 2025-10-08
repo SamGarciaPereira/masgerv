@@ -26,20 +26,15 @@ class OrcamentoController extends Controller
     {
         $validatedData = $request->validate([
             'cliente_id' => 'required|exists:clientes,id',
-            'numero_proposta' => 'required|string|max:255|unique:orcamentos',
+            'numero_proposta' => 'nullable|string|max:255|unique:orcamentos',
             'data_envio' => 'nullable|date', 
-            'valor' => 'required|numeric|min:0',
+            'valor' => 'nullable|numeric|min:0',
             'status' => 'required|string|in:Pendente,Em Andamento,Enviado,Aprovado',
-            'revisao' => 'required|integer|min:0',
-            'escopo' => 'required|string',
+            'revisao' => 'nullable|integer|min:0',
+            'escopo' => 'nullable|string',
             'data_limite_envio' => 'nullable|date',
             'data_aprovacao' => 'nullable|date',
         ]);
-
-        // Garante que datas vazias sejam salvas como NULL
-        $validatedData['data_envio'] = $validatedData['data_envio'] ?? null;
-        $validatedData['data_limite_envio'] = $validatedData['data_limite_envio'] ?? null;
-        $validatedData['data_aprovacao'] = $validatedData['data_aprovacao'] ?? null;
 
         Orcamento::create($validatedData);
 
@@ -57,12 +52,12 @@ class OrcamentoController extends Controller
     {
         $validatedData = $request->validate([
             'cliente_id' => 'required|exists:clientes,id',
-            'numero_proposta' => ['required', 'string', 'max:255', Rule::unique('orcamentos')->ignore($orcamento->id)],
+            'numero_proposta' => ['nullable', 'string', 'max:255', Rule::unique('orcamentos')->ignore($orcamento->id)],
             'data_envio' => 'nullable|date',
-            'valor' => 'required|numeric|min:0',
+            'valor' => 'nullable|numeric|min:0',
             'status' => 'required|string|in:Pendente,Em Andamento,Enviado,Aprovado',
-            'revisao' => 'required|integer|min:0',
-            'escopo' => 'required|string',
+            'revisao' => 'nullable|integer|min:0',
+            'escopo' => 'nullable|string',
             'data_limite_envio' => 'nullable|date',
             'data_aprovacao' => 'nullable|date',
         ]);
