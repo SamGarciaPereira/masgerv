@@ -13,7 +13,7 @@
     @vite('resources/css/app.css')
     <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 </head>
-<body class="bg-gray-100 font-inter">
+<body class="bg-gray-100 font-inter overflow-x-hidden min-h-screen">
 
     <div id="sidebar" class="fixed top-0 left-0 h-screen bg-gray-900 text-white p-4 flex flex-col z-50 w-20">
         <div class="flex items-center justify-between pb-4 border-b border-gray-700">
@@ -78,11 +78,10 @@
         </div>
     </div>
 
-    <main id="main-content" class="w-full pl-20">
-        <div class="p-8">
+    <main id="main-content" class="min-h-screen ml-20 overflow-x-hidden flex flex-col justify-between bg-gray-100">
+        <div class="p-8 flex-grow">
             @yield('content')
         </div>
-        
         <footer class="text-center p-4 text-gray-500 text-sm">
             <p>Magserv Manutenção e Serviços LTDA &copy; 2025 | Samuel Software Developer</p>
         </footer>

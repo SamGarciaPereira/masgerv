@@ -1,5 +1,4 @@
 footer{
-    margin-top: 550px;
     text-align: center;
 }
 
@@ -9,7 +8,7 @@ footer{
 
 .sidebar-text {
     transition: opacity 0.2s ease-in-out, width 0.3s ease-in-out;
-    white-space: nowrap; /* Impede que o texto quebre a linha durante a transição */
-    overflow: hidden; /* Esconde o texto que transborda */
+    white-space: nowrap; 
+    overflow: hidden; 
 }
 

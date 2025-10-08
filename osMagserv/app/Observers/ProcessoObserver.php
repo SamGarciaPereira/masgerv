@@ -3,6 +3,8 @@
 namespace App\Observers;
 
 use App\Models\Processo;
+use App\Models\Activity;
+use App\Observers\ContasReceberObserver;
 
 class ProcessoObserver
 {
@@ -11,7 +13,9 @@ class ProcessoObserver
      */
     public function created(Processo $processo): void
     {
-        //
+        Activity::create([
+            'description' => "Processo para o orçamento '{$processo->orcamento->numero_proposta}' foi criado."
+        ]);
     }
 
     /**
