@@ -12,7 +12,7 @@ class ContasPagarController extends Controller
      */
     public function index()
     {
-        //
+        return view('financeiro.contas-pagar.index');
     }
 
     /**
@@ -20,7 +20,7 @@ class ContasPagarController extends Controller
      */
     public function create()
     {
-        //
+        
     }
 
     /**

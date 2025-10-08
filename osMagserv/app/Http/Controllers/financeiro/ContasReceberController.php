@@ -12,7 +12,7 @@ class ContasReceberController extends Controller
      */
     public function index()
     {
-        //
+        return view('financeiro.contas-receber.index');
     }
 
     /**
