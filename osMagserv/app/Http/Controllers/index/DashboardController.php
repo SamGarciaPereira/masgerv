@@ -13,7 +13,7 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $atividades = Activity::latest()->take(10)->get();
+        $atividades = Activity::latest()->take(7)->get();
 
         return view('index', compact('atividades'));
     }

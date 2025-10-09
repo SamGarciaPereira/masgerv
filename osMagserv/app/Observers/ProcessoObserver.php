@@ -30,14 +30,24 @@ class ProcessoObserver
 
             if ($processo->orcamento) {
                 ContasReceberObserver::create([
-                    'descricao' => 'Faturamento do orçamento: ' . $processo->orcamento->numero_proposta,
-                    'valor' => $processo->orcamento->valor,
-                    'data_vencimento' => now()->addDays(30), // Vencimento para 30 dias (exemplo)
-                    'status' => 'Pendente',
-                    'cliente_id' => $processo->orcamento->cliente_id,
+                   'processo_id' => $processo->id,
+                   'cliente_id' => $processo->orcamento->cliente_id,
+                   'descricao' => "Faturamento do orçamento '{$processo->orcamento->numero_proposta}'",
+                   'valor' => $processo->orcamento->valor,
+                   'data_vencimento' =>
+                   'status' => 'Pendente',
+                    
+                ]);
+                
+                Activity::create([
+                    'description' => "Processo '{$processo->orcamento->numero_proposta}' foi faturado e uma conta a receber foi gerada."
                 ]);
             }
         }
+
+        Activity::create([
+            'description' => "Processo para o orçamento '{$processo->orcamento->numero_proposta}' foi atualizado."
+        ]);
     }
 
     /**

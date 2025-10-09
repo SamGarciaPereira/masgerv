@@ -6,5 +6,23 @@ use Illuminate\Database\Eloquent\Model;
 
 class ContasReceber extends Model
 {
-    //
+    protected $fillable = [
+        'processo_id',
+        'cliente_id',
+        'descricao',
+        'nf',
+        'valor',
+        'data_vencimento',
+        'status',
+    ];
+
+    public function processo()
+    {
+        return $this->belongsTo(Processo::class);
+    }
+
+    public function cliente()
+    {
+        return $this->belongsTo(Cliente::class);
+    }
 }

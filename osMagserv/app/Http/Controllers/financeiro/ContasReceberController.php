@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\financeiro;
 
 use App\Http\Controllers\Controller;
+use App\Models\ContasReceber;
+use App\Models\Cliente;
+use App\Models\Processo;
 use Illuminate\Http\Request;
 
 class ContasReceberController extends Controller
@@ -12,7 +15,8 @@ class ContasReceberController extends Controller
      */
     public function index()
     {
-        return view('financeiro.contas-receber.index');
+        $contasReceber = ContasReceber::with(['cliente', 'processo'])->latest()->get();
+        return view('financeiro.contas-receber.index', compact('contasReceber'));
     }
 
     /**
@@ -20,7 +24,8 @@ class ContasReceberController extends Controller
      */
     public function create()
     {
-        //
+        $clientes = Cliente::orderBy('nome')->get();
+        return view('financeiro.contas-receber.create', compact('clientes'));
     }
 
     /**
@@ -28,7 +33,15 @@ class ContasReceberController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'processo_id' => 'nullable|exists:processos,id',
+            'cliente_id' => 'required|exists:clientes,id',
+            'descricao' => 'required|string|max:255',
+            'nf' => 'nullable|string|max:100',
+            'valor' => 'required|numeric|min:0',
+            'data_vencimento' => 'required|date',
+            'status' => 'required|in:Pendente,Pago,Cancelado',
+        ]);
     }
 
     /**
@@ -44,7 +57,7 @@ class ContasReceberController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        return view('financeiro.contas-receber.edit');
     }
 
     /**
