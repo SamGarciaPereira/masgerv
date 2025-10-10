@@ -60,9 +60,8 @@ class ContasReceberController extends Controller
      */
     public function edit(ContasReceber $contasReceber)
     {
-        $clientes = Cliente::orderBy('nome')->get();
-        return view('financeiro.contas-receber.edit', compact('contasReceber', 'clientes'));
-    }
+        return view('financeiro.contas-receber.edit', compact('contasReceber'));
+    }   
 
     /**
      * Update the specified resource in storage.

@@ -21,10 +21,10 @@ Route::resource('processos', ProcessoController::class);
 Route::resource('manutencoes', ManutencaoController::class);
 
 // --- ROTAS DO MÓDULO FINANCEIRO ---
-Route::resource('financeiro/contas-pagar', ContasPagarController::class)
-     ->names('financeiro.contas-pagar');
-Route::resource('financeiro/contas-receber', ContasReceberController::class)
-     ->names('financeiro.contas-receber');
+Route::prefix('financeiro')->name('financeiro.')->group(function () {
+    Route::resource('contas-pagar', ContasPagarController::class);
+    Route::resource('contas-receber', ContasReceberController::class);
+});
 
 // --- ROTAS DE AUTENTICAÇÃO ---
 Route::get('/login', function() { return 'Página de Login'; })->name('login');
