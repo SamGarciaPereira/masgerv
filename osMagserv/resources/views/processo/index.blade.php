@@ -46,7 +46,7 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600">{{ $processo->nf ?? 'N/A' }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ $processo->orcamento->numero_proposta ?? 'N/A' }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $processo->orcamento->cliente->nome ?? 'N/A' }} </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">R$ {{ number_format($processo->orcamento->valor_total ?? 0, 2, ',', '.') }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">R$ {{ number_format($processo->orcamento->valor ?? 0, 2, ',', '.') }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             @php
                                 $statusClass = [

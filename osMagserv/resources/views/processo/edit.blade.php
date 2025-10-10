@@ -15,6 +15,17 @@
         </a>
     </div>
 
+    @if ($errors->any())
+        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-md" role="alert">
+            <p class="font-bold">Atenção!</p>
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <div class="bg-white p-8 rounded-lg shadow-md">
         <form action="{{ route('processos.update', $processo->id) }}" method="POST">
             @csrf

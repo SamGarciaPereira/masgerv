@@ -59,6 +59,15 @@ class ProcessoController extends Controller
             'nf' => 'nullable|string|max:255',
         ]);
 
+        if ($validatedData['status'] === 'Faturado') {
+            $processo->load('orcamento');
+           if (empty($processo->orcamento->valor) || $processo->orcamento->valor <= 0) {
+                return redirect()->back()
+                                 ->withInput()
+                                 ->withErrors(['faturamento' => 'Não é possível faturar um processo cujo orçamento não tem um valor definido maior que zero.']);
+            }
+        }
+
         $processo->update($validatedData);
 
         return redirect()->route('processos.index')->with('success', 'Status do processo atualizado com sucesso!');

@@ -14,13 +14,20 @@ class ContasReceberObserver
      */
     public function created(ContasReceber $contasReceber): void
     {
-        if ($contasReceber->processo_id) {
+         if ($contasReceber->processo_id) {
             $contasReceber->load('processo.orcamento');
-            $identificador = $contasReceber->nf ? "da NF {$contasReceber->nf}" : "do orçamento {$contasReceber->processo->orcamento->numero_proposta}";
 
-            Activity::create([
-                'description' => "Processo {$identificador} foi faturado e uma nova conta a receber foi gerada."
-            ]);
+            if ($contasReceber->processo && $contasReceber->processo->orcamento) {
+                $orcamento = $contasReceber->processo->orcamento;
+                
+                $identificador = $contasReceber->nf 
+                    ? "da NF {$contasReceber->nf}" 
+                    : "do orçamento {$orcamento->numero_proposta}";
+
+                Activity::create([
+                    'description' => "Processo {$identificador} foi faturado e uma nova conta a receber foi gerada."
+                ]);
+            }
         } else {
             Activity::create([
                 'description' => "Uma nova conta a receber foi cadastrada: '{$contasReceber->descricao}'."

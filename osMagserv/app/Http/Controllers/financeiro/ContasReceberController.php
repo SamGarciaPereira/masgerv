@@ -15,7 +15,7 @@ class ContasReceberController extends Controller
      */
     public function index()
     {
-        $contasReceber = ContasReceber::with(['cliente', 'processo'])->latest()->get();
+        $contasReceber = ContasReceber::with(['cliente', 'processo.orcamento'])->latest()->get();
         return view('financeiro.contas-receber.index', compact('contasReceber'));
     }
 
@@ -34,14 +34,17 @@ class ContasReceberController extends Controller
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'processo_id' => 'nullable|exists:processos,id',
             'cliente_id' => 'required|exists:clientes,id',
             'descricao' => 'required|string|max:255',
-            'nf' => 'nullable|string|max:100',
-            'valor' => 'required|numeric|min:0',
+            'valor' => 'required|numeric|min:0.01',
             'data_vencimento' => 'required|date',
-            'status' => 'required|in:Pendente,Pago,Cancelado',
+            'status' => 'required|in:Pendente,Pago,Atrasado',
         ]);
+
+        ContasReceber::create($validatedData);
+
+        return redirect()->route('financeiro.contas-receber.index')
+                         ->with('success', 'Conta a receber cadastrada com sucesso!');
     }
 
     /**
@@ -49,30 +52,45 @@ class ContasReceberController extends Controller
      */
     public function show(string $id)
     {
-        //
+        // Geralmente não é necessário para CRUDs simples, pode deixar vazio.
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(ContasReceber $contasReceber)
     {
-        return view('financeiro.contas-receber.edit');
+        $clientes = Cliente::orderBy('nome')->get();
+        return view('financeiro.contas-receber.edit', compact('contasReceber', 'clientes'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, ContasReceber $contasReceber)
     {
-        //
+        $validatedData = $request->validate([
+            'cliente_id' => 'required|exists:clientes,id',
+            'descricao' => 'required|string|max:255',
+            'valor' => 'required|numeric|min:0.01',
+            'data_vencimento' => 'required|date',
+            'status' => 'required|in:Pendente,Pago,Atrasado',
+        ]);
+
+        $contasReceber->update($validatedData);
+
+        return redirect()->route('financeiro.contas-receber.index')
+                         ->with('success', 'Conta a receber atualizada com sucesso!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(ContasReceber $contasReceber)
     {
-        //
+        $contasReceber->delete();
+
+        return redirect()->route('financeiro.contas-receber.index')
+                         ->with('success', 'Conta a receber removida com sucesso!');
     }
 }
