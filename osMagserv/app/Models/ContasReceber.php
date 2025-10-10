@@ -16,6 +16,10 @@ class ContasReceber extends Model
         'status',
     ];
 
+    protected $casts = [
+        'data_vencimento' => 'date',
+    ];
+
     public function processo()
     {
         return $this->belongsTo(Processo::class);

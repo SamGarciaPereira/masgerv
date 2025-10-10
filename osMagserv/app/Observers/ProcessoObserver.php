@@ -4,7 +4,7 @@ namespace App\Observers;
 
 use App\Models\Processo;
 use App\Models\Activity;
-use App\Observers\ContasReceberObserver;
+use App\Models\ContasReceber;
 
 class ProcessoObserver
 {
@@ -23,31 +23,25 @@ class ProcessoObserver
      */
     public function updated(Processo $processo)
     {
-
-        $processo->load('orcamento');
-
         if ($processo->isDirty('status') && $processo->status === 'Faturado') {
-
+            $processo->load('orcamento.cliente');
             if ($processo->orcamento) {
-                ContasReceberObserver::create([
-                   'processo_id' => $processo->id,
-                   'cliente_id' => $processo->orcamento->cliente_id,
-                   'descricao' => "Faturamento do orçamento '{$processo->orcamento->numero_proposta}'",
-                   'valor' => $processo->orcamento->valor,
-                   'data_vencimento' =>
-                   'status' => 'Pendente',
-                    
-                ]);
-                
-                Activity::create([
-                    'description' => "Processo '{$processo->orcamento->numero_proposta}' foi faturado e uma conta a receber foi gerada."
+                ContasReceber::create([
+                    'descricao' => 'Faturamento do orçamento: ' . $processo->orcamento->numero_proposta,
+                    'valor' => $processo->orcamento->valor,
+                    'data_vencimento' => null,
+                    'status' => 'Pendente',
+                    'cliente_id' => $processo->orcamento->cliente_id,
+                    'processo_id' => $processo->id,
+                    'nf' => $processo->nf,
                 ]);
             }
+        } else if ($processo->wasChanged()) {
+            $processo->load('orcamento');
+            Activity::create([
+                'description' => "O processo para o orçamento '{$processo->orcamento->numero_proposta}' foi atualizado."
+            ]);
         }
-
-        Activity::create([
-            'description' => "Processo para o orçamento '{$processo->orcamento->numero_proposta}' foi atualizado."
-        ]);
     }
 
     /**

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('descricao');    
             $table->string('nf')->nullable();
             $table->decimal('valor', 10, 2);
-            $table->date('data_vencimento');
+            $table->date('data_vencimento')->nullable();
             $table->enum('status', ['Pendente', 'Pago', 'Atrasado'])->default('Pendente');
             $table->timestamps();
 
