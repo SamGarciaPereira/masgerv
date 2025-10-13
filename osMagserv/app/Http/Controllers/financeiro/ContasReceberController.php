@@ -36,6 +36,7 @@ class ContasReceberController extends Controller
         $validatedData = $request->validate([
             'cliente_id' => 'required|exists:clientes,id',
             'descricao' => 'required|string|max:255',
+            'nf' => 'nullable|string|max:100',
             'valor' => 'required|numeric|min:0.01',
             'data_vencimento' => 'required|date',
             'status' => 'required|in:Pendente,Pago,Atrasado',

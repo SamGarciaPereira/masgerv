@@ -1,5 +1,7 @@
 @extends('layouts.main')
 
+@section('title', 'Novo Orçamento')
+
 @section('content')
 
     <div class="flex justify-between items-center mb-8">
@@ -98,7 +100,7 @@
                 </div>
             </div>
 
-            <div class="flex justify-end mt-10 pt-6 border-t">
+            <div class="flex justify-end mt-10 pt-6">
                 <a href="{{ route('orcamentos.index') }}"
                     class="bg-gray-200 text-gray-700 hover:bg-gray-300 font-medium py-2 px-6 rounded-lg mr-4">
                     Cancelar
