@@ -5,6 +5,7 @@ namespace App\Http\Controllers\manutencao;
 use App\Http\Controllers\Controller;
 use App\Models\Cliente;
 use App\Models\Manutencao;
+use App\Models\Orcamento;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -33,7 +34,20 @@ class ManutencaoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'cliente_id' => 'required|exists:clientes,id',
+            'chamado' => 'required|string|max:255',
+            'descricao' => 'required|string',
+            'data_inicio_agendamento' => 'required|date',
+            'data_fim_agendamento' => 'required|date|after_or_equal:data_inicio_agendamento',
+            'tipo' => ['required', Rule::in(['Preventiva', 'Corretiva'])],
+            'status' => ['required', Rule::in(['Agendada', 'Em Andamento', 'Concluída', 'Cancelada'])],
+        ]);
+
+        Manutencao::create($validatedData);
+
+        return redirect()->route('manutencoes.index')
+            ->with('success', 'Manutenção agendada com sucesso!');
     }
 
     /**
@@ -58,7 +72,20 @@ class ManutencaoController extends Controller
      */
     public function update(Request $request, Manutencao $manutencao)
     {
-        //
+        $validatedData = $request->validate([
+            'cliente_id' => 'required|exists:clientes,id',
+            'chamado' => 'nullable|string|max:255',
+            'descricao' => 'required|string',
+           'data_inicio_agendamento' => 'required|date',
+            'data_fim_agendamento' => 'required|date|after_or_equal:data_inicio_agendamento',
+            'tipo' => ['required', Rule::in(['Preventiva', 'Corretiva', 'Preditiva'])],
+            'status' => ['required', Rule::in(['Agendada', 'Em Andamento', 'Concluída', 'Cancelada'])],
+        ]);
+
+        $manutencao->update($validatedData);
+
+        return redirect()->route('manutencoes.index')
+            ->with('success', 'Manutenção atualizada com sucesso!');
     }
 
     /**
@@ -67,6 +94,21 @@ class ManutencaoController extends Controller
     public function destroy(Manutencao $manutencao)
     {
         $manutencao->delete();
-        return redirect()->route('manutencao.index')->with('success', 'Manutenção agendada removida com sucesso!');
+        return redirect()->route('manutencoes.index')->with('success', 'Manutenção agendada removida com sucesso!');
+    }
+
+    /**
+     * Create an orcamento from a manutencao.
+     */
+    public function createOrcamento(Manutencao $manutencao)
+    {
+        $orcamento = Orcamento::create([
+            'cliente_id' => $manutencao->cliente_id,
+            'escopo' => "Orçamento referente a manutenção do chamado: {$manutencao->chamado}\n\n{$manutencao->descricao}",
+            'status' => 'Pendente',
+        ]);
+
+        return redirect()->route('orcamentos.edit', $orcamento)
+            ->with('success', 'Orçamento gerado a partir da manutenção. Por favor, preencha o restante das informações.');
     }
 }

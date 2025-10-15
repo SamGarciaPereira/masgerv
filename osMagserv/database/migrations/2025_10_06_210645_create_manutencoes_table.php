@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('manutencoes', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('cliente_id')->constrained('clientes')->onDelete('cascade');
+            $table->string('chamado');
+            $table->text('descricao');
+            $table->date('data_inicio_agendamento');
+            $table->date('data_fim_agendamento');
+            $table->enum('tipo', ['Preventiva', 'Corretiva']);
+            $table->enum('status', ['Agendada', 'Em Andamento', 'Concluída', 'Cancelada']);
             $table->timestamps();
         });
     }
