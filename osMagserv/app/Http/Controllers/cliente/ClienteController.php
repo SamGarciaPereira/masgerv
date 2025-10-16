@@ -35,6 +35,10 @@ class ClienteController extends Controller
             'estado' => 'nullable|string|max:50',
         ]);
 
+        if (isset($validatedData['documento'])) {
+        $validatedData['documento'] = preg_replace('/[^0-9]/', '', $validatedData['documento']);
+    }
+
         Cliente::create($validatedData);
 
         return redirect()->route('clientes.index')
@@ -67,6 +71,10 @@ class ClienteController extends Controller
             'cidade' => 'nullable|string|max:100',
             'estado' => 'nullable|string|max:50',
         ]);
+
+        if (isset($validatedData['documento'])) {
+        $validatedData['documento'] = preg_replace('/[^0-9]/', '', $validatedData['documento']);
+    }
 
         $cliente->update($validatedData);
 
