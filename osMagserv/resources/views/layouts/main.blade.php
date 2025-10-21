@@ -46,31 +46,40 @@
                 <i class="bi bi-file-earmark-ruled-fill text-lg"></i>
                 <span class="sidebar-text text-sm font-medium ml-4 w-0 opacity-0">Orçamentos</span>
             </a>
-            <a href="{{ route('manutencoes.index') }}" class="p-2.5 flex items-center rounded-md hover:bg-blue-600 group">
-                <i class="bi bi-hammer text-lg"></i>
-                <span class="sidebar-text text-sm font-medium ml-4 w-0 opacity-0">Manutenção</span>
-            </a> 
             <a href="{{ route('clientes.index') }}" class="p-2.5 flex items-center rounded-md hover:bg-blue-600 group">
                 <i class="bi bi-people-fill text-lg"></i>
                 <span class="sidebar-text text-sm font-medium ml-4 w-0 opacity-0">Clientes</span>
             </a>
-            
             <div>
-                <button id="dropdown-btn" class="w-full p-2.5 flex items-center justify-between rounded-md hover:bg-blue-600 group">
+                <button id="dropdown-btn-manutencao" class="w-full p-2.5 flex items-center justify-between rounded-md hover:bg-blue-600 group">
+                    <div class="flex items-center">
+                        <i class="bi bi-hammer text-lg"></i>
+                        <span class="sidebar-text text-sm font-medium ml-4 w-0 opacity-0">Manutenção</span>
+                    </div>
+                    <i class="sidebar-text bi bi-chevron-down text-xs w-0 opacity-0" id="arrow-manutencao"></i>
+                </button>
+                <div id="submenu-manutencao" class="hidden flex-col mt-1 pl-10">
+                    <a href="{{ route('manutencoes.index') }}" class="sidebar-text text-sm text-gray-300 p-2 rounded-md hover:bg-gray-700 w-full opacity-0">Relatórios</a>
+                    <a href="{{ route('manutencoes.corretiva.index') }}" class="sidebar-text text-sm text-gray-300 p-2 rounded-md hover:bg-gray-700 w-full opacity-0">Manutenções Corretivas</a>
+                    <a href="{{ route('manutencoes.preventiva.index') }}" class="sidebar-text text-sm text-gray-300 p-2 rounded-md hover:bg-gray-700 w-full opacity-0">Manutenções Preventivas</a>
+                </div>
+            </div>
+            <div>
+                <button id="dropdown-btn-financeiro" class="w-full p-2.5 flex items-center justify-between rounded-md hover:bg-blue-600 group">
                     <div class="flex items-center">
                         <i class="bi bi-piggy-bank-fill text-lg"></i>
                         <span class="sidebar-text text-sm font-medium ml-4 w-0 opacity-0">Financeiro</span>
                     </div>
-                    <i class="sidebar-text bi bi-chevron-down text-xs w-0 opacity-0" id="arrow"></i>
+                    <i class="sidebar-text bi bi-chevron-down text-xs w-0 opacity-0" id="arrow-financeiro"></i>
                 </button>
-                <div id="submenu" class="hidden flex-col mt-1 pl-10">
+                <div id="submenu-financeiro" class="hidden flex-col mt-1 pl-10">
                     <a href="{{ route('financeiro.contas-pagar.index') }}" class="sidebar-text text-sm text-gray-300 p-2 rounded-md hover:bg-gray-700 w-full opacity-0">Contas a pagar</a>
                     <a href="{{ route('financeiro.contas-receber.index') }}" class="sidebar-text text-sm text-gray-300 p-2 rounded-md hover:bg-gray-700 w-full opacity-0">Contas a receber</a>
                 </div>
             </div>
         </nav>
 
-        <div class="pt-4 border-t border-gray-700">
+        <div>
             <a href="{{ route('login') }}" class="p-2.5 flex items-center rounded-md hover:bg-blue-600 group">
                 <i class="bi bi-box-arrow-in-right text-lg"></i>
                 <span class="sidebar-text text-sm font-medium ml-4 w-0 opacity-0">Logout</span>

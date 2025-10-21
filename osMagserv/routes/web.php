@@ -18,12 +18,26 @@ Route::get('/', [DashboardController::class, 'index'])->name('home');
 Route::resource('clientes', ClienteController::class);
 Route::resource('orcamentos', OrcamentoController::class);
 Route::resource('processos', ProcessoController::class);
-Route::resource('manutencoes', ManutencaoController::class);
+Route::resource('manutencoes', ManutencaoController::class)
+    ->only(['index', 'store', 'update', 'destroy']);
 
 // --- ROTAS DO MÓDULO FINANCEIRO ---
 Route::prefix('financeiro')->name('financeiro.')->group(function () {
     Route::resource('contas-pagar', ContasPagarController::class);
     Route::resource('contas-receber', ContasReceberController::class);
+});
+
+// ROTAS DO MÓDULO DE MANUTENÇÃO
+Route::prefix('manutencoes/corretiva')->name('manutencoes.corretiva.')->group(function () {
+    Route::get('/', [ManutencaoController::class, 'indexCorretiva'])->name('index');
+    Route::get('/create', [ManutencaoController::class, 'createCorretiva'])->name('create');
+    Route::get('/{manutencao}/edit', [ManutencaoController::class, 'editCorretiva'])->name('edit');
+});
+
+Route::prefix('manutencoes/preventiva')->name('manutencoes.preventiva.')->group(function () {
+    Route::get('/', [ManutencaoController::class, 'indexPreventiva'])->name('index');
+    Route::get('/create', [ManutencaoController::class, 'createPreventiva'])->name('create');
+    Route::get('/{manutencao}/edit', [ManutencaoController::class, 'editPreventiva'])->name('edit');
 });
 
 // --- ROTAS DE AUTENTICAÇÃO ---

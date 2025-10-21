@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('manutencoes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('cliente_id')->constrained('clientes')->onDelete('cascade');
-            $table->string('chamado');
+            $table->string('chamado')->nullable();
             $table->text('descricao');
             $table->date('data_inicio_agendamento');
             $table->date('data_fim_agendamento');
