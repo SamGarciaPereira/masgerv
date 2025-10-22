@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             $table->foreignId('cliente_id')->constrained('clientes')->onDelete('cascade');
             $table->string('chamado')->nullable();
+            $table->string('solicitante')->nullable();
             $table->text('descricao');
-            $table->date('data_inicio_agendamento');
-            $table->date('data_fim_agendamento');
+            $table->date('data_inicio_atendimento')->nullable();
+            $table->date('data_fim_atendimento')->nullable();
             $table->enum('tipo', ['Preventiva', 'Corretiva']);
             $table->enum('status', ['Agendada', 'Em Andamento', 'Concluída', 'Cancelada']);
             $table->timestamps();

@@ -34,9 +34,10 @@ class ManutencaoController extends Controller
                 'string',
                 'max:255'
             ],
-            'descricao' => 'required|string',
-            'data_inicio_agendamento' => 'required|date',
-            'data_fim_agendamento' => 'required|date|after_or_equal:data_inicio_agendamento',
+            'solicitante' => 'nullable|string|max:255',
+            'descricao' => 'nullable|string',
+            'data_inicio_atendimento' => 'nullable|date',
+            'data_fim_atendimento' => 'required|date|after_or_equal:data_inicio_atendimento',
             'tipo' => ['required', Rule::in(['Preventiva', 'Corretiva'])],
             'status' => ['required', Rule::in(['Agendada', 'Em Andamento', 'Concluída', 'Cancelada'])],
         ]);
@@ -69,9 +70,10 @@ class ManutencaoController extends Controller
                 'string',
                 'max:255'
             ],
+            'solicitante' => 'nullable|string|max:255',
             'descricao' => 'required|string',
-           'data_inicio_agendamento' => 'required|date',
-            'data_fim_agendamento' => 'required|date|after_or_equal:data_inicio_agendamento',
+           'data_inicio_atendimento' => 'nullable|date',
+            'data_fim_atendimento' => 'nullable|date|after_or_equal:data_inicio_atendimento',
             'tipo' => ['required', Rule::in(['Preventiva', 'Corretiva', 'Preditiva'])],
             'status' => ['required', Rule::in(['Agendada', 'Em Andamento', 'Concluída', 'Cancelada'])],
         ]);

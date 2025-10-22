@@ -11,15 +11,17 @@ class Manutencao extends Model
     protected $fillable = [
         'cliente_id',
         'chamado',
+        'solicitante',
         'descricao',
-        'data_inicio_agendamento',
-        'data_fim_agendamento',
+        'data_inicio_atendimento',
+        'data_fim_atendimento',
         'tipo',
         'status',   
     ];
 
     protected $casts = [
-        'data_agendamento' => 'date',
+        'data_inicio_atendimento' => 'date',
+        'data_fim_atendimento' => 'date',
     ];
 
      public function cliente()
