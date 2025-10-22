@@ -6,8 +6,8 @@
 
     <div class="flex justify-between items-center mb-8">
         <div>
-            <h1 class="text-3xl font-bold text-gray-900">Gestão de Manutenções</h1>
-            <p class="text-gray-600 mt-1">Visualize e gerencie todas as manutenções agendadas.</p>
+            <h1 class="text-3xl font-bold text-gray-900">Manutenções Corretivas</h1>
+            <p class="text-gray-600 mt-1">Visualize e gerencie todas as manutenções corretivas agendadas.</p>
         </div>
         <a href="#"
             class="bg-blue-600 text-white hover:bg-blue-700 font-medium py-2 px-4 rounded-lg flex items-center shadow-sm">
@@ -43,7 +43,7 @@
                     {{-- Adicione um loop @forelse aqui quando tiver os dados do controller --}}
                     <tr>
                         <td colspan="5" class="px-6 py-4 whitespace-nowrap text-center text-gray-500">
-                            Nenhuma manutenção agendada.
+                            Nenhuma manutenção corretiva agendada.
                         </td>
                     </tr>
                 </tbody>
