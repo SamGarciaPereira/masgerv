@@ -63,7 +63,7 @@ class ManutencaoController extends Controller
     {
         $validatedData = $request->validate([
             'cliente_id' => 'required|exists:clientes,id',
-            'tipo' => 'required|in:Corretiva,Preventiva',
+            'tipo' => ['required', Rule::in(['Preventiva', 'Corretiva'])],
             'chamado' => [
                 Rule::requiredIf($request->input('tipo') === 'Corretiva'),
                 'nullable',
@@ -74,7 +74,6 @@ class ManutencaoController extends Controller
             'descricao' => 'required|string',
            'data_inicio_atendimento' => 'required|date',
             'data_fim_atendimento' => 'nullable|date|after_or_equal:data_inicio_atendimento',
-            'tipo' => ['required', Rule::in(['Preventiva', 'Corretiva', 'Preditiva'])],
             'status' => ['required', Rule::in(['Agendada', 'Em Andamento', 'Concluída', 'Cancelada'])],
         ]);
 
@@ -83,10 +82,21 @@ class ManutencaoController extends Controller
             $data['chamado'] = null;
         }
 
+        
+
+        if ($validatedData['tipo'] === 'Preventiva') {
+            $validatedData['chamado'] = null;
+        }
+
         $manutencao->update($validatedData);
 
-        return redirect()->route('manutencoes.index')
-            ->with('success', 'Manutenção atualizada com sucesso!');
+        if ($manutencao->tipo === 'Corretiva') {
+             return redirect()->route('manutencoes.corretiva.index')
+                 ->with('success', 'Manutenção corretiva atualizada com sucesso!');
+        } else {
+             return redirect()->route('manutencoes.preventiva.index')
+                 ->with('success', 'Manutenção preventiva atualizada com sucesso!');
+        }
     }
 
     /**

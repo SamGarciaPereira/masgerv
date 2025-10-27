@@ -124,5 +124,4 @@
             </table>
         </div>
     </div>
-
 @endsection
