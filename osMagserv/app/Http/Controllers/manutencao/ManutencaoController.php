@@ -27,7 +27,7 @@ class ManutencaoController extends Controller
     {
         $validatedData = $request->validate([
             'cliente_id' => 'required|exists:clientes,id',
-            'tipo' => 'required|in:Corretiva,Preventiva',
+            //'tipo' => 'required|in:Corretiva,Preventiva',
             'chamado' => [
                 Rule::requiredIf($request->input('tipo') === 'Corretiva'),
                 'nullable',
@@ -36,15 +36,15 @@ class ManutencaoController extends Controller
             ],
             'solicitante' => 'nullable|string|max:255',
             'descricao' => 'nullable|string',
-            'data_inicio_atendimento' => 'nullable|date',
-            'data_fim_atendimento' => 'required|date|after_or_equal:data_inicio_atendimento',
+            'data_inicio_atendimento' => 'required|date',
+            'data_fim_atendimento' => 'nullable|date|after_or_equal:data_inicio_atendimento',
             'tipo' => ['required', Rule::in(['Preventiva', 'Corretiva'])],
             'status' => ['required', Rule::in(['Agendada', 'Em Andamento', 'Concluída', 'Cancelada'])],
         ]);
 
         Manutencao::create($validatedData);
 
-        return redirect()->route('manutencoes.index')
+        return redirect()->route('manutencoes.corretiva.index')
             ->with('success', 'Manutenção agendada com sucesso!');
     }
 
@@ -72,7 +72,7 @@ class ManutencaoController extends Controller
             ],
             'solicitante' => 'nullable|string|max:255',
             'descricao' => 'required|string',
-           'data_inicio_atendimento' => 'nullable|date',
+           'data_inicio_atendimento' => 'required|date',
             'data_fim_atendimento' => 'nullable|date|after_or_equal:data_inicio_atendimento',
             'tipo' => ['required', Rule::in(['Preventiva', 'Corretiva', 'Preditiva'])],
             'status' => ['required', Rule::in(['Agendada', 'Em Andamento', 'Concluída', 'Cancelada'])],
@@ -133,9 +133,6 @@ class ManutencaoController extends Controller
         $clientes = Cliente::all();
         return view('manutencao.manutencao-corretiva.edit', compact('manutencao', 'clientes'));
     }
-
-
-    // --- MÉTODOS PARA PREVENTIVA ---
 
     public function indexPreventiva()
     {

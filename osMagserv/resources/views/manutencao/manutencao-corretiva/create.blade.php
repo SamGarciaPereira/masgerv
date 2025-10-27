@@ -18,6 +18,8 @@
         <form action="{{ route('manutencoes.store') }}" method="POST">
             @csrf
 
+            <input type="hidden" name="tipo" value="Corretiva">
+
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div class="lg:col-span-2">
                     <label for="cliente_id" class="block text-sm font-medium text-gray-700 mb-2">Cliente</label>
@@ -39,10 +41,14 @@
                     @error('chamado') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label for="data_agendada" class="block text-sm font-medium text-gray-700 mb-2">Data Agendada</label>
-                    <input type="date" id="data_agendada" name="data_agendada" value="{{ old('data_agendada') }}"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
-                    @error('data_agendada') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                    <label for="data_inicio_atendimento" class="block text-sm font-medium text-gray-700 mb-2">Data Início Atendimento <span class="text-red-500">*</span></label>
+                    <input type="date" id="data_inicio_atendimento" name="data_inicio_atendimento" value="{{ old('data_inicio_atendimento') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" required>
+                    @error('data_inicio_atendimento') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                </div>
+                <div>
+                    <label for="data_fim_atendimento" class="block text-sm font-medium text-gray-700 mb-2">Data Fim Atendimento</label>
+                    <input type="date" id="data_fim_atendimento" name="data_fim_atendimento" value="{{ old('data_fim_atendimento') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                    @error('data_fim_atendimento') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
                     <label for="solicitante" class="block text-sm font-medium text-gray-700 mb-2">Solicitante</label>
