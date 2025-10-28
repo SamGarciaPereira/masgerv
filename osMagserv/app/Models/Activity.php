@@ -10,6 +10,12 @@ class Activity extends Model
     use HasFactory;
 
     protected $fillable = [
-        'description',
+        'cliente_id',
+        'descricao',
     ];
+
+    public function cliente()
+    {
+        return $this->belongsTo(Cliente::class);
+    }
 }

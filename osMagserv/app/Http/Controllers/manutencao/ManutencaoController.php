@@ -11,78 +11,67 @@ use Illuminate\Validation\Rule;
 
 class ManutencaoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $manutencoes = Manutencao::with('cliente')->latest()->get();
         return view('manutencao.index', compact('manutencoes'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $validatedData = $request->validate([
             'cliente_id' => 'required|exists:clientes,id',
-            //'tipo' => 'required|in:Corretiva,Preventiva',
+            'tipo' => ['required', Rule::in(['Preventiva', 'Corretiva'])],
             'chamado' => [
                 Rule::requiredIf($request->input('tipo') === 'Corretiva'),
                 'nullable',
                 'string',
                 'max:255'
             ],
-            'solicitante' => 'nullable|string|max:255',
-            'descricao' => 'nullable|string',
+            'solicitante' => 'required|string|max:255',
+            'descricao' => 'required|string',
             'data_inicio_atendimento' => 'required|date',
             'data_fim_atendimento' => 'nullable|date|after_or_equal:data_inicio_atendimento',
-            'tipo' => ['required', Rule::in(['Preventiva', 'Corretiva'])],
             'status' => ['required', Rule::in(['Agendada', 'Em Andamento', 'Concluída', 'Cancelada'])],
         ]);
 
+        if ($validatedData['tipo'] === 'Preventiva') {
+            $validatedData['chamado'] = null;
+        }
+
         Manutencao::create($validatedData);
 
-        return redirect()->route('manutencoes.corretiva.index')
-            ->with('success', 'Manutenção agendada com sucesso!');
+        if ($validatedData['tipo'] === 'Corretiva') {
+             return redirect()->route('manutencoes.corretiva.index')
+                 ->with('success', 'Manutenção corretiva agendada com sucesso!');
+        } else {
+             return redirect()->route('manutencoes.preventiva.index')
+                 ->with('success', 'Manutenção preventiva agendada com sucesso!');
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Manutencao $manutencao)
     {
-        //
+        abort(404);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Manutencao $manutencao)
     {
         $validatedData = $request->validate([
             'cliente_id' => 'required|exists:clientes,id',
-            'tipo' => ['required', Rule::in(['Preventiva', 'Corretiva'])],
+            'tipo' => ['required', Rule::in(['Preventiva', 'Corretiva'])], 
             'chamado' => [
                 Rule::requiredIf($request->input('tipo') === 'Corretiva'),
                 'nullable',
                 'string',
                 'max:255'
             ],
-            'solicitante' => 'nullable|string|max:255',
+            'solicitante' => 'nullable|string|max:255', 
             'descricao' => 'required|string',
-           'data_inicio_atendimento' => 'required|date',
+            'data_inicio_atendimento' => 'required|date',
             'data_fim_atendimento' => 'nullable|date|after_or_equal:data_inicio_atendimento',
             'status' => ['required', Rule::in(['Agendada', 'Em Andamento', 'Concluída', 'Cancelada'])],
         ]);
-
-        $data = $request->all();
-        if ($data['tipo'] === 'Preventiva') {
-            $data['chamado'] = null;
-        }
-
-        
 
         if ($validatedData['tipo'] === 'Preventiva') {
             $validatedData['chamado'] = null;
@@ -90,7 +79,12 @@ class ManutencaoController extends Controller
 
         $manutencao->update($validatedData);
 
-        if ($manutencao->tipo === 'Corretiva') {
+       // $updateResult = $manutencao->update($validatedData);
+
+        
+        //dd($updateResult, $validatedData, $manutencao->getChanges());
+
+        if ($validatedData['tipo'] === 'Corretiva') {
              return redirect()->route('manutencoes.corretiva.index')
                  ->with('success', 'Manutenção corretiva atualizada com sucesso!');
         } else {
@@ -99,20 +93,25 @@ class ManutencaoController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(Manutencao $manutencao)
     {
+        $tipo = $manutencao->tipo;
         $manutencao->delete();
-        return redirect()->route('manutencoes.index')->with('success', 'Manutenção agendada removida com sucesso!');
+
+        if ($tipo === 'Corretiva') {
+            return redirect()->route('manutencoes.corretiva.index')->with('success', 'Manutenção corretiva removida com sucesso!');
+        } else {
+             return redirect()->route('manutencoes.preventiva.index')->with('success', 'Manutenção preventiva removida com sucesso!');
+        }
     }
 
-    /**
-     * Create an orcamento from a manutencao.
-     */
     public function createOrcamento(Manutencao $manutencao)
     {
+        if($manutencao->tipo !== 'Corretiva' || !$manutencao->chamado) {
+            return redirect()->back()->with('error', 'Só é possível gerar orçamento a partir de manutenções corretivas com chamado.');
+        }
+
         $orcamento = Orcamento::create([
             'cliente_id' => $manutencao->cliente_id,
             'escopo' => "Orçamento referente a manutenção do chamado: {$manutencao->chamado}\n\n{$manutencao->descricao}",
@@ -140,6 +139,9 @@ class ManutencaoController extends Controller
 
     public function editCorretiva(Manutencao $manutencao)
     {
+        if ($manutencao->tipo !== 'Corretiva') {
+            abort(404);
+        }
         $clientes = Cliente::all();
         return view('manutencao.manutencao-corretiva.edit', compact('manutencao', 'clientes'));
     }
@@ -161,6 +163,9 @@ class ManutencaoController extends Controller
 
     public function editPreventiva(Manutencao $manutencao)
     {
+        if ($manutencao->tipo !== 'Preventiva') {
+             abort(404);
+        }
         $clientes = Cliente::all();
         return view('manutencao.manutencao-preventiva.edit', compact('manutencao', 'clientes'));
     }
