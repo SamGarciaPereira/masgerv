@@ -11,7 +11,7 @@ class Activity extends Model
 
     protected $fillable = [
         'cliente_id',
-        'descricao',
+        'description',
     ];
 
     public function cliente()
