@@ -22,12 +22,7 @@ class ManutencaoController extends Controller
         $validatedData = $request->validate([
             'cliente_id' => 'required|exists:clientes,id',
             'tipo' => ['required', Rule::in(['Preventiva', 'Corretiva'])],
-            'chamado' => [
-                Rule::requiredIf($request->input('tipo') === 'Corretiva'),
-                'nullable',
-                'string',
-                'max:255'
-            ],
+            'chamado' => 'nullable|string|max:255',
             'solicitante' => 'required|string|max:255',
             'descricao' => 'required|string',
             'data_inicio_atendimento' => 'required|date',
@@ -60,22 +55,13 @@ class ManutencaoController extends Controller
         $validatedData = $request->validate([
             'cliente_id' => 'required|exists:clientes,id',
             'tipo' => ['required', Rule::in(['Preventiva', 'Corretiva'])], 
-            'chamado' => [
-                Rule::requiredIf($request->input('tipo') === 'Corretiva'),
-                'nullable',
-                'string',
-                'max:255'
-            ],
+            'chamado' => 'nullable|string|max:255',
             'solicitante' => 'nullable|string|max:255', 
             'descricao' => 'required|string',
             'data_inicio_atendimento' => 'required|date',
             'data_fim_atendimento' => 'nullable|date|after_or_equal:data_inicio_atendimento',
             'status' => ['required', Rule::in(['Agendada', 'Em Andamento', 'Concluída', 'Cancelada'])],
         ]);
-
-        if ($validatedData['tipo'] === 'Preventiva') {
-            $validatedData['chamado'] = null;
-        }
 
         $manutencao->update($validatedData);
 
