@@ -13,8 +13,16 @@ use App\Http\Controllers\AuthController;
 // --- ROTA PRINCIPAL ---
 Route::get('/', [DashboardController::class, 'index'])->name('home');
 
+//rotas de solicitações
+Route::get('admin/solicitacoes', [App\Http\Controllers\admin\SolicitacaoController::class, 'index'])->name('admin.solicitacao.index');
+
+//aprovar solicitação
+Route::post('admin/solicitacoes/{solicitacao}/aprovar', [App\Http\Controllers\admin\SolicitacaoController::class, 'approve'])->name('admin.solicitacoes.approve');
+
+//recusar solicitação
+Route::post('admin/solicitacoes/{solicitacao}/recusar', [App\Http\Controllers\admin\SolicitacaoController::class, 'reject'])->name('admin.solicitacoes.reject');
+
 // --- ROTAS DOS MÓDULOS (CRUD) ---
-// O comando 'resource' cria automaticamente as rotas (index, create, store, etc.)
 Route::resource('clientes', ClienteController::class);
 Route::resource('orcamentos', OrcamentoController::class);
 Route::resource('processos', ProcessoController::class);

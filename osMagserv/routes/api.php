@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Cache;
 use App\Models\Cliente;
 use App\Models\Manutencao;
 use App\Models\Orcamento;
+use App\Models\Solicitacao;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
@@ -31,9 +32,8 @@ function sendMainMenu(string $instance, string $sender, string $apiKey, string $
 
 // --- ROTA PRINCIPAL DO WEBHOOK ---
 Route::post('/webhook', function (Request $request) {
-    $apiKey = '8nQHBRTKUvTxQAj1t1XhFqW7JbGjJ4aH'; // Sua chave da Evolution API
+    $apiKey = '8nQHBRTKUvTxQAj1t1XhFqW7JbGjJ4aH'; 
 
-    // Ignora webhooks que não são mensagens de texto ou são do próprio bot
     if (!$request->has('data.message.conversation')) {
         return response()->json(['status' => 'ok', 'message' => 'Not a text message, ignored.']);
     }
@@ -55,25 +55,46 @@ Route::post('/webhook', function (Request $request) {
     
     // --- Controle da Máquina de Estados ---
     $conversation = Cache::get('conversation_' . $sender);
-    $state = $conversation['state'] ?? null; // Pega o estado atual ou null (início)
+    $state = $conversation['state'] ?? null;
 
     // Roteador de estados da conversa
     switch ($state) {
         
-        // Estado: Aguardando escolha inicial (1-Cliente, 2-Não Cliente)
         case 'awaiting_client_type_choice':
             $choice = preg_replace('/[^1-2]/', '', $message);
+            
             if ($choice == '1') { // Já é cliente
                 $conversation['state'] = 'awaiting_existing_client_lookup';
                 Cache::put('conversation_' . $sender, $conversation, now()->addMinutes(10));
                 sendWhatsappMessage($instanceName, $sender, "Entendido. Por favor, informe seu *CNPJ ou CPF* para localizarmos seu cadastro:", $apiKey);
+            
             } elseif ($choice == '2') { // Não é cliente
                 $conversation['state'] = 'register_awaiting_name';
                 Cache::put('conversation_' . $sender, $conversation, now()->addMinutes(10));
                 sendWhatsappMessage($instanceName, $sender, "Vamos iniciar seu cadastro. Por favor, informe o *nome da empresa* (Razão Social):", $apiKey);
+            
             } else {
-                sendWhatsappMessage($instanceName, $sender, "Opção inválida. Digite *1* (Já sou cliente) ou *2* (Ainda não sou cliente).", $apiKey);
-                Cache::put('conversation_' . $sender, $conversation, now()->addMinutes(10));
+                $cleanedDocumento = preg_replace('/[^0-9]/', '', $message);
+                
+                if (strlen($cleanedDocumento) == 11 || strlen($cleanedDocumento) == 14) {
+                    
+                    $cliente = Cliente::whereRaw('REGEXP_REPLACE(documento, "[^0-9]", "") = ?', [$cleanedDocumento])->first();
+                    
+                    if ($cliente) {
+                        $conversation['data']['cliente_id'] = $cliente->id;
+                        $conversation['data']['cliente_nome'] = $cliente->nome;
+                        $conversation['state'] = 'awaiting_main_menu_choice';
+                        Cache::put('conversation_' . $sender, $conversation, now()->addMinutes(10));
+                        sendMainMenu($instanceName, $sender, $apiKey, $cliente->nome);
+                    } else {
+                        $conversation['state'] = 'register_awaiting_name'; 
+                        Cache::put('conversation_' . $sender, $conversation, now()->addMinutes(10));
+                        sendWhatsappMessage($instanceName, $sender, "Não localizamos seu cadastro com este documento. Vamos iniciar um novo.\n\nPor favor, informe o *nome da empresa* (Razão Social):", $apiKey);
+                    }
+                } else {
+                    sendWhatsappMessage($instanceName, $sender, "Opção inválida. Digite *1* (Já sou cliente) ou *2* (Ainda não sou cliente).", $apiKey);
+                    Cache::put('conversation_' . $sender, $conversation, now()->addMinutes(10));
+                }
             }
             break;
 
@@ -83,14 +104,12 @@ Route::post('/webhook', function (Request $request) {
             $cliente = Cliente::whereRaw('REGEXP_REPLACE(documento, "[^0-9]", "") = ?', [$cleanedDocumento])->first();
             
             if ($cliente) {
-                // Cliente encontrado, "loga" e vai para o menu de serviços
                 $conversation['data']['cliente_id'] = $cliente->id;
                 $conversation['data']['cliente_nome'] = $cliente->nome;
                 $conversation['state'] = 'awaiting_main_menu_choice';
                 Cache::put('conversation_' . $sender, $conversation, now()->addMinutes(10));
                 sendMainMenu($instanceName, $sender, $apiKey, $cliente->nome);
             } else {
-                // Cliente não encontrado, inicia fluxo de cadastro
                 $conversation['state'] = 'register_awaiting_name'; 
                 Cache::put('conversation_' . $sender, $conversation, now()->addMinutes(10));
                 sendWhatsappMessage($instanceName, $sender, "Não localizamos seu cadastro. Vamos iniciar um novo.\n\nPor favor, informe o *nome da empresa* (Razão Social):", $apiKey);
@@ -174,6 +193,7 @@ Route::post('/webhook', function (Request $request) {
                 Cache::put('conversation_' . $sender, $conversation, now()->addMinutes(10));
                 sendWhatsappMessage($instanceName, $sender, "Você selecionou *Solicitação de Orçamento*.\n\nPor favor, *descreva sua solicitação*:", $apiKey);
             
+            // --- RE-ADICIONADO (Pergunta a "Área") ---
             } elseif ($choice == '2') { // 2. Manutenção
                 $conversation['state'] = 'manutencao_awaiting_area'; 
                 Cache::put('conversation_' . $sender, $conversation, now()->addMinutes(10));
@@ -185,32 +205,41 @@ Route::post('/webhook', function (Request $request) {
             }
             break;
         
-        // Estado: Salva Orçamento
+        // --- MODIFICADO (Orçamento -> Solicitação) ---
         case 'orcamento_awaiting_description':
             $conversation['data']['escopo'] = $message;
             try {
-                $orcamento = Orcamento::create([
-                    'cliente_id' => $conversation['data']['cliente_id'],
-                    'escopo' => $conversation['data']['escopo'],
-                    'status' => 'Pendente',
+                // LÓGICA DE SOLICITAÇÃO
+                Solicitacao::create([
+                    'tipo' => 'orcamento',
+                    'status' => 'pendente',
+                    'data_solicitacao' => Carbon::now(), // Alinhado ao seu Model
+                    'dados' => [
+                        'cliente_id' => $conversation['data']['cliente_id'],
+                        'cliente_nome' => $conversation['data']['cliente_nome'], 
+                        'escopo' => $conversation['data']['escopo'],
+                        'status' => 'Pendente', // Mantém o status original no JSON
+                    ]
                 ]);
-                Log::info('Nova solicitação de orçamento criada via WhatsApp:', $orcamento->toArray());
 
-                $successMessage = "✅ Solicitação de orçamento registrada com sucesso para *{$conversation['data']['cliente_nome']}*!\n\n";
+                Log::info('Nova SOLICITAÇÃO DE ORÇAMENTO criada via WhatsApp.');
+
+                $successMessage = "✅ *Solicitação de orçamento registrada com sucesso* para *{$conversation['data']['cliente_nome']}*!\n\n";
                 $successMessage .= "*Descrição:* {$conversation['data']['escopo']}\n\n";
-                $successMessage .= "Entraremos em contato em breve. FIM.";
+                $successMessage .= "Nossa equipe irá analisar seu pedido e retornará em breve.\n\nFIM.";
 
                 sendWhatsappMessage($instanceName, $sender, $successMessage, $apiKey);
                 Cache::forget('conversation_' . $sender);
 
             } catch (\Exception $e) {
-                Log::error("Erro ao criar orçamento via WhatsApp: " . $e->getMessage(), $conversation['data']);
+                Log::error("Erro ao criar SOLICITAÇÃO DE ORÇAMENTO via WhatsApp: " . $e->getMessage(), $conversation['data']);
                 sendWhatsappMessage($instanceName, $sender, "❌ Ocorreu um erro ao registrar sua solicitação.", $apiKey);
                 Cache::forget('conversation_' . $sender);
             }
             break;
 
         // --- Início do Fluxo de Manutenção ---
+
         case 'manutencao_awaiting_area':
             $areas = ['1' => 'Civil', '2' => 'Hidráulica', '3' => 'Elétrica'];
             $choice = preg_replace('/[^1-3]/', '', $message);
@@ -233,34 +262,40 @@ Route::post('/webhook', function (Request $request) {
             sendWhatsappMessage($instanceName, $sender, "Obrigado, {$message}.\n\nPara finalizar, *descreva o problema* que você está enfrentando:", $apiKey);
             break;
             
-        // Estado: Salva Manutenção
         case 'manutencao_awaiting_description':
             $conversation['data']['descricao'] = $message;
             
             try {
-                $manutencao = Manutencao::create([
-                    'cliente_id' => $conversation['data']['cliente_id'],
-                    'descricao' => $conversation['data']['descricao'],
-                    'solicitante' => $conversation['data']['solicitante'],
-                    'area' => $conversation['data']['area'],
-                    'tipo' => 'Corretiva',
-                    'status' => 'Agendada',
-                    'data_inicio_atendimento' => Carbon::now(),
+                Solicitacao::create([
+                    'tipo' => 'manutencao_corretiva',
+                    'status' => 'pendente',
+                    'data_solicitacao' => Carbon::now(), 
+                    'dados' => [
+                        'cliente_id' => $conversation['data']['cliente_id'],
+                        'cliente_nome' => $conversation['data']['cliente_nome'],
+                        'area' => $conversation['data']['area'],
+                        'descricao' => $conversation['data']['descricao'],
+                        'solicitante' => $conversation['data']['solicitante'],
+                        'tipo' => 'Corretiva', 
+                        'status' => 'Agendada', 
+                        'data_inicio_atendimento' => Carbon::now(), 
+                    ]
                 ]);
 
-                Log::info('Novo chamado de manutenção corretiva criado via WhatsApp:', $manutencao->toArray());
+                Log::info('Nova SOLICITAÇÃO DE MANUTENÇÃO corretiva criada via WhatsApp.');
 
-                $successMessage = "✅ Chamado de manutenção corretiva registrado com sucesso para *{$conversation['data']['cliente_nome']}*!\n\n";
+                // Mensagem de sucesso com a "Área"
+                $successMessage = "✅ *Solicitação de chamado registrada com sucesso* para *{$conversation['data']['cliente_nome']}*!\n\n";
                 $successMessage .= "*Área:* {$conversation['data']['area']}\n";
                 $successMessage .= "*Solicitante:* {$conversation['data']['solicitante']}\n";
                 $successMessage .= "*Problema:* {$conversation['data']['descricao']}\n\n";
-                $successMessage .= "Entraremos em contato em breve. FIM.";
+                $successMessage .= "Nossa equipe irá analisar seu pedido e retornará em breve.\n\nFIM.";
 
                 sendWhatsappMessage($instanceName, $sender, $successMessage, $apiKey);
                 Cache::forget('conversation_' . $sender);
 
             } catch (\Exception $e) {
-                Log::error("Erro ao criar manutenção via WhatsApp: " . $e->getMessage(), $conversation['data']);
+                Log::error("Erro ao criar SOLICITAÇÃO DE MANUTENÇÃO via WhatsApp: " . $e->getMessage(), $conversation['data']);
                 sendWhatsappMessage($instanceName, $sender, "❌ Ocorreu um erro ao registrar seu chamado.", $apiKey);
                 Cache::forget('conversation_' . $sender);
             }

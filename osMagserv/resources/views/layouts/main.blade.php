@@ -27,12 +27,6 @@
         </div>
 
         <nav class="flex-grow mt-4 space-y-2">
-            <div class="relative">
-                <div class="p-2.5 flex items-center rounded-md bg-gray-700">
-                    <i class="bi bi-search text-sm text-gray-400"></i>
-                    <input type="text" class="sidebar-text text-sm ml-4 w-0 opacity-0 bg-transparent focus:outline-none" placeholder="Pesquisar"/>
-                </div>
-            </div>
 
             <a href="{{ route('home') }}" class="p-2.5 flex items-center rounded-md hover:bg-blue-600 group">
                 <i class="bi bi-house-door-fill text-lg"></i>
@@ -77,6 +71,10 @@
                     <a href="{{ route('financeiro.contas-receber.index') }}" class="sidebar-text text-sm text-gray-300 p-2 rounded-md hover:bg-gray-700 w-full opacity-0">Contas a receber</a>
                 </div>
             </div>
+            <a href="{{ route('admin.solicitacao.index') }}" class="p-2.5 flex items-center rounded-md hover:bg-blue-600 group">
+                <i class="bi bi-chat-dots-fill text-lg"></i>
+                <span class="sidebar-text text-sm font-medium ml-4 w-0 opacity-0">Solicitações</span>
+            </a>
         </nav>
 
         <div>
