@@ -58,6 +58,7 @@
                     <a href="{{ route('manutencoes.preventiva.index') }}" class="sidebar-text text-sm text-gray-300 p-2 rounded-md hover:bg-gray-700 w-full opacity-0">Manutenções Preventivas</a>
                 </div>
             </div>
+            @if (auth()->user()->isAdmin())
             <div>
                 <button id="dropdown-btn-financeiro" class="w-full p-2.5 flex items-center justify-between rounded-md hover:bg-blue-600 group">
                     <div class="flex items-center">
@@ -71,6 +72,7 @@
                     <a href="{{ route('financeiro.contas-receber.index') }}" class="sidebar-text text-sm text-gray-300 p-2 rounded-md hover:bg-gray-700 w-full opacity-0">Contas a receber</a>
                 </div>
             </div>
+            @endif
             <a href="{{ route('admin.solicitacao.index') }}" class="p-2.5 flex items-center rounded-md hover:bg-blue-600 group">
                 <i class="bi bi-chat-dots-fill text-lg"></i>
                 <span class="sidebar-text text-sm font-medium ml-4 w-0 opacity-0">Solicitações</span>
@@ -78,10 +80,14 @@
         </nav>
 
         <div>
-            <a href="{{ route('login') }}" class="p-2.5 flex items-center rounded-md hover:bg-blue-600 group">
-                <i class="bi bi-box-arrow-in-right text-lg"></i>
-                <span class="sidebar-text text-sm font-medium ml-4 w-0 opacity-0">Logout</span>
-            </a>
+            <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button type="submit"
+                class="flex items-center p-2 w-full text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
+                <i class="bi bi-box-arrow-left text-xl text-gray-500"></i>
+                <span class="ml-3">Sair</span>
+            </button>
+        </form>
         </div>
     </div>
 
