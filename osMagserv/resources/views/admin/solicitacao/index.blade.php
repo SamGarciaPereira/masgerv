@@ -68,22 +68,17 @@
                     </button>
                 </form>
 
-                <button type="button" class="bg-red-600 text-white hover:bg-red-700 font-medium py-2 px-4 rounded-lg flex items-center shadow-sm"
-                        onclick="toggleRejectForm('form-reject-{{ $solicitacao->id }}')">
-                    <i class="bi bi-x-lg mr-2"></i> Recusar
-                </button>
-            </div>
-
-            <form action="{{ route('admin.solicitacoes.reject', $solicitacao->id) }}" method="POST"
-                  id="form-reject-{{ $solicitacao->id }}" class="hidden mt-4 pt-4 border-t border-gray-200"
+                <form action="{{ route('admin.solicitacoes.reject', $solicitacao->id) }}" method="POST"
                   onsubmit="return confirm('Tem certeza que deseja RECUSAR esta solicitação?');">
                 @csrf
-                <label for="motivo_recusa_{{ $solicitacao->id }}" class="block text-sm font-medium text-gray-700">Motivo da Recusa (Obrigatório)</label>
-                <textarea name="motivo_recusa" id="motivo_recusa_{{ $solicitacao->id }}" rows="3" class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg" required minlength="10"></textarea>
-                <button type="submit" class="mt-2 bg-gray-700 text-white hover:bg-gray-800 font-medium py-2 px-4 rounded-lg">
-                    Confirmar Recusa
+                <button type="submit" class="bg-red-600 text-white hover:bg-red-700 font-medium py-2 px-4 rounded-lg flex items-center 
+                shadow-sm">
+                    <i class="bi bi-x-lg mr-2"></i> Recusar
                 </button>
             </form>
+
+               
+            </div>
 
         </div>
     @empty
@@ -95,11 +90,5 @@
         </div>
     @endforelse
 </div>
-
-<script>
-    function toggleRejectForm(formId) {
-        document.getElementById(formId).classList.toggle('hidden');
-    }
-</script>
 
 @endsection

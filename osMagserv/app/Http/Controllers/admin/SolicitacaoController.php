@@ -39,6 +39,10 @@ class SolicitacaoController extends Controller
                     break;
             }
 
+            if (empty($solicitacao->data_solicitacao)) {
+                $solicitacao->data_solicitacao = $solicitacao->created_at ?? Carbon::now();
+            }
+
             $solicitacao->status = 'Aprovada';
             $solicitacao->data_resolucao = now(); 
             $solicitacao->save();
