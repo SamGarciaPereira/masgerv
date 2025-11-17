@@ -24,11 +24,29 @@ function sendWhatsappMessage(string $instance, string $number, string $text, str
     );
 }
 
-// Helper: Envia o menu principal de serviços (após o login)
+//Envia o menu principal de serviços (após o login)
 function sendMainMenu(string $instance, string $sender, string $apiKey, string $clientName) {
     $menu = "Olá, *{$clientName}*!\n\nComo podemos te ajudar?\n\n*1)* Solicitação de orçamento\n*2)* Abertura de chamado de manutenção corretiva\n\nDigite 'cancelar' a qualquer momento para reiniciar.";
     sendWhatsappMessage($instance, $sender, $menu, $apiKey);
 }
+
+//Limpa o número do WhatsApp
+function cleanWhatsAppNumber(string $senderNumber) {
+    $number = preg_replace('/@s\.whatsapp\.net$/', '', $senderNumber);
+    
+    if (str_starts_with($number, '55')) {
+        $number = substr($number, 2);
+    }
+
+    if (strlen($number) == 10 || strlen($number) == 11) {
+        $ddd = substr($number, 0, 2);
+        $restante = substr($number, 2);
+        return $ddd . ' ' . $restante; 
+    }
+    
+    return $number; 
+}
+
 
 // --- ROTA PRINCIPAL DO WEBHOOK ---
 Route::post('/webhook', function (Request $request) {
@@ -126,18 +144,11 @@ Route::post('/webhook', function (Request $request) {
 
         case 'register_awaiting_responsavel_name':
             $conversation['data']['responsavel'] = $message;
-            $conversation['state'] = 'register_awaiting_responsavel_telefone';
+            $conversation['state'] = 'register_awaiting_email';
             Cache::put('conversation_' . $sender, $conversation, now()->addMinutes(10));
-            sendWhatsappMessage($instanceName, $sender, "Qual o *telefone do responsável* (com DDD)?", $apiKey);
+            sendWhatsappMessage($instanceName, $sender, "Qual o *e-mail* principal para contato?", $apiKey);
             break;
-        
-        case 'register_awaiting_responsavel_telefone':
-             $conversation['data']['telefone_responsavel'] = $message;
-             $conversation['state'] = 'register_awaiting_email';
-             Cache::put('conversation_' . $sender, $conversation, now()->addMinutes(10));
-             sendWhatsappMessage($instanceName, $sender, "Qual o *e-mail* principal para contato?", $apiKey);
-             break;
-
+    
         case 'register_awaiting_email':
             if (!filter_var($message, FILTER_VALIDATE_EMAIL)) {
                  sendWhatsappMessage($instanceName, $sender, "E-mail inválido. Por favor, insira um e-mail válido:", $apiKey);
@@ -155,10 +166,12 @@ Route::post('/webhook', function (Request $request) {
             $conversation['data']['documento'] = preg_replace('/[^0-9]/', '', $message);
             
             try {
+
+                $cleanedNumber = cleanWhatsAppNumber($sender);
+
                 $cliente = Cliente::create([
                     'nome' => $conversation['data']['nome'],
                     'responsavel' => $conversation['data']['responsavel'],
-                    'telefone_responsavel' => $conversation['data']['telefone_responsavel'],
                     'email' => $conversation['data']['email'],
                     'documento' => $conversation['data']['documento'],
                     'telefone' => preg_replace('/@s\.whatsapp\.net$/', '', $sender),
