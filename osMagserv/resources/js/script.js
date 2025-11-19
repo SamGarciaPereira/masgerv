@@ -2,145 +2,181 @@ document.addEventListener("DOMContentLoaded", function () {
     const sidebar = document.getElementById("sidebar");
     const toggleBtn = document.getElementById("sidebar-toggle");
     const sidebarTexts = document.querySelectorAll(".sidebar-text");
-    const dropdownBtnManutencao = document.getElementById("dropdown-btn-manutencao");
+
+    // Elementos do Header
+    const sidebarHeader = document.getElementById("sidebar-header");
+    const sidebarBranding = document.getElementById("sidebar-branding");
+
+    // Dropdowns
+    const dropdownBtnManutencao = document.getElementById(
+        "dropdown-btn-manutencao"
+    );
     const submenuManutencao = document.getElementById("submenu-manutencao");
     const arrowManutencao = document.getElementById("arrow-manutencao");
-    const submenuLinksManutencao = submenuManutencao ? submenuManutencao.querySelectorAll("a") : [];
-    const dropdownBtnFinanceiro = document.getElementById("dropdown-btn-financeiro");
+
+    const dropdownBtnFinanceiro = document.getElementById(
+        "dropdown-btn-financeiro"
+    );
     const submenuFinanceiro = document.getElementById("submenu-financeiro");
     const arrowFinanceiro = document.getElementById("arrow-financeiro");
-    const submenuLinksFinanceiro = submenuFinanceiro ? submenuFinanceiro.querySelectorAll("a") : [];
+
     const toggleButtons = document.querySelectorAll(".toggle-details-btn");
 
-    try {
-        submenuLinks.forEach((link) => {
-            link.classList.add("w-0", "opacity-0");
-        });
-    } catch (e) {
-        console.debug("submenu links init skipped:", e);
-    }
+    const allSubLinks = document.querySelectorAll(
+        "#submenu-manutencao a, #submenu-financeiro a"
+    );
+    allSubLinks.forEach((link) => {
+        link.style.transition = "all 0.3s ease-in-out";
+        if (sidebar.classList.contains("w-20")) {
+            const textSpan = link.querySelector(".sidebar-text");
+            if (textSpan) {
+                textSpan.classList.add("w-0", "opacity-0");
+                textSpan.classList.remove("w-full", "opacity-100");
+            }
+        }
+    });
 
     let isExpanded = false;
 
+    // Função Principal de Expandir/Recolher Sidebar
     function setExpanded(state) {
         isExpanded = state;
         if (isExpanded) {
-            // EXPANDIR
             sidebar.classList.remove("w-20");
             sidebar.classList.add("w-72");
 
+            if (sidebarHeader) {
+                sidebarHeader.classList.remove("justify-center");
+                sidebarHeader.classList.add("justify-between");
+            }
+            if (sidebarBranding) {
+                sidebarBranding.classList.remove("hidden");
+                setTimeout(() => {
+                    sidebarBranding.classList.remove("w-0", "opacity-0");
+                    sidebarBranding.classList.add("w-auto", "opacity-100");
+                }, 50);
+            }
+
             setTimeout(() => {
                 sidebarTexts.forEach((text) => {
-                    if (!text.closest("#submenu")) {
+                    if (
+                        !text.closest(
+                            "#submenu-manutencao, #submenu-financeiro"
+                        )
+                    ) {
                         text.classList.remove("w-0", "opacity-0");
                         text.classList.add("w-full", "opacity-100");
                     }
                 });
             }, 100);
         } else {
-            // RECOLHER
+            // --- RECOLHER ---
             sidebar.classList.add("w-20");
             sidebar.classList.remove("w-72");
+
+            if (sidebarBranding) {
+                sidebarBranding.classList.remove("w-auto", "opacity-100");
+                sidebarBranding.classList.add("w-0", "opacity-0");
+                setTimeout(() => {
+                    sidebarBranding.classList.add("hidden");
+                    if (sidebarHeader) {
+                        sidebarHeader.classList.remove("justify-between");
+                        sidebarHeader.classList.add("justify-center");
+                    }
+                }, 200);
+            } else if (sidebarHeader) {
+                sidebarHeader.classList.remove("justify-between");
+                sidebarHeader.classList.add("justify-center");
+            }
 
             sidebarTexts.forEach((text) => {
                 text.classList.add("w-0", "opacity-0");
                 text.classList.remove("w-full", "opacity-100");
             });
 
-            submenu.classList.add("hidden");
-            if (arrow) {
-                arrow.classList.remove("rotate-180");
-            }
+            closeDropdown(submenuFinanceiro, arrowFinanceiro);
+            closeDropdown(submenuManutencao, arrowManutencao);
         }
     }
 
     if (toggleBtn) {
         toggleBtn.addEventListener("click", () => setExpanded(!isExpanded));
-    } else {
-        console.debug("sidebar-toggle not found");
     }
 
+    function closeDropdown(submenu, arrow) {
+        if (!submenu) return;
+        if (!submenu.classList.contains("hidden")) {
+            submenu.classList.add("hidden");
+            if (arrow) arrow.classList.remove("rotate-180");
+        }
+    }
+
+    function toggleDropdown(submenu, arrow) {
+        if (!submenu) return;
+
+        const isHidden = submenu.classList.contains("hidden");
+        const linksTexts = submenu.querySelectorAll(".sidebar-text");
+
+        if (isHidden) {
+            // --- ABRIR ---
+            submenu.classList.remove("hidden");
+            if (arrow) arrow.classList.add("rotate-180");
+
+            // Delay para mostrar os textos suavemente
+            setTimeout(() => {
+                linksTexts.forEach((text) => {
+                    text.classList.remove("w-0", "opacity-0");
+                    text.classList.add("w-full", "opacity-100");
+                });
+            }, 100);
+        } else {
+            // --- FECHAR ---
+            // Primeiro esconde os textos
+            linksTexts.forEach((text) => {
+                text.classList.add("w-0", "opacity-0");
+                text.classList.remove("w-full", "opacity-100");
+            });
+
+            if (arrow) arrow.classList.remove("rotate-180");
+
+            // Espera a animação do texto terminar para esconder a div
+            setTimeout(() => {
+                submenu.classList.add("hidden");
+            }, 300);
+        }
+    }
+
+    // Event Listeners dos Dropdowns
     if (dropdownBtnFinanceiro) {
-        dropdownBtnFinanceiro.addEventListener("click", function (e) {
-            try {
-                if (!isExpanded) {
-                    setExpanded(true);
-                    return;
-                }
-
-                const isSubmenuVisible = submenuFinanceiro
-                    ? !submenuFinanceiro.classList.contains("hidden")
-                    : false;
-                if (arrowFinanceiro) {
-                    arrowFinanceiro.classList.toggle("rotate-180");
-                }
-
-                if (isSubmenuVisible) {
-                    submenuLinksFinanceiro.forEach((link) => {
-                        link.classList.add("w-0", "opacity-0");
-                        link.classList.remove("w-full", "opacity-100");
-                    });
-                    setTimeout(() => {
-                        if (submenuFinanceiro) submenuFinanceiro.classList.add("hidden");
-                    }, 300);
-                } else {
-                    if (submenuFinanceiro) submenuFinanceiro.classList.remove("hidden");
-                    setTimeout(() => {
-                        submenuLinksFinanceiro.forEach((link) => {
-                            link.classList.remove("w-0", "opacity-0");
-                            link.classList.add("w-full", "opacity-100");
-                        });
-                    }, 10);
-                }
-            } catch (err) {
-                console.error("dropdown click error", err);
+        dropdownBtnFinanceiro.addEventListener("click", () => {
+            if (!isExpanded) {
+                setExpanded(true);
+                // Pequeno delay se a sidebar estava fechada
+                setTimeout(
+                    () => toggleDropdown(submenuFinanceiro, arrowFinanceiro),
+                    300
+                );
+            } else {
+                toggleDropdown(submenuFinanceiro, arrowFinanceiro);
             }
         });
-    } else {
-        console.debug("dropdown-btn not found");
     }
 
     if (dropdownBtnManutencao) {
-        dropdownBtnManutencao.addEventListener("click", function (e) {
-            try {
-                if (!isExpanded) {
-                    setExpanded(true);
-                    return;
-                }
-
-                const isSubmenuVisible = submenuManutencao
-                    ? !submenuManutencao.classList.contains("hidden")
-                    : false;
-                if (arrowManutencao) {
-                    arrowManutencao.classList.toggle("rotate-180");
-                }
-
-                if (isSubmenuVisible) {
-                    submenuLinksManutencao.forEach((link) => {
-                        link.classList.add("w-0", "opacity-0");
-                        link.classList.remove("w-full", "opacity-100");
-                    });
-                    setTimeout(() => {
-                        if (submenuManutencao) submenuManutencao.classList.add("hidden");
-                    }, 300);
-                } else {
-                    if (submenuManutencao) submenuManutencao.classList.remove("hidden");
-                    setTimeout(() => {
-                        submenuLinksManutencao.forEach((link) => {
-                            link.classList.remove("w-0", "opacity-0");
-                            link.classList.add("w-full", "opacity-100");
-                        });
-                    }, 10);
-                }
-            } catch (err) {
-                console.error("dropdown click error", err);
+        dropdownBtnManutencao.addEventListener("click", () => {
+            if (!isExpanded) {
+                setExpanded(true);
+                setTimeout(
+                    () => toggleDropdown(submenuManutencao, arrowManutencao),
+                    300
+                );
+            } else {
+                toggleDropdown(submenuManutencao, arrowManutencao);
             }
         });
-    } else {
-        console.debug("dropdown-btn not found");
     }
 
-    // --- LÓGICA PARA EXPANDIR/RECOLHER DETALHES DA TABELA ---
+    // Toggle Detalhes da Tabela
     if (toggleButtons && toggleButtons.length) {
         toggleButtons.forEach((button) => {
             button.addEventListener("click", function () {
@@ -153,14 +189,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     if (detailsRow) {
                         detailsRow.classList.toggle("hidden");
-                        if (icon) icon.classList.toggle("rotate-180"); // Gira o ícone da seta
+                        if (icon) icon.classList.toggle("rotate-180");
                     }
                 } catch (err) {
                     console.error("toggle details error", err);
                 }
             });
         });
-    } else {
-        console.debug("no toggle-details-btn elements found");
     }
 });

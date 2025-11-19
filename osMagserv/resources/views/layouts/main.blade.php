@@ -16,36 +16,37 @@
 <body class="bg-gray-100 font-inter overflow-x-hidden min-h-screen">
 
     <div id="sidebar" class="fixed top-0 left-0 h-screen bg-gray-900 text-white p-4 flex flex-col z-50 w-20">
-        <div class="flex items-center justify-between pb-4 border-b border-gray-700">
-            <div class="flex items-center min-w-0">
-                <i class="bi bi-app-indicator text-2xl text-blue-500"></i>
-                <h1 class="sidebar-text text-xl font-bold ml-3 w-0 opacity-0">Magserv</h1>
+        <div id="sidebar-header" class="flex items-center justify-center pb-4 border-b border-gray-700 h-16 transition-all duration-300">
+            <div id="sidebar-branding" class="flex items-center min-w-0 overflow-hidden transition-all duration-300 w-0 opacity-0">
+                <i id="sidebar-icon" class="bi bi-app-indicator text-2xl text-blue-500 transition-all duration-300 flex-shrink-0"></i>
+                <img id="sidebar-logo" src="{{ asset('img/magservLogoBranco.png') }}" alt="Logo Magserv" 
+                     class="h-8 ml-3 pl-5 object-contain transition-all duration-300">
             </div>
-            <button id="sidebar-toggle" class="text-gray-400 hover:text-white focus:outline-none">
+            <button id="sidebar-toggle" class="text-gray-400 hover:text-white focus:outline-none flex-shrink-0">
               <i class="bi bi-list text-2xl"></i>
             </button>
         </div>
 
         <nav class="flex-grow mt-4 space-y-2">
 
-            <a href="{{ route('home') }}" class="p-2.5 flex items-center rounded-md hover:bg-blue-600 group">
+            <a href="{{ route('home') }}" class="p-2.5 pl-3.5 flex items-center rounded-md hover:bg-blue-600 group">
                 <i class="bi bi-house-door-fill text-lg"></i>
                 <span class="sidebar-text text-sm font-medium ml-4 w-0 opacity-0">Menu</span>
             </a>
-            <a href="{{ route('processos.index') }}" class="p-2.5 flex items-center rounded-md hover:bg-blue-600 group">
+            <a href="{{ route('processos.index') }}" class="p-2.5 pl-3.5 flex items-center rounded-md hover:bg-blue-600 group">
                 <i class="bi bi-inboxes-fill text-lg"></i>
                 <span class="sidebar-text text-sm font-medium ml-4 w-0 opacity-0">Processos</span>
             </a>
-            <a href="{{ route('orcamentos.index') }}" class="p-2.5 flex items-center rounded-md hover:bg-blue-600 group">
+            <a href="{{ route('orcamentos.index') }}" class="p-2.5 pl-3.5 flex items-center rounded-md hover:bg-blue-600 group">
                 <i class="bi bi-file-earmark-ruled-fill text-lg"></i>
                 <span class="sidebar-text text-sm font-medium ml-4 w-0 opacity-0">Orçamentos</span>
             </a>
-            <a href="{{ route('clientes.index') }}" class="p-2.5 flex items-center rounded-md hover:bg-blue-600 group">
+            <a href="{{ route('clientes.index') }}" class="p-2.5 pl-3.5 flex items-center rounded-md hover:bg-blue-600 group">
                 <i class="bi bi-people-fill text-lg"></i>
                 <span class="sidebar-text text-sm font-medium ml-4 w-0 opacity-0">Clientes</span>
             </a>
             <div>
-                <button id="dropdown-btn-manutencao" class="w-full p-2.5 flex items-center justify-between rounded-md hover:bg-blue-600 group">
+                <button id="dropdown-btn-manutencao" class="w-full p-2.5 pl-3.5 flex items-center justify-between rounded-md hover:bg-blue-600 group">
                     <div class="flex items-center">
                         <i class="bi bi-hammer text-lg"></i>
                         <span class="sidebar-text text-sm font-medium ml-4 w-0 opacity-0">Manutenção</span>
@@ -53,14 +54,14 @@
                     <i class="sidebar-text bi bi-chevron-down text-xs w-0 opacity-0" id="arrow-manutencao"></i>
                 </button>
                 <div id="submenu-manutencao" class="hidden flex-col mt-1 pl-10">
-                    <a href="{{ route('manutencoes.index') }}" class="sidebar-text text-sm text-gray-300 p-2 rounded-md hover:bg-gray-700 w-full opacity-0">Relatórios</a>
-                    <a href="{{ route('manutencoes.corretiva.index') }}" class="sidebar-text text-sm text-gray-300 p-2 rounded-md hover:bg-gray-700 w-full opacity-0">Manutenções Corretivas</a>
-                    <a href="{{ route('manutencoes.preventiva.index') }}" class="sidebar-text text-sm text-gray-300 p-2 rounded-md hover:bg-gray-700 w-full opacity-0">Manutenções Preventivas</a>
+                    <a href="{{ route('manutencoes.index') }}" class="sidebar-text text-sm text-gray-300 p-1 rounded-md hover:bg-gray-700 w-full opacity-0">Relatórios</a>
+                    <a href="{{ route('manutencoes.corretiva.index') }}" class="sidebar-text text-sm text-gray-300 p-1 rounded-md hover:bg-gray-700 w-full opacity-0">Manutenções Corretivas</a>
+                    <a href="{{ route('manutencoes.preventiva.index') }}" class="sidebar-text text-sm text-gray-300 p-1 rounded-md hover:bg-gray-700 w-full opacity-0">Manutenções Preventivas</a>
                 </div>
             </div>
             @if (auth()->user()->isAdmin())
             <div>
-                <button id="dropdown-btn-financeiro" class="w-full p-2.5 flex items-center justify-between rounded-md hover:bg-blue-600 group">
+                <button id="dropdown-btn-financeiro" class="w-full p-2.5 pl-3.5 flex items-center justify-between rounded-md hover:bg-blue-600 group">
                     <div class="flex items-center">
                         <i class="bi bi-piggy-bank-fill text-lg"></i>
                         <span class="sidebar-text text-sm font-medium ml-4 w-0 opacity-0">Financeiro</span>
@@ -68,12 +69,12 @@
                     <i class="sidebar-text bi bi-chevron-down text-xs w-0 opacity-0" id="arrow-financeiro"></i>
                 </button>
                 <div id="submenu-financeiro" class="hidden flex-col mt-1 pl-10">
-                    <a href="{{ route('financeiro.contas-pagar.index') }}" class="sidebar-text text-sm text-gray-300 p-2 rounded-md hover:bg-gray-700 w-full opacity-0">Contas a pagar</a>
-                    <a href="{{ route('financeiro.contas-receber.index') }}" class="sidebar-text text-sm text-gray-300 p-2 rounded-md hover:bg-gray-700 w-full opacity-0">Contas a receber</a>
+                    <a href="{{ route('financeiro.contas-pagar.index') }}" class="sidebar-text text-sm text-gray-300 p-1 rounded-md hover:bg-gray-700 w-full opacity-0">Contas a pagar</a>
+                    <a href="{{ route('financeiro.contas-receber.index') }}" class="sidebar-text text-sm text-gray-300 p-1 rounded-md hover:bg-gray-700 w-full opacity-0">Contas a receber</a>
                 </div>
             </div>
             @endif
-            <a href="{{ route('admin.solicitacao.index') }}" class="p-2.5 flex items-center rounded-md hover:bg-blue-600 group">
+            <a href="{{ route('admin.solicitacao.index') }}" class="p-2.5 pl-3.5 flex items-center rounded-md hover:bg-blue-600 group">
                 <i class="bi bi-chat-dots-fill text-lg"></i>
                 <span class="sidebar-text text-sm font-medium ml-4 w-0 opacity-0">Solicitações</span>
             </a>
@@ -83,9 +84,9 @@
             <form action="{{ route('logout') }}" method="POST">
             @csrf
             <button type="submit"
-                class="flex items-center p-2 w-full text-base font-normal text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700">
-                <i class="bi bi-box-arrow-left text-xl text-gray-500"></i>
-                <span class="ml-3">Sair</span>
+                class="p-2.5 flex items-center rounded-md hover:bg-blue-600 group">
+                <i class="bi bi-box-arrow-in-right text-lg"></i>
+                <span class="sidebar-text text-sm font-medium ml-4 w-0 opacity-0">Logout</span>
             </button>
         </form>
         </div>
