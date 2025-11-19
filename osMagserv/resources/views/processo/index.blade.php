@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Gestão de Processos')
+@section('title', 'Magserv | Processos')
 
 @section('content')
 

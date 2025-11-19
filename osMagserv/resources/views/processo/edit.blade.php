@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Editar Processo')
+@section('title', 'Masgerv | Editar Processo')
 
 @section('content')
 

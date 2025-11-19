@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Editar Manutenção Corretiva')
+@section('title', 'Magserv | Editar Manutenção Corretiva')
 
 @section('content')
     <div class="flex justify-between items-center mb-8">

@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Manutenções Corretivas')
+@section('title', 'Magserv | Manutenções Corretivas')
 
 @section('content')
 

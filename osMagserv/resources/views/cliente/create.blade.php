@@ -1,5 +1,7 @@
 @extends('layouts.main')
 
+@section('title', 'Magserv | Cadastrar Cliente')
+
 @section('content')
 
 <div class="p-8">

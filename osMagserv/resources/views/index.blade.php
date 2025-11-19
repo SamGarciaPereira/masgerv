@@ -1,5 +1,7 @@
 @extends('layouts.main')
 
+@section('title', 'Magserv | Home')
+
 @section('content')
 
 <!-- Cabeçalho da Página -->

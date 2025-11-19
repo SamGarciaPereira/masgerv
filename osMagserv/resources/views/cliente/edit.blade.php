@@ -1,4 +1,6 @@
-    @extends('layouts.main')
+@extends('layouts.main')
+
+@section('title', 'Magserv | Editar Cliente')
 
 @section('content')
 

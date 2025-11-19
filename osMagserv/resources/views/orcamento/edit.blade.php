@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Editar Orçamento')
+@section('title', 'Magserv | Editar Orçamento')
 
 @section('content')
 
