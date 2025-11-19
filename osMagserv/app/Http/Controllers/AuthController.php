@@ -12,7 +12,7 @@ class AuthController extends Controller
      */
     public function showLoginForm()
     {
-        return view('auth.login'); // Vamos criar esta view
+        return view('auth.login');
     }
 
     /**
@@ -30,7 +30,6 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
             
-            // Redireciona para a Rota 'home' (seu dashboard principal)
             return redirect()->intended(route('home')); 
         }
 

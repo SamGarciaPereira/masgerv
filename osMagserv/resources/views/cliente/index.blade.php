@@ -16,14 +16,12 @@
         </a>
     </div>
 
-    <!-- Mensagem de Sucesso (para quando criar ou remover um cliente) -->
     @if (session('success'))
         <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded-md" role="alert">
             <p>{{ session('success') }}</p>
         </div>
     @endif
 
-    <!-- Tabela de Clientes -->
     <div class="bg-white p-8 rounded-lg shadow-md">
         <div class="overflow-x-auto">
             <table class="w-full table-auto">
