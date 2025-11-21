@@ -15,6 +15,7 @@ use App\Observers\ContasPagarObserver;
 use App\Observers\ContasReceberObserver;
 use App\Observers\ManutencaoObserver;
 use Illuminate\Support\ServiceProvider;
+use Carbon\Carbon;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -31,6 +32,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Carbon::setLocale('pt_BR');
+
+        setlocale(LC_TIME, 'pt_BR', 'pt_BR.utf-8', 'pt_BR.utf-8', 'portuguese');
+
         Cliente::observe(ClienteObserver::class);
         Processo::observe(ProcessoObserver::class);
         ContasPagar::observe(ContasPagarObserver::class);

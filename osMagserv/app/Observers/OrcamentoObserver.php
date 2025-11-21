@@ -13,12 +13,6 @@ class OrcamentoObserver
      */
     public function created(Orcamento $orcamento): void
     {
-
-        Processo::create([
-            'orcamento_id' => $orcamento->id,
-            'status' => 'Em aberto',
-        ]);
-
         Activity::create([
             'description' => "Orçamento '{$orcamento->numero_proposta}' foi cadastrado."
         ]);
@@ -32,6 +26,12 @@ class OrcamentoObserver
         Activity::create([
             'description' => "Orçamento '{$orcamento->numero_proposta}' foi atualizado."
         ]);
+        if($orcamento->isDirty('status') && $orcamento->status === 'Aprovado') {
+            Processo::create([
+                'orcamento_id' => $orcamento->id,
+                'status' => 'Em Aberto',
+            ]);
+        }
     }
 
     /**
