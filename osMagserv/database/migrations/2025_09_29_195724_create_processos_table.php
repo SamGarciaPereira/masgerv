@@ -16,7 +16,7 @@ return new class extends Migration
 
             $table->foreignId('orcamento_id')->unique()->constrained('orcamentos')->onDelete('cascade');
             $table->string('nf')->nullable();
-            $table->enum('status', ['Em aberto', 'Finalizado', 'Faturado'])->default('Em aberto');
+            $table->enum('status', ['Em Aberto', 'Finalizado', 'Faturado'])->default('Em Aberto');
 
             $table->timestamps();
         });
