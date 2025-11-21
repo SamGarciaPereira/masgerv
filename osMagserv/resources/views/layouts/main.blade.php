@@ -21,7 +21,7 @@
                 <img id="sidebar-logo" src="{{ asset('img/magservLogoBranco.png') }}" alt="Logo Magserv" 
                      class="h-10 ml-3 object-contain transition-all duration-300">
             </div>
-            <button id="sidebar-toggle" class="pl-2 text-gray-400 hover:text-white focus:outline-none flex-shrink-0">
+            <button id="sidebar-toggle" class="text-gray-400 hover:text-white focus:outline-none flex-shrink-0">
               <i class="bi bi-list text-2xl"></i>
             </button>
         </div>

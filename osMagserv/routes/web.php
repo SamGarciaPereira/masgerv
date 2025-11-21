@@ -42,6 +42,7 @@ Route::middleware('auth')->group(function() {
     Route::resource('orcamentos', OrcamentoController::class);
     Route::resource('processos', ProcessoController::class);
     Route::resource('manutencoes', ManutencaoController::class)
+        ->parameters(['manutencoes' => 'manutencao'])
         ->only(['index', 'store', 'update', 'destroy']);
 
     
