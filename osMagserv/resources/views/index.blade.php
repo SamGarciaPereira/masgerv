@@ -40,9 +40,9 @@
         foreach($stats as $status => $val) {
             $displayVal = $isMoney ? 'R$ ' . number_format($val, 2, ',', '.') : $val;
             $color = match($status) {
-                'Concluída', 'Aprovado', 'Finalizado', 'Pago' => 'bg-green-500',
+                'Concluída', 'Aprovado', 'Aprovada', 'Finalizado', 'Pago' => 'bg-green-500',
                 'Pendente', 'Em Aberto', 'Agendada' => 'bg-yellow-500',
-                'Cancelada', 'Recusado', 'Recusada' => 'bg-red-500',
+                'Cancelada', 'Recusado', 'Recusada', 'Atrasado' => 'bg-red-500',
                 'Em Andamento', 'Enviado' => 'bg-blue-500',
                 'Faturado' => 'bg-purple-500',
                 default => 'bg-gray-400'
@@ -146,7 +146,7 @@
         <div class="flex justify-between items-start mb-2">
             <div>
                 <p class="text-md font-bold text-gray-500  tracking-wide">Receitas</p>
-                <h3 class="text-2xl font-bold text-gray-800">R$ {{ number_format(array_sum($receberStats), 2, ',', '.') }}</h3>
+                <h3 class="text-2xl font-bold text-gray-800">R$ {{ number_format($receberStats['Pago'] ?? 0, 2, ',', '.') }}</h3>
             </div>
             <div class="bg-green-50 text-green-600 p-2 rounded-lg">
                 <i class="bi bi-arrow-down-circle-fill text-xl"></i>
@@ -161,7 +161,7 @@
         <div class="flex justify-between items-start mb-2">
             <div>
                 <p class="text-md font-bold text-gray-500  tracking-wide">Despesas</p>
-                <h3 class="text-2xl font-bold text-gray-800">R$ {{ number_format(array_sum($pagarStats), 2, ',', '.') }}</h3>
+                <h3 class="text-2xl font-bold text-gray-800">R$ {{ number_format($pagarStats['Pago'] ?? 0, 2, ',', '.') }}</h3>
             </div>
             <div class="bg-red-50 text-red-600 p-2 rounded-lg">
                 <i class="bi bi-arrow-up-circle-fill text-xl"></i>
@@ -177,15 +177,29 @@
 <div class="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-6">
     @if(auth()->user()->isAdmin())
     <div class="lg:col-span-2 bg-white p-6 rounded-lg shadow-md">
-        <div class="flex justify-between items-center mb-4">
-            <h3 class="font-bold text-lg text-gray-800">Fluxo de Caixa Diário (Receitas)</h3>
+        <div class="flex flex-col sm:flex-row justify-between items-center mb-4 gap-4">
+            <div>
+                <h3 class="font-bold text-lg text-gray-800" id="chartTitle">Fluxo Financeiro (Receitas)</h3>
+                <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">Ref: {{ $mes }}/{{ $ano }}</span>
+            </div>
+            
+            <div class="flex bg-gray-100 p-1 rounded-lg">
+                <button onclick="updateChart('receita')" id="btnReceita" 
+                        class="px-4 py-1.5 text-sm font-medium rounded-md shadow-sm bg-white text-blue-600 transition-all duration-200">
+                    Receitas
+                </button>
+                <button onclick="updateChart('despesa')" id="btnDespesa" 
+                        class="px-4 py-1.5 text-sm font-medium rounded-md text-gray-500 hover:text-gray-700 transition-all duration-200">
+                    Despesas
+                </button>
+            </div>
         </div>
+        
         <div class="relative h-72 w-full">
-            <canvas id="revenueChart"></canvas>
+            <canvas id="financeChart"></canvas>
         </div>
     </div>
     @endif
-
     <div class="bg-white p-6 rounded-lg shadow-md">
         <h3 class="font-bold text-lg mb-4 text-gray-800">Atividades Recentes</h3>
         <ul class="space-y-4 max-h-72 overflow-y-auto custom-scrollbar pr-2">
@@ -208,32 +222,110 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const ctx = document.getElementById('revenueChart').getContext('2d');
-        const labels = @json($labelsGrafico);
-        const dataValues = @json($dadosGrafico);
+    let financeChart = null;
 
-        new Chart(ctx, {
+    const chartLabels = @json($labelsGrafico);
+    const dataReceita = @json($dadosReceita);
+    const dataDespesa = @json($dadosDespesa);
+    const configReceita = {
+        label: 'Recebido (R$)',
+        color: 'rgba(34, 197, 94, 0.7)',      
+        hoverColor: 'rgba(22, 163, 74, 1)',   
+        borderColor: 'rgba(22, 163, 74, 0.8)' 
+    };
+
+    const configDespesa = {
+        label: 'Pago (R$)',
+        color: 'rgba(239, 68, 68, 0.7)',     
+        hoverColor: 'rgba(220, 38, 38, 1)',   
+        borderColor: 'rgba(220, 38, 38, 0.8)' 
+    };
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const ctx = document.getElementById('financeChart').getContext('2d');
+
+        financeChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: labels,
+                labels: chartLabels,
                 datasets: [{
-                    label: 'Recebido (R$)',
-                    data: dataValues,
-                    backgroundColor: 'rgba(34, 197, 94, 0.7)', 
-                    hoverBackgroundColor: 'rgba(22, 163, 74, 1)', 
-                    borderRadius: 4
+                    label: configReceita.label,
+                    data: dataReceita,
+                    backgroundColor: configReceita.color,
+                    hoverBackgroundColor: configReceita.hoverColor,
+                    borderColor: configReceita.borderColor,
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    barPercentage: 0.6,
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) { label += ': '; }
+                                if (context.parsed.y !== null) {
+                                    label += new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(context.parsed.y);
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
                 scales: {
-                    y: { beginAtZero: true }
+                    y: {
+                        beginAtZero: true,
+                        grid: { borderDash: [2, 4], color: '#f3f4f6' },
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL', maximumSignificantDigits: 3});
+                            },
+                            font: { size: 11 }
+                        }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { size: 11 } }
+                    }
                 }
             }
         });
     });
+
+    function updateChart(type) {
+        const btnReceita = document.getElementById('btnReceita');
+        const btnDespesa = document.getElementById('btnDespesa');
+        const title = document.getElementById('chartTitle');
+
+        if (type === 'receita') {
+            financeChart.data.datasets[0].data = dataReceita;
+            financeChart.data.datasets[0].label = configReceita.label;
+            financeChart.data.datasets[0].backgroundColor = configReceita.color;
+            financeChart.data.datasets[0].hoverBackgroundColor = configReceita.hoverColor;
+            financeChart.data.datasets[0].borderColor = configReceita.borderColor;
+            
+            btnReceita.className = "px-4 py-1.5 text-sm font-medium rounded-md shadow-sm bg-white text-blue-600 transition-all duration-200";
+            btnDespesa.className = "px-4 py-1.5 text-sm font-medium rounded-md text-gray-500 hover:text-gray-700 transition-all duration-200";
+            title.innerText = "Fluxo Financeiro (Receitas)";
+        } else {
+            financeChart.data.datasets[0].data = dataDespesa;
+            financeChart.data.datasets[0].label = configDespesa.label;
+            financeChart.data.datasets[0].backgroundColor = configDespesa.color;
+            financeChart.data.datasets[0].hoverBackgroundColor = configDespesa.hoverColor;
+            financeChart.data.datasets[0].borderColor = configDespesa.borderColor;
+
+            btnDespesa.className = "px-4 py-1.5 text-sm font-medium rounded-md shadow-sm bg-white text-red-600 transition-all duration-200";
+            btnReceita.className = "px-4 py-1.5 text-sm font-medium rounded-md text-gray-500 hover:text-gray-700 transition-all duration-200";
+            title.innerText = "Fluxo Financeiro (Despesas)";
+        }
+
+        financeChart.update();
+    }
 </script>
 
 @endsection

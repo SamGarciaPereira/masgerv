@@ -37,7 +37,7 @@
             <tbody class="bg-white divide-y divide-gray-200">
                 @forelse ($contasReceber as $conta) 
                     <tr>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $conta->cliente->nome ?? 'N/A' }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $conta->cliente->nome ?? 'N/A' }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                             @if ($conta->processo && $conta->processo->orcamento)
                                 Faturamento do orçamento: {{ $conta->processo->orcamento->numero_proposta }} 
@@ -45,8 +45,8 @@
                                 {{ $conta->descricao }}
                             @endif
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">R$ {{ number_format($conta->valor, 2, ',', '.') }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">R$ {{ number_format($conta->valor, 2, ',', '.') }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                             {{ $conta->data_vencimento ? \Carbon\Carbon::parse($conta->data_vencimento)->format('d/m/Y') : 'Não definida' }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
@@ -78,7 +78,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="px-6 py-4 text-center text-gray-500">
+                        <td colspan="6" class="px-6 py-4 text-center text-gray-900">
                             Nenhuma conta a receber encontrada.
                         </td>
                     </tr>

@@ -53,7 +53,7 @@ class ContasReceberController extends Controller
      */
     public function show(string $id)
     {
-        // Geralmente não é necessário para CRUDs simples, pode deixar vazio.
+    
     }
 
     /**
