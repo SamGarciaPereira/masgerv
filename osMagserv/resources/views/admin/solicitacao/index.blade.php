@@ -61,10 +61,10 @@
 
             <div class="flex items-center space-x-4 mt-6">
                 <form action="{{ route('admin.solicitacoes.approve', $solicitacao->id) }}" method="POST"
-                      onsubmit="return confirm('Tem certeza que deseja APROVAR esta solicitação?');">
+                      onsubmit="return confirm('Tem certeza que deseja ACEITAR esta solicitação?');">
                     @csrf
                     <button type="submit" class="bg-green-600 text-white hover:bg-green-700 font-medium py-2 px-4 rounded-lg flex items-center shadow-sm">
-                        <i class="bi bi-check-lg mr-2"></i> Aprovar
+                        <i class="bi bi-check-lg mr-2"></i> Aceitar
                     </button>
                 </form>
 

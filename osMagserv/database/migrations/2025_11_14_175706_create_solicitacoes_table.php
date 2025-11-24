@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('tipo');
             $table->json('dados');
-            $table->enum('status', ['Pendente', 'Aprovada', 'Recusada'])->default('Pendente');
+            $table->enum('status', ['Pendente', 'Aceita', 'Recusada'])->default('Pendente');
             $table->timestamp('data_solicitacao');
             $table->timestamp('data_resolucao')->nullable();
 
