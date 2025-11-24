@@ -4,11 +4,55 @@
 
 @section('content')
 
+    
+
     <div class="flex justify-between items-center mb-8">
         <div>
             <h1 class="text-3xl font-bold text-gray-900">Gestão de Processos</h1>
             <p class="text-gray-600 mt-1">Visualize e gerencie todos os processos em andamento.</p>
         </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg shadow-sm mb-6 border border-gray-200">
+        <form method="GET" action="{{ route('processos.index') }}" class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+            
+            <div class="md:col-span-5">
+                <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Pesquisar</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="bi bi-search text-gray-400"></i>
+                    </div>
+                    <input type="text" name="search" id="search" value="{{ request('search') }}" 
+                           placeholder="Nº Proposta, Cliente ou Escopo..."
+                           class="w-full pl-10 px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500">
+                </div>
+            </div>
+
+            <div class="md:col-span-3">
+                <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                <select name="status" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                    <option value="">Todos</option>
+                    <option value="Em Aberto" {{ request('status') == 'Em Aberto' ? 'selected' : '' }}>Em Aberto</option>
+                    <option value="Finalizado" {{ request('status') == 'Finalizado' ? 'selected' : '' }}>Finalizado</option>
+                    <option value="Faturado" {{ request('status') == 'Faturado' ? 'selected' : '' }}>Faturado</option>
+                </select>
+            </div>
+
+            <div class="md:col-span-3">
+                <label for="ordem" class="block text-sm font-medium text-gray-700 mb-1">Ordenar</label>
+                <select name="ordem" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                    <option value="recentes" {{ request('ordem') == 'recentes' ? 'selected' : '' }}>Recentes</option>
+                    <option value="antigos" {{ request('ordem') == 'antigos' ? 'selected' : '' }}>Antigos</option>
+                    <option value="maior_valor" {{ request('ordem') == 'maior_valor' ? 'selected' : '' }}>Maior Valor</option>
+                    <option value="faturamento" {{ request('ordem') == 'faturamento' ? 'selected' : '' }}>Data Faturamento</option>
+                </select>
+            </div>
+            <div class="md:col-span-1">
+                <button type="submit" class="bg-blue-600 text-white w-full py-2 rounded-md text-sm hover:bg-blue-700 transition" title="Filtrar">
+                    <i class="bi bi-filter"></i>
+                </button>
+            </div>
+        </form>
     </div>
 
     @if (session('success'))

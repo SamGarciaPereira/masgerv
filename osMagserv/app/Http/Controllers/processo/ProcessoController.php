@@ -11,9 +11,43 @@ class ProcessoController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $processos = Processo::with('orcamento.cliente')->latest()->get();
+       $query = Processo::with('orcamento.cliente');
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function($q) use ($search) {
+                $q->where('nf', 'like', "%{$search}%")
+                  ->orWhereHas('orcamento', function($q2) use ($search) {
+                      $q2->where('numero_proposta', 'like', "%{$search}%")
+                         ->orWhere('escopo', 'like', "%{$search}%")
+                         ->orWhere('valor', 'like', "%{$search}%")
+                         ->orWhereHas('cliente', function($q3) use ($search) {
+                             $q3->where('nome', 'like', "%{$search}%")
+                                ->orWhere('email', 'like', "%{$search}%");
+                         });
+                  });
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->input('status'));
+        }
+
+        switch ($request->input('ordem')) {
+            case 'antigos':
+                $query->oldest();
+                break;
+            case 'faturamento':
+                $query->orderByDesc('data_faturamento');
+                break;
+            default: 
+                $query->latest();
+                break;
+        }
+
+        $processos = $query->paginate(10); 
         return view('processo.index', compact('processos'));
     }
 

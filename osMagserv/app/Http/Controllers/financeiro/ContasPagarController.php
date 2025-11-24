@@ -11,11 +11,45 @@ class ContasPagarController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $contasPagar = ContasPagar::latest()->get();
+      $query = ContasPagar::query();
+
+      if ($request->filled('search')) {
+        $search = $request->input('search');
+        $query->where(function($q) use ($search) {
+            $q->where('descricao', 'like', "%{$search}%")
+                ->orWhere('danfe', 'like', "%{$search}%")
+                ->orWhere('fornecedor', 'like', "%{$search}%");
+
+        });
+      }
+
+      if($request->filled('status')){
+        $query->where('status', $request->input('status'));
+      }
+
+      switch ($request->input('ordem')) {
+            case 'vencimento_asc':
+                $query->orderBy('data_vencimento', 'asc');
+                break;
+            case 'vencimento_desc':
+                $query->orderBy('data_vencimento', 'desc');
+                break;
+            case 'maior_valor':
+                $query->orderByDesc('valor');
+                break;
+            case 'recentes':
+                $query->latest();
+                break;
+            default:
+                $query->orderBy('data_vencimento', 'asc');
+                break;
+        }
+
+        $contasPagar = $query->get();
+
         return view('financeiro.contas-pagar.index', compact('contasPagar'));
-        
     }
 
     /**

@@ -13,9 +13,42 @@ class ContasReceberController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $contasReceber = ContasReceber::with(['cliente', 'processo.orcamento'])->latest()->get();
+       $query = ContasReceber::query();
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function($q) use ($search) {
+                 $q->where('descricao', 'like', "%{$search}%")
+                  ->orWhere('nf', 'like', "%{$search}%")
+                  ->orWhereHas('cliente', function($q2) use ($search) {
+                        $q2->where('nome', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        if($request->filled('status')){
+            $query->where('status', $request->input('status'));
+        }
+
+        switch ($request->input('ordem')) {
+            case 'vencimento_asc':
+                $query->orderBy('data_vencimento', 'asc');
+                break;
+            case 'vencimento_desc':
+                $query->orderBy('data_vencimento', 'desc');
+                break;
+            case 'maior_valor':
+                $query->orderByDesc('valor');
+                break;
+            default:
+                $query->orderBy('data_vencimento', 'asc');
+                break;
+        }
+
+        $contasReceber = $query->get();
+
         return view('financeiro.contas-receber.index', compact('contasReceber'));
     }
 

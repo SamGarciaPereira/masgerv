@@ -8,10 +8,36 @@ use Illuminate\Http\Request;
 
 class ClienteController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $clientes = Cliente::latest()->get();
+        $query = Cliente::query();
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function($q) use ($search) {
+                $q->where('nome', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('responsavel', 'like', "%{$search}%")
+                  ->orWhere('documento', 'like', "%{$search}%")
+                  ->orWhere('telefone', 'like', "%{$search}%")
+                  ->orWhere('cidade', 'like', "%{$search}%")
+                  ->orWhere('estado', 'like', "%{$search}%");
+            });
+        }
+
+        switch ($request->input('ordem')) {
+            case 'antigos':
+                $query->oldest();
+                break;
+            default: 
+                $query->latest();
+                break;
+        }
+
+        $clientes = $query->orderBy('nome')->paginate(10);
         return view('cliente.index', compact('clientes'));
+
+        
+        
     }
 
     public function create()

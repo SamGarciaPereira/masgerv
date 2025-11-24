@@ -10,9 +10,45 @@ use Illuminate\Validation\Rule;
 
 class OrcamentoController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $orcamentos = Orcamento::with('cliente')->latest()->get();
+        $query = Orcamento::with('cliente');
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function($q) use ($search) {
+                $q->where('numero_proposta', 'like', "%{$search}%")
+                  ->orWhere('escopo', 'like', "%{$search}%") 
+                  ->orWhereHas('cliente', function($q2) use ($search) {
+                      $q2->where('nome', 'like', "%{$search}%")
+                         ->orWhere('email', 'like', "%{$search}%"); 
+                  });
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->input('status'));
+        }
+
+        switch ($request->input('ordem')) {
+            case 'antigos':
+                $query->oldest();
+                break;
+            case 'maior_valor':
+                $query->orderByDesc('valor');
+                break;
+            case 'menor_valor':
+                $query->orderBy('valor');
+                break;
+            case 'aprovacao':
+                $query->orderByDesc('data_aprovacao');
+                break;
+            default: 
+                $query->latest();
+                break;
+        }
+
+        $orcamentos = $query->paginate(10); 
         return view('orcamento.index', compact('orcamentos'));
     }
 

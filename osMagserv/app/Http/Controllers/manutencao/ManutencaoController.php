@@ -65,11 +65,6 @@ class ManutencaoController extends Controller
 
         $manutencao->update($validatedData);
 
-       // $updateResult = $manutencao->update($validatedData);
-
-        
-        //dd($updateResult, $validatedData, $manutencao->getChanges());
-
         if ($validatedData['tipo'] === 'Corretiva') {
              return redirect()->route('manutencoes.corretiva.index')
                  ->with('success', 'Manutenção corretiva atualizada com sucesso!');
@@ -92,6 +87,46 @@ class ManutencaoController extends Controller
         }
     }
 
+    private function filtrarManutencoes(Request $request, $tipo)
+    {
+        $query = Manutencao::where('tipo', $tipo)->with('cliente');
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function($q) use ($search) {
+                $q->where('descricao', 'like', "%{$search}%")
+                  ->orWhere('data_inicio_atendimento', 'like', "%{$search}%")
+                  ->orWhere('data_fim_atendimento', 'like', "%{$search}%")
+                  ->orWhere('descricao', 'like', "%{$search}%")
+                  ->orWhere('solicitante', 'like', "%{$search}%")
+                  ->orWhere('chamado', 'like', "%{$search}%")
+                  ->orWhereHas('cliente', function($q2) use ($search) {
+                      $q2->where('nome', 'like', "%{$search}%");
+                  });
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->input('status'));
+        }
+
+        switch ($request->input('ordem')) {
+            case 'antigos':
+                $query->oldest(); 
+                break;
+            case 'data_inicio_desc': 
+                $query->orderBy('data_inicio_atendimento', 'desc');
+                break;
+            case 'data_inicio_asc': 
+                $query->orderBy('data_inicio_atendimento', 'asc'); 
+                break;
+            default: 
+                $query->latest(); 
+                break;
+        }
+        return $query->get();
+    }
+
     public function createOrcamento(Manutencao $manutencao)
     {
         if($manutencao->tipo !== 'Corretiva' || !$manutencao->chamado) {
@@ -108,12 +143,9 @@ class ManutencaoController extends Controller
             ->with('success', 'Orçamento gerado a partir da manutenção. Por favor, preencha o restante das informações.');
     }
 
-    public function indexCorretiva()
+    public function indexCorretiva(Request $request)
     {
-        $manutencoes = Manutencao::where('tipo', 'Corretiva')
-                                ->with('cliente')
-                                ->orderBy('created_at', 'desc')
-                                ->get();
+        $manutencoes = $this->filtrarManutencoes($request, 'Corretiva');
         return view('manutencao.manutencao-corretiva.index', compact('manutencoes'));
     }
 
@@ -132,12 +164,9 @@ class ManutencaoController extends Controller
         return view('manutencao.manutencao-corretiva.edit', compact('manutencao', 'clientes'));
     }
 
-    public function indexPreventiva()
+    public function indexPreventiva(Request $request)
     {
-        $manutencoes = Manutencao::where('tipo', 'Preventiva')
-                                ->with('cliente')
-                                ->orderBy('created_at', 'desc')
-                                ->get();
+        $manutencoes = $this->filtrarManutencoes($request, 'Preventiva');
         return view('manutencao.manutencao-preventiva.index', compact('manutencoes'));
     }
 

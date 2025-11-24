@@ -15,6 +15,47 @@
     </a>
 </div>
 
+<div class="bg-white p-6 rounded-lg shadow-sm mb-6 border border-gray-200">
+    <form method="GET" action="{{ route('financeiro.contas-receber.index') }}" class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+        
+        <div class="md:col-span-5">
+            <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Pesquisar</label>
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="bi bi-search text-gray-400"></i>
+                </div>
+                <input type="text" name="search" id="search" value="{{ request('search') }}" 
+                       placeholder="Cliente, Descrição..."
+                       class="w-full pl-10 px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500">
+            </div>
+        </div>
+
+        <div class="md:col-span-3">
+            <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+            <select name="status" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                <option value="">Todos</option>
+                <option value="Pendente" {{ request('status') == 'Pendente' ? 'selected' : '' }}>Pendente</option>
+                <option value="Pago" {{ request('status') == 'Pago' ? 'selected' : '' }}>Pago</option>
+                <option value="Atrasado" {{ request('status') == 'Atrasado' ? 'selected' : '' }}>Atrasado</option>
+            </select>
+        </div>
+
+        <div class="md:col-span-3">
+            <label for="ordem" class="block text-sm font-medium text-gray-700 mb-1">Ordenar</label>
+            <select name="ordem" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
+                <option value="recentes" {{ request('ordem') == 'recentes' ? 'selected' : '' }}>Recentes</option>
+                <option value="antigos" {{ request('ordem') == 'antigos' ? 'selected' : '' }}>Antigos</option>
+                <option value="maior_valor" {{ request('ordem') == 'maior_valor' ? 'selected' : '' }}>Maior Valor</option>
+            </select>
+        </div>  
+        <div class="md:col-span-1">
+            <button type="submit" class="bg-blue-600 text-white w-full py-2 rounded-md text-sm hover:bg-blue-700 transition" title="Filtrar">
+                <i class="bi bi-filter"></i>
+            </button>
+        </div>
+    </form>
+</div>
+
 @if (session('success'))
     <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded-md" role="alert">
         <p>{{ session('success') }}</p>
