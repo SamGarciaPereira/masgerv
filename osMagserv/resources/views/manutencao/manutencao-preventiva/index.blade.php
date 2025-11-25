@@ -7,7 +7,7 @@
     <div class="flex justify-between items-center mb-8">
         <div>
             <h1 class="text-3xl font-bold text-gray-900">Manutenções Preventivas</h1>
-            <p class="text-gray-600 mt-1">Visualize e gerencie todas as manutenções preventivas agendadas.</p>
+            <p class="text-gray-600 mt-1">Visualize e gerencie todas as manutenções preventivas.</p>
         </div>
         <a href="#"
             class="bg-blue-600 text-white hover:bg-blue-700 font-medium py-2 px-4 rounded-lg flex items-center shadow-sm">
@@ -35,6 +35,7 @@
                 <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
                 <select name="status" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
                     <option value="">Todos</option>
+                    <option value="Pendente" {{ request('status') == 'Pendente' ? 'selected' : '' }}>Pendente</option>
                     <option value="Agendada" {{ request('status') == 'Agendada' ? 'selected' : '' }}>Agendada</option>
                     <option value="Em Andamento" {{ request('status') == 'Em Andamento' ? 'selected' : '' }}>Em Andamento</option>
                     <option value="Concluída" {{ request('status') == 'Concluída' ? 'selected' : '' }}>Concluída</option>
@@ -86,7 +87,7 @@
                     {{-- Adicione um loop @forelse aqui quando tiver os dados do controller --}}
                     <tr>
                         <td colspan="5" class="px-6 py-4 whitespace-nowrap text-center text-gray-500">
-                            Nenhuma manutenção preventiva agendada.
+                            Nenhuma manutenção preventiva cadastrada.
                         </td>
                     </tr>
                 </tbody>

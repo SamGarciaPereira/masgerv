@@ -290,7 +290,7 @@ Route::post('/webhook', function (Request $request) {
                         'descricao' => $conversation['data']['descricao'],
                         'solicitante' => $conversation['data']['solicitante'],
                         'tipo' => 'Corretiva', 
-                        'status' => 'Agendada', 
+                        'status' => 'Pendente', 
                         'data_inicio_atendimento' => Carbon::now(), 
                     ]
                 ]);

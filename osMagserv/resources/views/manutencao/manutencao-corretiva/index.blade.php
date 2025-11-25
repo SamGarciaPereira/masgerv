@@ -7,7 +7,7 @@
     <div class="flex justify-between items-center mb-8">
         <div>
             <h1 class="text-3xl font-bold text-gray-900">Manutenções Corretivas</h1>
-            <p class="text-gray-600 mt-1">Visualize e gerencie todas as manutenções corretivas agendadas.</p>
+            <p class="text-gray-600 mt-1">Visualize e gerencie todas as manutenções corretivas.</p>
         </div>
         <a href=" {{ route('manutencoes.corretiva.create') }} "
             class="bg-blue-600 text-white hover:bg-blue-700 font-medium py-2 px-4 rounded-lg flex items-center shadow-sm">
@@ -33,6 +33,7 @@
                 <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
                 <select name="status" class="w-full px-3 py-2 border border-gray-300 rounded-md text-sm">
                     <option value="">Todos</option>
+                    <option value="Pendente" {{ request('status') == 'Pendente' ? 'selected' : '' }}>Pendente</option>
                     <option value="Agendada" {{ request('status') == 'Agendada' ? 'selected' : '' }}>Agendada</option>
                     <option value="Em Andamento" {{ request('status') == 'Em Andamento' ? 'selected' : '' }}>Em Andamento</option>
                     <option value="Concluída" {{ request('status') == 'Concluída' ? 'selected' : '' }}>Concluída</option>
@@ -111,11 +112,14 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                             @php
                                 switch ($manutencao->status) {
+                                    case 'Pendente':
+                                        $statusClass = 'bg-yellow-100 text-yellow-800';
+                                        break;
                                     case 'Agendada':
-                                        $statusClass = 'bg-blue-100 text-blue-800';
+                                        $statusClass = 'bg-orange-100 text-blue-800';
                                         break;
                                     case 'Em Andamento':
-                                        $statusClass = 'bg-yellow-100 text-yellow-800';
+                                        $statusClass = 'bg-blue-100 text-yellow-800';
                                         break;
                                     case 'Concluída':
                                         $statusClass = 'bg-green-100 text-green-800';
@@ -156,7 +160,7 @@
                     @empty
                         <tr>
                             <td colspan="5" class="px-6 py-4 whitespace-nowrap text-center text-gray-500">
-                                Nenhuma manutenção corretiva agendada.
+                                Nenhuma manutenção corretiva cadastrada.
                             </td>
                         </tr>
                     @endforelse

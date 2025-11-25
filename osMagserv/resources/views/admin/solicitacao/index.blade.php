@@ -51,6 +51,7 @@
 
                 @if($solicitacao->tipo == 'manutencao_corretiva')
                     <p><strong>Solicitante:</strong> {{ $solicitacao->dados['solicitante'] ?? 'N/A' }}</p>
+                    <p><strong>Área:</strong> {{ $solicitacao->dados['area'] ?? 'N/A' }}</p>
                     <p><strong>Descrição:</strong> {{ $solicitacao->dados['descricao'] ?? 'N/A' }}</p>
                     <p><strong>Nº Chamado Cliente:</strong> {{ $solicitacao->dados['chamado'] ?? 'N/A' }}</p>
                 

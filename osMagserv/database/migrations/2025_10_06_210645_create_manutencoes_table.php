@@ -20,7 +20,7 @@ return new class extends Migration
             $table->date('data_inicio_atendimento')->nullable();
             $table->date('data_fim_atendimento')->nullable();
             $table->enum('tipo', ['Preventiva', 'Corretiva']);
-            $table->enum('status', ['Agendada', 'Em Andamento', 'Concluída', 'Cancelada']);
+            $table->enum('status', ['Pendente', 'Agendada', 'Em Andamento', 'Concluída', 'Cancelada']);
             $table->timestamps();
         });
     }

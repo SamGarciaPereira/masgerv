@@ -27,7 +27,7 @@ class ManutencaoController extends Controller
             'descricao' => 'required|string',
             'data_inicio_atendimento' => 'required|date',
             'data_fim_atendimento' => 'nullable|date|after_or_equal:data_inicio_atendimento',
-            'status' => ['required', Rule::in(['Agendada', 'Em Andamento', 'Concluída', 'Cancelada'])],
+            'status' => ['required', Rule::in(['Pendente', 'Agendada', 'Em Andamento', 'Concluída', 'Cancelada'])],
         ]);
 
         if ($validatedData['tipo'] === 'Preventiva') {
@@ -38,10 +38,10 @@ class ManutencaoController extends Controller
 
         if ($validatedData['tipo'] === 'Corretiva') {
              return redirect()->route('manutencoes.corretiva.index')
-                 ->with('success', 'Manutenção corretiva agendada com sucesso!');
+                 ->with('success', 'Manutenção corretiva criada com sucesso!');
         } else {
              return redirect()->route('manutencoes.preventiva.index')
-                 ->with('success', 'Manutenção preventiva agendada com sucesso!');
+                 ->with('success', 'Manutenção preventiva criada com sucesso!');
         }
     }
 
@@ -60,7 +60,7 @@ class ManutencaoController extends Controller
             'descricao' => 'required|string',
             'data_inicio_atendimento' => 'required|date',
             'data_fim_atendimento' => 'nullable|date|after_or_equal:data_inicio_atendimento',
-            'status' => ['required', Rule::in(['Agendada', 'Em Andamento', 'Concluída', 'Cancelada'])],
+            'status' => ['required', Rule::in(['Pendente', 'Agendada', 'Em Andamento', 'Concluída', 'Cancelada'])],
         ]);
 
         $manutencao->update($validatedData);
