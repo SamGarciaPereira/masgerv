@@ -21,7 +21,7 @@ class SolicitacaoController extends Controller
     /**
      * Aprova uma solicitação e cria o registro na tabela correta.
      */
-    public function approve(Solicitacao $solicitacao)
+    public function accept(Solicitacao $solicitacao)
     {
         $dados = $solicitacao->dados;
 
@@ -43,16 +43,16 @@ class SolicitacaoController extends Controller
                 $solicitacao->data_solicitacao = $solicitacao->created_at ?? Carbon::now();
             }
 
-            $solicitacao->status = 'Aprovada';
+            $solicitacao->status = 'Aceita';
             $solicitacao->data_resolucao = now(); 
             $solicitacao->save();
 
             return redirect()->route('admin.solicitacao.index') 
-                             ->with('success', 'Solicitação aprovada com sucesso!');
+                             ->with('success', 'Solicitação aceita com sucesso!');
 
         } catch (\Exception $e) {
             return redirect()->route('admin.solicitacao.index') 
-                             ->with('error', 'Erro ao aprovar solicitação: ' . $e->getMessage());
+                             ->with('error', 'Erro ao aceitar solicitação: ' . $e->getMessage());
         }
     }
 

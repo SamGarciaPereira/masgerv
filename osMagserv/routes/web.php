@@ -32,7 +32,7 @@ Route::middleware('auth')->group(function() {
     Route::get('admin/solicitacoes', [App\Http\Controllers\admin\SolicitacaoController::class, 'index'])->name('admin.solicitacao.index');
 
     //APROVAR SOLICITAÇÃO
-    Route::post('admin/solicitacoes/{solicitacao}/aprovar', [App\Http\Controllers\admin\SolicitacaoController::class, 'approve'])->name('admin.solicitacoes.approve');
+    Route::post('admin/solicitacoes/{solicitacao}/aceitar', [App\Http\Controllers\admin\SolicitacaoController::class, 'accept'])->name('admin.solicitacoes.accept');
 
     //RECUSAR SOLICITAÇÃO
     Route::post('admin/solicitacoes/{solicitacao}/recusar', [App\Http\Controllers\admin\SolicitacaoController::class, 'reject'])->name('admin.solicitacoes.reject');

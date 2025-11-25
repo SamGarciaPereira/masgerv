@@ -40,7 +40,7 @@
         foreach($stats as $status => $val) {
             $displayVal = $isMoney ? 'R$ ' . number_format($val, 2, ',', '.') : $val;
             $color = match($status) {
-                'Concluída', 'Aprovado', 'Aprovada', 'Finalizado', 'Pago' => 'bg-green-500',
+                'Concluída', 'Aprovado', 'Aceita', 'Finalizado', 'Pago' => 'bg-green-500',
                 'Pendente', 'Em Aberto', 'Agendada' => 'bg-yellow-500',
                 'Cancelada', 'Recusado', 'Recusada', 'Atrasado' => 'bg-red-500',
                 'Em Andamento', 'Enviado' => 'bg-blue-500',
