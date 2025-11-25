@@ -26,7 +26,7 @@ function sendWhatsappMessage(string $instance, string $number, string $text, str
 
 //Envia o menu principal de serviços (após o login)
 function sendMainMenu(string $instance, string $sender, string $apiKey, string $clientName) {
-    $menu = "Olá, *{$clientName}*!\n\nComo podemos te ajudar?\n\n*1)* Solicitação de orçamento\n*2)* Abertura de chamado de manutenção corretiva\n\nDigite 'cancelar' a qualquer momento para reiniciar.";
+    $menu = "Olá, *{$clientName}*!\n\nComo podemos te ajudar?\n\n*1)* Solicitação de orçamento\n*2)* Abertura de chamado de manutenção corretiva\n\nDigite 'sair' a qualquer momento para reiniciar.";
     sendWhatsappMessage($instance, $sender, $menu, $apiKey);
 }
 
@@ -65,7 +65,7 @@ Route::post('/webhook', function (Request $request) {
     $message = trim($request->input('data.message.conversation'));
 
     // Lógica global de cancelamento
-    if (strtolower($message) === 'cancelar') {
+    if (strtolower($message) === 'sair') {
         Cache::forget('conversation_' . $sender); // Limpa o estado da conversa
         sendWhatsappMessage($instanceName, $sender, "Atendimento cancelado. Para começar de novo, envie qualquer mensagem.", $apiKey);
         return response()->json(['status' => 'ok']);
@@ -189,7 +189,7 @@ Route::post('/webhook', function (Request $request) {
 
             } catch (\Illuminate\Database\QueryException $e) {
                 if ($e->errorInfo[1] == 1062) { // Erro de duplicidade (CNPJ/Email)
-                    sendWhatsappMessage($instanceName, $sender, "Este CNPJ/CPF ou E-mail já está cadastrado. Por favor, digite 'cancelar' e reinicie a conversa selecionando 'Já sou cliente'.", $apiKey);
+                    sendWhatsappMessage($instanceName, $sender, "Este CNPJ/CPF ou E-mail já está cadastrado. Por favor, digite 'sair' e reinicie a conversa selecionando 'Já sou cliente'.", $apiKey);
                 } else {
                     Log::error("Erro ao cadastrar cliente via WhatsApp: " . $e->getMessage(), $conversation['data']);
                     sendWhatsappMessage($instanceName, $sender, "❌ Ocorreu um erro ao registrar seu cadastro. Por favor, tente novamente.", $apiKey);
@@ -316,7 +316,7 @@ Route::post('/webhook', function (Request $request) {
             
         // Estado Padrão: Início da conversa
         default:
-            $menu = "Bem vindo ao autoatendimento da MAGSERV!\n\nVocê já é nosso cliente?\n\n*1)* Sim, já sou cliente\n*2)* Não, ainda não sou cliente\n\nDigite 'cancelar' a qualquer momento para reiniciar.";
+            $menu = "Bem vindo ao autoatendimento da MAGSERV!\n\nVocê já é nosso cliente?\n\n*1)* Sim, já sou cliente\n*2)* Não, ainda não sou cliente\n\nDigite 'sair' a qualquer momento para reiniciar.";
             sendWhatsappMessage($instanceName, $sender, $menu, $apiKey);
             Cache::put('conversation_' . $sender, ['state' => 'awaiting_client_type_choice', 'data' => []], now()->addMinutes(10));
             break;
