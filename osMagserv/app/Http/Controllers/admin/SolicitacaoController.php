@@ -29,7 +29,6 @@ class SolicitacaoController extends Controller
             switch ($solicitacao->tipo) {
                 
                 case 'manutencao_corretiva':
-                    $dados['data_inicio_atendimento'] = $dados['data_inicio_atendimento'] ?? Carbon::now();
                     Manutencao::create($dados);
                     break;
                 
@@ -37,10 +36,6 @@ class SolicitacaoController extends Controller
                     $dados['status'] = 'Pendente';
                     Orcamento::create($dados);
                     break;
-            }
-
-            if (empty($solicitacao->data_solicitacao)) {
-                $solicitacao->data_solicitacao = $solicitacao->created_at ?? Carbon::now();
             }
 
             $solicitacao->status = 'Aceita';

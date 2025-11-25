@@ -226,12 +226,12 @@ Route::post('/webhook', function (Request $request) {
                 Solicitacao::create([
                     'tipo' => 'orcamento',
                     'status' => 'pendente',
-                    'data_solicitacao' => Carbon::now(), // Alinhado ao seu Model
+                    'data_solicitacao' => Carbon::now(), 
                     'dados' => [
                         'cliente_id' => $conversation['data']['cliente_id'],
                         'cliente_nome' => $conversation['data']['cliente_nome'], 
                         'escopo' => $conversation['data']['escopo'],
-                        'status' => 'Pendente', // Mantém o status original no JSON
+                        'status' => 'Pendente', 
                     ]
                 ]);
 
@@ -239,7 +239,7 @@ Route::post('/webhook', function (Request $request) {
 
                 $successMessage = "✅ *Solicitação de orçamento registrada com sucesso* para *{$conversation['data']['cliente_nome']}*!\n\n";
                 $successMessage .= "*Descrição:* {$conversation['data']['escopo']}\n\n";
-                $successMessage .= "Nossa equipe irá analisar seu pedido e retornará em breve.\n\nFIM.";
+                $successMessage .= "Nossa equipe irá analisar sua solicitação e retornará em breve.\n\nFIM.";
 
                 sendWhatsappMessage($instanceName, $sender, $successMessage, $apiKey);
                 Cache::forget('conversation_' . $sender);
@@ -291,7 +291,6 @@ Route::post('/webhook', function (Request $request) {
                         'solicitante' => $conversation['data']['solicitante'],
                         'tipo' => 'Corretiva', 
                         'status' => 'Pendente', 
-                        'data_inicio_atendimento' => Carbon::now(), 
                     ]
                 ]);
 
@@ -302,7 +301,7 @@ Route::post('/webhook', function (Request $request) {
                 $successMessage .= "*Área:* {$conversation['data']['area']}\n";
                 $successMessage .= "*Solicitante:* {$conversation['data']['solicitante']}\n";
                 $successMessage .= "*Problema:* {$conversation['data']['descricao']}\n\n";
-                $successMessage .= "Nossa equipe irá analisar seu pedido e retornará em breve.\n\nFIM.";
+                $successMessage .= "Nossa equipe irá analisar sua solicitação e retornará em breve.\n\nFIM.";
 
                 sendWhatsappMessage($instanceName, $sender, $successMessage, $apiKey);
                 Cache::forget('conversation_' . $sender);
