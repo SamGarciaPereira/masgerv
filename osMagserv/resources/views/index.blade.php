@@ -195,7 +195,7 @@
             </div>
         </div>
         
-        <div class="relative h-72 w-full">
+        <div class="relative h-80 w-full">
             <canvas id="financeChart"></canvas>
         </div>
     </div>
@@ -221,111 +221,16 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    let financeChart = null;
-
-    const chartLabels = @json($labelsGrafico);
-    const dataReceita = @json($dadosReceita);
-    const dataDespesa = @json($dadosDespesa);
-    const configReceita = {
-        label: 'Recebido (R$)',
-        color: 'rgba(34, 197, 94, 0.7)',      
-        hoverColor: 'rgba(22, 163, 74, 1)',   
-        borderColor: 'rgba(22, 163, 74, 0.8)' 
-    };
-
-    const configDespesa = {
-        label: 'Pago (R$)',
-        color: 'rgba(239, 68, 68, 0.7)',     
-        hoverColor: 'rgba(220, 38, 38, 1)',   
-        borderColor: 'rgba(220, 38, 38, 0.8)' 
-    };
-
+<script type="module">
     document.addEventListener('DOMContentLoaded', function () {
-        const ctx = document.getElementById('financeChart').getContext('2d');
-
-        financeChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: chartLabels,
-                datasets: [{
-                    label: configReceita.label,
-                    data: dataReceita,
-                    backgroundColor: configReceita.color,
-                    hoverBackgroundColor: configReceita.hoverColor,
-                    borderColor: configReceita.borderColor,
-                    borderWidth: 1,
-                    borderRadius: 4,
-                    barPercentage: 0.6,
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                let label = context.dataset.label || '';
-                                if (label) { label += ': '; }
-                                if (context.parsed.y !== null) {
-                                    label += new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(context.parsed.y);
-                                }
-                                return label;
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: { borderDash: [2, 4], color: '#f3f4f6' },
-                        ticks: {
-                            callback: function(value) {
-                                return value.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL', maximumSignificantDigits: 3});
-                            },
-                            font: { size: 11 }
-                        }
-                    },
-                    x: {
-                        grid: { display: false },
-                        ticks: { font: { size: 11 } }
-                    }
-                }
-            }
-        });
-    });
-
-    function updateChart(type) {
-        const btnReceita = document.getElementById('btnReceita');
-        const btnDespesa = document.getElementById('btnDespesa');
-        const title = document.getElementById('chartTitle');
-
-        if (type === 'receita') {
-            financeChart.data.datasets[0].data = dataReceita;
-            financeChart.data.datasets[0].label = configReceita.label;
-            financeChart.data.datasets[0].backgroundColor = configReceita.color;
-            financeChart.data.datasets[0].hoverBackgroundColor = configReceita.hoverColor;
-            financeChart.data.datasets[0].borderColor = configReceita.borderColor;
-            
-            btnReceita.className = "px-4 py-1.5 text-sm font-medium rounded-md shadow-sm bg-white text-blue-600 transition-all duration-200";
-            btnDespesa.className = "px-4 py-1.5 text-sm font-medium rounded-md text-gray-500 hover:text-gray-700 transition-all duration-200";
-            title.innerText = "Fluxo Financeiro (Receitas)";
-        } else {
-            financeChart.data.datasets[0].data = dataDespesa;
-            financeChart.data.datasets[0].label = configDespesa.label;
-            financeChart.data.datasets[0].backgroundColor = configDespesa.color;
-            financeChart.data.datasets[0].hoverBackgroundColor = configDespesa.hoverColor;
-            financeChart.data.datasets[0].borderColor = configDespesa.borderColor;
-
-            btnDespesa.className = "px-4 py-1.5 text-sm font-medium rounded-md shadow-sm bg-white text-red-600 transition-all duration-200";
-            btnReceita.className = "px-4 py-1.5 text-sm font-medium rounded-md text-gray-500 hover:text-gray-700 transition-all duration-200";
-            title.innerText = "Fluxo Financeiro (Despesas)";
+        if (typeof window.initDashboard === 'function') {
+            window.initDashboard(
+                @json($labelsGrafico),
+                @json($dadosReceita),
+                @json($dadosDespesa)
+            );
         }
-
-        financeChart.update();
-    }
+    });
 </script>
 
 @endsection
