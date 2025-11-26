@@ -9,6 +9,7 @@ use App\Http\Controllers\manutencao\ManutencaoController;
 use App\Http\Controllers\financeiro\ContasPagarController;
 use App\Http\Controllers\financeiro\ContasReceberController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\anexo\AnexoController;
 
 //ROTAS DE AUTENTICAÇÃO
 Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -58,6 +59,12 @@ Route::middleware('auth')->group(function() {
         Route::get('/create', [ManutencaoController::class, 'createPreventiva'])->name('create');
         Route::get('/{manutencao}/edit', [ManutencaoController::class, 'editPreventiva'])->name('edit');
     });
+
+    //ROTAS DE ANEXOS
+    Route::post('/anexos/upload', [AnexoController::class, 'store'])->name('anexos.store');
+    Route::delete('/anexos/{anexo}', [AnexoController::class, 'destroy'])->name('anexos.destroy');
+    Route::get('/anexos/{anexo}/download', [AnexoController::class, 'download'])->name('anexos.download');
+    Route::get('/anexos/{anexo}/visualizar', [AnexoController::class, 'show'])->name('anexos.show');
 });
 
 

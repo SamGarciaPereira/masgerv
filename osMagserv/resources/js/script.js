@@ -197,4 +197,20 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
     }
+    // Modal de Anexos
+    window.openAnexoModal = function (id, nome) {
+        const modal = document.getElementById("anexoModal");
+        if (modal) {
+            document.getElementById("modalModelId").value = id;
+            document.getElementById("modalModelName").innerText = nome;
+            modal.classList.remove("hidden");
+        }
+    };
+
+    window.closeAnexoModal = function () {
+        const modal = document.getElementById("anexoModal");
+        if (modal) {
+            modal.classList.add("hidden");
+        }
+    };
 });

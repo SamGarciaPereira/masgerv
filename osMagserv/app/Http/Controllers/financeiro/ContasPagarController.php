@@ -93,6 +93,7 @@ class ContasPagarController extends Controller
      */
     public function edit(ContasPagar $contasPagar)
     {
+        $contasPagar->load('anexos');
         return view('financeiro.contas-pagar.edit', compact('contasPagar'));
     }
 

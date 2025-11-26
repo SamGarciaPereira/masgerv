@@ -17,4 +17,9 @@ class ContasPagar extends Model
     protected $casts = [
         'data_vencimento' => 'date',
     ];
+
+    public function anexos()
+    {
+        return $this->morphMany(Anexo::class, 'anexable');
+    }
 }
