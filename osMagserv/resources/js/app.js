@@ -1,2 +1,4 @@
 import './bootstrap';
-import './script'
+import './components/sidebar';
+import './components/tables';
+import './components/modals';

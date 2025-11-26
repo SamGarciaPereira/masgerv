@@ -8,26 +8,19 @@ document.addEventListener("DOMContentLoaded", function () {
     const sidebarBranding = document.getElementById("sidebar-branding");
 
     // Dropdowns
-    const dropdownBtnManutencao = document.getElementById(
-        "dropdown-btn-manutencao"
-    );
+    const dropdownBtnManutencao = document.getElementById("dropdown-btn-manutencao");
     const submenuManutencao = document.getElementById("submenu-manutencao");
     const arrowManutencao = document.getElementById("arrow-manutencao");
 
-    const dropdownBtnFinanceiro = document.getElementById(
-        "dropdown-btn-financeiro"
-    );
+    const dropdownBtnFinanceiro = document.getElementById("dropdown-btn-financeiro");
     const submenuFinanceiro = document.getElementById("submenu-financeiro");
     const arrowFinanceiro = document.getElementById("arrow-financeiro");
 
-    const toggleButtons = document.querySelectorAll(".toggle-details-btn");
-
-    const allSubLinks = document.querySelectorAll(
-        "#submenu-manutencao a, #submenu-financeiro a"
-    );
+    // Ajuste inicial dos links dos submenus
+    const allSubLinks = document.querySelectorAll("#submenu-manutencao a, #submenu-financeiro a");
     allSubLinks.forEach((link) => {
         link.style.transition = "all 0.3s ease-in-out";
-        if (sidebar.classList.contains("w-20")) {
+        if (sidebar && sidebar.classList.contains("w-20")) {
             const textSpan = link.querySelector(".sidebar-text");
             if (textSpan) {
                 textSpan.classList.add("w-0", "opacity-0");
@@ -40,6 +33,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Função Principal de Expandir/Recolher Sidebar
     function setExpanded(state) {
+        if (!sidebar) return;
+        
         isExpanded = state;
         if (isExpanded) {
             sidebar.classList.remove("w-20");
@@ -59,11 +54,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             setTimeout(() => {
                 sidebarTexts.forEach((text) => {
-                    if (
-                        !text.closest(
-                            "#submenu-manutencao, #submenu-financeiro"
-                        )
-                    ) {
+                    if (!text.closest("#submenu-manutencao, #submenu-financeiro")) {
                         text.classList.remove("w-0", "opacity-0");
                         text.classList.add("w-full", "opacity-100");
                     }
@@ -131,7 +122,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }, 100);
         } else {
             // --- FECHAR ---
-            // Primeiro esconde os textos
             linksTexts.forEach((text) => {
                 text.classList.add("w-0", "opacity-0");
                 text.classList.remove("w-full", "opacity-100");
@@ -139,7 +129,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (arrow) arrow.classList.remove("rotate-180");
 
-            // Espera a animação do texto terminar para esconder a div
             setTimeout(() => {
                 submenu.classList.add("hidden");
             }, 300);
@@ -151,11 +140,7 @@ document.addEventListener("DOMContentLoaded", function () {
         dropdownBtnFinanceiro.addEventListener("click", () => {
             if (!isExpanded) {
                 setExpanded(true);
-                // Pequeno delay se a sidebar estava fechada
-                setTimeout(
-                    () => toggleDropdown(submenuFinanceiro, arrowFinanceiro),
-                    300
-                );
+                setTimeout(() => toggleDropdown(submenuFinanceiro, arrowFinanceiro), 300);
             } else {
                 toggleDropdown(submenuFinanceiro, arrowFinanceiro);
             }
@@ -166,51 +151,10 @@ document.addEventListener("DOMContentLoaded", function () {
         dropdownBtnManutencao.addEventListener("click", () => {
             if (!isExpanded) {
                 setExpanded(true);
-                setTimeout(
-                    () => toggleDropdown(submenuManutencao, arrowManutencao),
-                    300
-                );
+                setTimeout(() => toggleDropdown(submenuManutencao, arrowManutencao), 300);
             } else {
                 toggleDropdown(submenuManutencao, arrowManutencao);
             }
         });
     }
-
-    // Toggle Detalhes da Tabela
-    if (toggleButtons && toggleButtons.length) {
-        toggleButtons.forEach((button) => {
-            button.addEventListener("click", function () {
-                try {
-                    const targetId = this.dataset.targetId;
-                    const detailsRow = document.getElementById(
-                        `details-${targetId}`
-                    );
-                    const icon = this.querySelector("i");
-
-                    if (detailsRow) {
-                        detailsRow.classList.toggle("hidden");
-                        if (icon) icon.classList.toggle("rotate-180");
-                    }
-                } catch (err) {
-                    console.error("toggle details error", err);
-                }
-            });
-        });
-    }
-    // Modal de Anexos
-    window.openAnexoModal = function (id, nome) {
-        const modal = document.getElementById("anexoModal");
-        if (modal) {
-            document.getElementById("modalModelId").value = id;
-            document.getElementById("modalModelName").innerText = nome;
-            modal.classList.remove("hidden");
-        }
-    };
-
-    window.closeAnexoModal = function () {
-        const modal = document.getElementById("anexoModal");
-        if (modal) {
-            modal.classList.add("hidden");
-        }
-    };
 });

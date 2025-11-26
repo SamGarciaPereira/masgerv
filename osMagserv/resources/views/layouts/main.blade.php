@@ -9,9 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
-    
     @vite('resources/css/app.css')
-    <link rel="stylesheet" href="{{ asset('css/styles.css') }}">
 </head>
 <body class="bg-gray-100 font-inter overflow-x-hidden min-h-screen">
 
@@ -99,8 +97,6 @@
             <p>Magserv Manutenção e Serviços LTDA &copy; 2025 | Samuel Software Developer</p>
         </footer>
     </main>
-
-    <script src="{{ asset('js/script.js') }}"></script>
     @vite('resources/js/app.js')
 </body>
 </html>
