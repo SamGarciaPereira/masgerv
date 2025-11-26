@@ -115,8 +115,7 @@
                         </tr>
                         <tr id="details-{{ $cliente->id }}" class="hidden details-row">
                             <td colspan="6" class="px-6 py-2 bg-gray-50">
-                                <div
-                                    class="p-2 text-sm text-gray-700 grid grid-cols-1 md:grid-cols-2 gap-2 max-h-40 overflow-auto">
+                                <div class="p-2 text-sm text-gray-700 grid grid-cols-1 md:grid-cols-2 gap-2 max-h-40 overflow-auto">
                                     <div class="space-y-1">
                                         <p class="mb-0"><strong>Endereço:</strong> {{ $cliente->logradouro }},
                                             {{ $cliente->numero }}, {{ $cliente->bairro }}, {{ $cliente->cidade }},

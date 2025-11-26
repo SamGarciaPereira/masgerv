@@ -147,14 +147,69 @@
                                         <i class="bi bi-trash-fill text-base"></i>
                                     </button>
                                 </form>
+                                <button onclick="openAnexoModal({{ $manutencao->id }}, '{{ $manutencao->descricao }}')"  class="text-gray-500 hover:text-blue-600 mr-3" title="Anexar Arquivo">
+                                    <i class="bi bi-paperclip text-lg"></i>
+                                </button>
                             </div>
                         </td>
                     </tr>
                     <tr id="details-{{ $manutencao->id }}" class="hidden details-row">
-                        <td colspan="6" class="px-6 py-2 bg-gray-50">
-                            <div class="mt-2 text-sm text-gray-700">
-                                <p><strong>Descrição:</strong><br>{{ $manutencao->descricao ? : 'Não definido'}}</p>
-                            </div>
+                        <td colspan="8" class="px-6 py-4 bg-gray-50">
+                            <div class="p-2 text-sm text-gray-700 grid grid-cols-1 md:grid-cols-2 gap-2 max-h-40 overflow-auto">
+                                <div class="space-y-1">
+                                    <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center">
+                                        <i class="bi bi-folder2-open mr-1"></i> Arquivos Anexados
+                                    </h4>
+                                
+                                    @if($manutencao->anexos && $manutencao->anexos->count() > 0)
+                                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                                            @foreach($manutencao->anexos as $anexo)
+                                                <div class="bg-white border border-gray-200 rounded-md p-3 flex items-center justify-between shadow-sm hover:shadow-md transition">
+                                                    <div class="flex items-center overflow-hidden">
+                                                        @if(Str::endsWith(strtolower($anexo->nome_original), '.pdf'))
+                                                            <i class="bi bi-file-earmark-pdf-fill text-red-500 text-xl mr-3 flex-shrink-0"></i>
+                                                        @else
+                                                            <i class="bi bi-file-earmark-image-fill text-blue-500 text-xl mr-3 flex-shrink-0"></i>
+                                                        @endif
+                                                        
+                                                        <div class="truncate">
+                                                            <p class="text-sm font-medium text-gray-700 truncate" title="{{ $anexo->nome_original }}">
+                                                                {{ $anexo->nome_original }}
+                                                            </p>
+                                                            <p class="text-xs text-gray-400">{{ $anexo->created_at->format('d/m/Y H:i') }}</p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="flex items-center gap-2 ml-2">
+                                                        <a href="{{ route('anexos.show', $anexo->id) }}" target="_blank" 
+                                                        class="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition" 
+                                                        title="Visualizar">
+                                                            <i class="bi bi-eye-fill"></i>
+                                                        </a>
+                                                        <a href="{{ route('anexos.download', $anexo->id) }}" 
+                                                        class="p-1.5 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded transition" 
+                                                        title="Baixar">
+                                                            <i class="bi bi-download"></i>
+                                                        </a>
+                                                        <form action="{{ route('anexos.destroy', $anexo->id) }}" method="POST" onsubmit="return confirm('Excluir arquivo?');" class="inline">
+                                                            @csrf @method('DELETE')
+                                                            <button type="submit" class="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition" title="Excluir">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @else
+                                        <p class="text-sm text-gray-500 italic">Nenhum anexo encontrado para esta manutenção.</p>
+                                    @endif
+                                </div>
+                                <div class="space-y-1">
+                                    <p><strong>Descrição:</strong><br>{{ $manutencao->descricao ? : 'Não definido'}}</p>
+                                </div>
+                                
+                            </div>                        
                         </td>
                     </tr>
                     @empty
@@ -169,4 +224,9 @@
             </table>
         </div>
     </div>
+
+</div> <x-modal model-type="App\Models\Manutencao" />
+
+
+@vite('resources/js/app.js')
 @endsection

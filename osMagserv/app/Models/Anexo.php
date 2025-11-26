@@ -13,7 +13,7 @@ class Anexo extends Model
         'anexable_type',
     ];
 
-    public function anexavel()
+    public function anexable()
     {
         return $this->morphTo();
     }

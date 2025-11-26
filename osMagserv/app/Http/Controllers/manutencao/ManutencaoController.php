@@ -13,7 +13,7 @@ class ManutencaoController extends Controller
 {
     public function index()
     {
-        $manutencoes = Manutencao::with('cliente')->latest()->get();
+        $manutencoes = Manutencao::with('cliente', 'anexos')->latest()->get();
         return view('manutencao.index', compact('manutencoes'));
     }
 
@@ -89,7 +89,7 @@ class ManutencaoController extends Controller
 
     private function filtrarManutencoes(Request $request, $tipo)
     {
-        $query = Manutencao::where('tipo', $tipo)->with('cliente');
+        $query = Manutencao::where('tipo', $tipo)->with('cliente', 'anexos');
 
         if ($request->filled('search')) {
             $search = $request->input('search');
@@ -157,6 +157,7 @@ class ManutencaoController extends Controller
 
     public function editCorretiva(Manutencao $manutencao)
     {
+        $manutencao->load('anexos');
         if ($manutencao->tipo !== 'Corretiva') {
             abort(404);
         }
@@ -178,6 +179,7 @@ class ManutencaoController extends Controller
 
     public function editPreventiva(Manutencao $manutencao)
     {
+        $manutencao->load('anexos');
         if ($manutencao->tipo !== 'Preventiva') {
              abort(404);
         }
