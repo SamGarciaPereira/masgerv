@@ -67,6 +67,7 @@
         <table class="w-full table-auto">
             <thead class="bg-gray-50">
                 <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valor</th>
@@ -78,6 +79,12 @@
             <tbody class="bg-white divide-y divide-gray-200">
                 @forelse ($contasReceber as $conta) 
                     <tr>
+                        <td class="px-6 py-4">
+                            <button class="toggle-details-btn text-gray-500 hover:text-gray-800 transition-colors"
+                            data-target-id="{{ $conta->id }}">
+                                <i class="bi bi-chevron-down toggle-arrow inline-block transition-transform duration-300"></i>
+                            </button>
+                        </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $conta->cliente->nome ?? 'N/A' }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                             @if ($conta->processo && $conta->processo->orcamento)
@@ -114,6 +121,64 @@
                                         <i class="bi bi-trash-fill text-base"></i>
                                     </button>
                                 </form>
+                                <button onclick="openAnexoModal({{ $conta->id }}, '{{ $conta->descricao }}')" 
+                                        class="text-gray-500 hover:text-blue-600 mr-3" 
+                                        title="Anexar Arquivo">
+                                            <i class="bi bi-paperclip text-lg"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr id="details-{{ $conta->id }}" class="hidden details-row bg-gray-50 border-b border-gray-200">
+                        <td colspan="8" class="px-6 py-4">
+                            <div class="flex flex-col gap-2">
+                                <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center">
+                                    <i class="bi bi-folder2-open mr-1"></i> Arquivos Anexados
+                                </h4>
+                                
+                                @if($conta->anexos && $conta->anexos->count() > 0)
+                                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                                        @foreach($conta->anexos as $anexo)
+                                            <div class="bg-white border border-gray-200 rounded-md p-3 flex items-center justify-between shadow-sm hover:shadow-md transition">
+                                                <div class="flex items-center overflow-hidden">
+                                                    @if(Str::endsWith(strtolower($anexo->nome_original), '.pdf'))
+                                                        <i class="bi bi-file-earmark-pdf-fill text-red-500 text-xl mr-3 flex-shrink-0"></i>
+                                                    @else
+                                                        <i class="bi bi-file-earmark-image-fill text-blue-500 text-xl mr-3 flex-shrink-0"></i>
+                                                    @endif
+                                                    
+                                                    <div class="truncate">
+                                                        <p class="text-sm font-medium text-gray-700 truncate" title="{{ $anexo->nome_original }}">
+                                                            {{ $anexo->nome_original }}
+                                                        </p>
+                                                        <p class="text-xs text-gray-400">{{ $anexo->created_at->format('d/m/Y H:i') }}</p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="flex items-center gap-2 ml-2">
+                                                    <a href="{{ route('anexos.show', $anexo->id) }}" target="_blank" 
+                                                    class="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition" 
+                                                    title="Visualizar">
+                                                        <i class="bi bi-eye-fill"></i>
+                                                    </a>
+                                                    <a href="{{ route('anexos.download', $anexo->id) }}" 
+                                                    class="p-1.5 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded transition" 
+                                                    title="Baixar">
+                                                        <i class="bi bi-download"></i>
+                                                    </a>
+                                                    <form action="{{ route('anexos.destroy', $anexo->id) }}" method="POST" onsubmit="return confirm('Excluir arquivo?');" class="inline">
+                                                        @csrf @method('DELETE')
+                                                        <button type="submit" class="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition" title="Excluir">
+                                                            <i class="bi bi-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <p class="text-sm text-gray-500 italic">Nenhum anexo encontrado para esta conta.</p>
+                                @endif
                             </div>
                         </td>
                     </tr>
@@ -129,4 +194,7 @@
     </div>
 </div>
 
+</div> <x-modal model-type="App\Models\ContasReceber" />
+
+@vite('resources/js/app.js')
 @endsection
