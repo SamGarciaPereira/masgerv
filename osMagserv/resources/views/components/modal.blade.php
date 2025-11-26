@@ -10,7 +10,7 @@
             <form action="{{ route('anexos.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="model_id" id="modalModelId">
-                <input type="hidden" name="model_type" value="App\Models\ContasPagar">
+                <input type="hidden" name="model_type" value="{{ $modelType }}">>
 
                 <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                     <div class="sm:flex sm:items-start">
