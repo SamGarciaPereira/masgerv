@@ -22,7 +22,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div class="lg:col-span-2">
-                    <label for="cliente_id" class="block text-sm font-medium text-gray-700 mb-2">Cliente</label>
+                    <label for="cliente_id" class="block text-sm font-medium text-gray-700 mb-2">Cliente <span class="text-red-500">*</span></label>
                     <select id="cliente_id" name="cliente_id"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                         required>
@@ -41,8 +41,8 @@
                     @error('chamado') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label for="data_inicio_atendimento" class="block text-sm font-medium text-gray-700 mb-2">Data Início Atendimento <span class="text-red-500">*</span></label>
-                    <input type="date" id="data_inicio_atendimento" name="data_inicio_atendimento" value="{{ old('data_inicio_atendimento') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" required>
+                    <label for="data_inicio_atendimento" class="block text-sm font-medium text-gray-700 mb-2">Data Início Atendimento</label>
+                    <input type="date" id="data_inicio_atendimento" name="data_inicio_atendimento" value="{{ old('data_inicio_atendimento') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                     @error('data_inicio_atendimento') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
@@ -51,15 +51,17 @@
                     @error('data_fim_atendimento') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label for="solicitante" class="block text-sm font-medium text-gray-700 mb-2">Solicitante</label>
+                    <label for="solicitante" class="block text-sm font-medium text-gray-700 mb-2">Solicitante <span class="text-red-500">*</span></label>
                     <input type="text" id="solicitante" name="solicitante" value="{{ old('solicitante') }}"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" required>
                     @error('solicitante') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label for="status" class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                    <label for="status" class="block text-sm font-medium text-gray-700 mb-2">Status <span class="text-red-500">*</span></label>
                     <select id="status" name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" required>
                         <option value="" disabled {{ old('status', $manutencao->status ?? '') == '' ? 'selected' : '' }}>Selecione um status...</option>
+                        <option value="Pendente" {{ old('status', $manutencao->status ?? '') == 'Pendente' ? 'selected' : '' }}>
+                        Pendente </option>
                         <option value="Agendada" {{ old('status', $manutencao->status ?? '') == 'Agendada' ? 'selected' : '' }}>
                         Agendada </option>
                         <option value="Em Andamento" {{ old('status', $manutencao->status ?? '') == 'Em Andamento' ? 'selected' : '' }}>
@@ -72,9 +74,9 @@
                     @error('status') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div class="md:col-span-2 lg:col-span-3">
-                    <label for="descricao" class="block text-sm font-medium text-gray-700 mb-2">Descrição do Problema</label>
+                    <label for="descricao" class="block text-sm font-medium text-gray-700 mb-2">Descrição do Problema <span class="text-red-500">*</span></label>
                     <textarea id="descricao" name="descricao" rows="4"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">{{ old('descricao') }}</textarea>
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" required>{{ old('descricao') }}</textarea>
                     @error('descricao') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>

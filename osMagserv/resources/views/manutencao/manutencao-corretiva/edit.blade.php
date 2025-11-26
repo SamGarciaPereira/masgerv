@@ -69,7 +69,7 @@
                 </div>
 
                 <div>
-                    <label for="solicitante" class="block text-sm font-medium text-gray-700 mb-2">Solicitante</label>
+                    <label for="solicitante" class="block text-sm font-medium text-gray-700 mb-2">Solicitante <span class="text-red-500">*</span></label>
                     <input type="text" id="solicitante" name="solicitante" value="{{ old('solicitante', $manutencao->solicitante) }}"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                     @error('solicitante') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
@@ -89,7 +89,7 @@
                 </div>
 
                 <div class="lg:col-span-3">
-                     <label for="descricao" class="block text-sm font-medium text-gray-700 mb-2">Descrição <span class="text-red-500">*</span></label>
+                     <label for="descricao" class="block text-sm font-medium text-gray-700 mb-2">Descrição</label>
                      <textarea id="descricao" name="descricao" rows="4"
                          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" required>{{ old('descricao', $manutencao->descricao) }}</textarea>
                      @error('descricao') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
