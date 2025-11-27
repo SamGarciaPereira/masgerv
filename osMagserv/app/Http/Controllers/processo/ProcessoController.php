@@ -13,7 +13,7 @@ class ProcessoController extends Controller
      */
     public function index(Request $request)
     {
-       $query = Processo::with('orcamento.cliente');
+       $query = Processo::with('orcamento.cliente', 'orcamento.anexos', 'anexos');
 
         if ($request->filled('search')) {
             $search = $request->input('search');
@@ -80,6 +80,7 @@ class ProcessoController extends Controller
      */
     public function edit(Processo $processo)
     {
+
         return view('processo.edit', compact('processo'));
     }
 

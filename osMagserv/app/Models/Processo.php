@@ -18,5 +18,9 @@ class Processo extends Model
     public function orcamento(){
         return $this->belongsTo(Orcamento::class);
     }
+
+    public function anexos(){
+        return $this->morphMany(Anexo::class, 'anexable');
+    }
     
 }

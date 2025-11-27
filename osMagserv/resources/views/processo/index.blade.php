@@ -105,17 +105,107 @@
                             <a href="{{ route('processos.edit', $processo->id) }}" class="text-indigo-600 hover:text-indigo-900" title="Gerenciar Processo">
                                 <i class="bi bi-pencil-fill"></i>
                             </a>
+                            <button onclick="openAnexoModal({{ $processo->id }})" class="text-gray-500 hover:text-blue-600 mr-3" title="Anexar Arquivo">
+                                    <i class="bi bi-paperclip text-lg"></i>
+                            </button>
                         </td>
                     </tr>
                     <tr id="details-{{ $processo->id }}" class="hidden details-row">
-                            <td colspan="6" class="px-6 py-2 bg-gray-50">
-                                <div
-                                    class="p-2 text-sm text-gray-700 grid grid-cols-1 md:grid-cols-2 gap-2 max-h-40 overflow-auto">
-                                    <div class="space-y-1">
-                                        <p class="mb-0"><strong>Escopo: </strong> {{ $processo->orcamento->escopo }}</p>
-                                    </div>
+                        <td colspan="8" class="px-6 py-4 bg-gray-50">
+                            <div class="flex flex-col md:flex-row gap-6 items-start">
+                                <div class="flex flex-col gap-2 md:w-1/3 text-gray-500">
+                                    <p><strong>Escopo:</strong><br>{{ $processo->orcamento->escopo ? : 'Não definido'}} </p>
                                 </div>
-                            </td>
+                                <div class="flex flex-col gap-2 md:w-1/3">
+                                    <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center">
+                                        <i class="bi bi-folder2-open mr-1"></i> Arquivos Anexados
+                                    </h4>
+                                    
+                                    @if($processo->anexos && $processo->anexos->count() > 0)
+                                        <div class="flex flex-col gap-3">
+                                            @foreach($processo->anexos as $anexo)
+                                                <div class="w-full bg-white border border-gray-200 rounded-md p-3 flex items-center justify-between shadow-sm hover:shadow-md transition">
+                                                    <div class="flex items-center gap-3 overflow-hidden">
+                                                        @if(Str::endsWith(strtolower($anexo->nome_original), '.pdf'))
+                                                            <i class="bi bi-file-earmark-pdf-fill text-red-500 text-2xl flex-shrink-0"></i>
+                                                        @else
+                                                            <i class="bi bi-file-earmark-image-fill text-blue-500 text-2xl flex-shrink-0"></i>
+                                                        @endif
+
+                                                        <div class="min-w-0">
+                                                            <p class="text-sm font-medium text-gray-700 whitespace-normal break-words" title="{{ $anexo->nome_original }}">
+                                                                {{ $anexo->nome_original }}
+                                                            </p>
+                                                            <p class="text-xs text-gray-400">{{ $anexo->created_at->format('d/m/Y H:i') }}</p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="flex items-center gap-2 ml-2">
+                                                        <a href="{{ route('anexos.show', $anexo->id) }}" target="_blank"
+                                                        class="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition" title="Visualizar">
+                                                            <i class="bi bi-eye-fill"></i>
+                                                        </a>
+                                                        <a href="{{ route('anexos.download', $anexo->id) }}"
+                                                        class="p-1.5 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded transition" title="Baixar">
+                                                            <i class="bi bi-download"></i>
+                                                        </a>
+                                                        <form action="{{ route('anexos.destroy', $anexo->id) }}" method="POST" onsubmit="return confirm('Excluir arquivo?');" class="inline">
+                                                            @csrf @method('DELETE')
+                                                            <button type="submit" class="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition" title="Excluir">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @else
+                                        <p class="text-sm text-gray-500 italic">Nenhum anexo encontrado para este processo.</p>
+                                    @endif
+                                </div>
+                                <div class="flex flex-col gap-2 md:w-1/3">
+                                    <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center">
+                                        <i class="bi bi-folder2-open mr-1"></i> Arquivos Anexados do Orçamento
+                                    </h4>
+                                    
+                                    @if($processo->orcamento && $processo->orcamento->anexos->count() > 0)
+                                        <div class="flex flex-col gap-3">
+                                            @foreach($processo->orcamento->anexos as $anexo)
+                                                <div class="bg-white border border-gray-200 rounded-md p-3 flex items-center justify-between shadow-sm hover:shadow-md transition">
+                                                    <div class="flex items-center overflow-hidden">
+                                                        @if(Str::endsWith(strtolower($anexo->nome_original), '.pdf'))
+                                                            <i class="bi bi-file-earmark-pdf-fill text-red-500 text-xl mr-3 flex-shrink-0"></i>
+                                                        @else
+                                                            <i class="bi bi-file-earmark-image-fill text-blue-500 text-xl mr-3 flex-shrink-0"></i>
+                                                        @endif
+                                                        <div class="truncate">
+                                                            <p class="text-sm font-medium text-gray-700 truncate" title="{{ $anexo->nome_original }}">
+                                                                {{ $anexo->nome_original }}
+                                                            </p>
+                                                            <p class="text-xs text-gray-400">{{ $anexo->created_at->format('d/m/Y H:i') }}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="flex items-center gap-2 ml-2">
+                                                        <a href="{{ route('anexos.show', $anexo->id) }}" target="_blank" 
+                                                        class="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition" 
+                                                        title="Visualizar">
+                                                            <i class="bi bi-eye-fill"></i>
+                                                        </a>
+                                                        <a href="{{ route('anexos.download', $anexo->id) }}" 
+                                                        class="p-1.5 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded transition" 
+                                                        title="Baixar">
+                                                            <i class="bi bi-download"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @else
+                                        <p class="text-sm text-gray-400 italic">O orçamento vinculado não possui anexos.</p>
+                                    @endif
+                                </div>
+                            </div>
+                        </td>
                     </tr>
                 @empty
                     <tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">Nenhum processo iniciado.</td></tr>
@@ -124,5 +214,7 @@
             </table>
         </div>
     </div>
+
+</div> <x-modal model-type="App\Models\Processo" />
 
 @endsection
