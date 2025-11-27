@@ -55,14 +55,7 @@
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                     @error('valor') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
-
-                <div>
-                    <label for="data_limite_envio" class="block text-sm font-medium text-gray-700 mb-2">Data Limite para Resposta</label>
-                    <input type="date" id="data_limite_envio" name="data_limite_envio" value="{{ old('data_limite_envio', optional($orcamento->data_limite_envio)->format('Y-m-d')) }}"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
-                    @error('data_limite_envio') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                </div>
-
+                
                 <div>
                     <label for="data_aprovacao" class="block text-sm font-medium text-gray-700 mb-2">Data de Aprovação</label>
                     <input type="date" id="data_aprovacao" name="data_aprovacao" value="{{ old('data_aprovacao', optional($orcamento->data_aprovacao)->format('Y-m-d')) }}"

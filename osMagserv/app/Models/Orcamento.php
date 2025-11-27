@@ -14,7 +14,6 @@ class Orcamento extends Model
         'cliente_id',
         'numero_proposta',
         'data_envio',
-        'data_limite_envio',
         'data_aprovacao',
         'escopo',
         'valor',
@@ -24,7 +23,6 @@ class Orcamento extends Model
 
     protected $casts = [
         'data_envio' => 'date',
-        'data_limite_envio' => 'date',
         'data_aprovacao' => 'date',
         'valor' => 'decimal:2',
     ];

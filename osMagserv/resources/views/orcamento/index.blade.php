@@ -130,7 +130,6 @@
                                 <p><strong>Escopo:</strong><br>{{ $orcamento->escopo ? : 'Não definido'}} </p>
                                 <div>
                                     <p><strong>Data de Envio:</strong> {{ $orcamento->data_envio ? \Carbon\Carbon::parse($orcamento->data_envio)->format('d/m/Y') : 'Não definida' }}</p>
-                                    <p><strong>Data Limite p/ Resposta:</strong> {{ $orcamento->data_limite_envio ? \Carbon\Carbon::parse($orcamento->data_limite_envio)->format('d/m/Y') : 'Não definida' }}</p>
                                     <p><strong>Data de Aprovação:</strong> {{ $orcamento->data_aprovacao ? \Carbon\Carbon::parse($orcamento->data_aprovacao)->format('d/m/Y') : 'Não definida' }}</p>
                                     <p><strong>Revisão:</strong> {{ $orcamento->revisao }}</p>
                                 </div>

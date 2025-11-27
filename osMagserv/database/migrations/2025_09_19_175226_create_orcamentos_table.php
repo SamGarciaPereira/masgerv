@@ -15,7 +15,6 @@ return new class extends Migration {
             $table->foreignId('cliente_id')->constrained('clientes')->onDelete('cascade');
             $table->string('numero_proposta')->unique()->nullable();
             $table->date('data_envio')->nullable();
-            $table->date('data_limite_envio')->nullable();
             $table->date('data_aprovacao')->nullable();
             $table->text('escopo')->nullable();
             $table->decimal('valor', 10, 2)->nullable();

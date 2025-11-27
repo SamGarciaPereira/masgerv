@@ -68,7 +68,6 @@ class OrcamentoController extends Controller
             'status' => 'required|string|in:Pendente,Em Andamento,Enviado,Aprovado',
             'revisao' => 'nullable|integer|min:0',
             'escopo' => 'nullable|string',
-            'data_limite_envio' => 'nullable|date',
             'data_aprovacao' => 'nullable|date',
         ]);
 
@@ -94,12 +93,10 @@ class OrcamentoController extends Controller
             'status' => 'required|string|in:Pendente,Em Andamento,Enviado,Aprovado',
             'revisao' => 'nullable|integer|min:0',
             'escopo' => 'nullable|string',
-            'data_limite_envio' => 'nullable|date',
             'data_aprovacao' => 'nullable|date',
         ]);
 
         $validatedData['data_envio'] = $validatedData['data_envio'] ?? null;
-        $validatedData['data_limite_envio'] = $validatedData['data_limite_envio'] ?? null;
         $validatedData['data_aprovacao'] = $validatedData['data_aprovacao'] ?? null;
 
         $orcamento->update($validatedData);
