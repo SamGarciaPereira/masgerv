@@ -51,11 +51,24 @@ class AnexoController extends Controller{
         return back()->with('error', 'Arquivo não encontrado.');
     }
 
-    public function show(Anexo $anexo, $filename){
-        if (Storage::disk('public')->exists($anexo->caminho)) {
-            return Storage::disk('public')->response($anexo->caminho, $anexo->nome_original);
+    public function show(Request $request, Anexo $anexo, $filename){
+        if (!Storage::disk('public')->exists($anexo->caminho)) {
+            return back()->with('error', 'Arquivo não encontrado.');
+        }
+
+        $extension = strtolower(pathinfo($anexo->nome_original, PATHINFO_EXTENSION));
+        $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'];
+        $isImage = in_array($extension, $imageExtensions);
+
+        if ($isImage && !$request->query('raw')) {
+            return view('anexo.show', [
+                'anexo' => $anexo,
+                'filename' => $filename
+            ]);
         }
         
-        return back()->with('error', 'Arquivo não encontrado.');
+        return Storage::disk('public')->response($anexo->caminho, $filename, [
+            'Content-Disposition' => 'inline; filename="' . $filename . '"'
+        ]);
     }
 }

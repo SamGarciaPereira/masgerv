@@ -31,6 +31,6 @@ class ContasReceber extends Model
     }
 
     public function anexos(){
-        return $this->morphMany(Anexo::class, 'anexavel');
+        return $this->morphMany(Anexo::class, 'anexable');
     }
 }
