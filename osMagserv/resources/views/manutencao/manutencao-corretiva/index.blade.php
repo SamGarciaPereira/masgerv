@@ -155,14 +155,17 @@
                     </tr>
                     <tr id="details-{{ $manutencao->id }}" class="hidden details-row">
                         <td colspan="8" class="px-6 py-4 bg-gray-50">
-                            <div class="p-2 text-sm text-gray-700 grid grid-cols-1 md:grid-cols-2 gap-2 max-h-40 overflow-auto">
-                                <div class="space-y-1">
+                            <div class="flex flex-col md:flex-row gap-6 items-start">
+                                <div class="flex flex-col gap-2 md:w-1/3">
+                                    <p><strong>Descrição:</strong><br>{{ $manutencao->descricao ? : 'Não definido'}}</p>
+                                </div>
+                                <div class="flex flex-col gap-2 md:w-2/3">
                                     <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center">
                                         <i class="bi bi-folder2-open mr-1"></i> Arquivos Anexados
                                     </h4>
-                                
+                                    
                                     @if($manutencao->anexos && $manutencao->anexos->count() > 0)
-                                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                                        <div class="grid gap-3" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
                                             @foreach($manutencao->anexos as $anexo)
                                                 <div class="bg-white border border-gray-200 rounded-md p-3 flex items-center justify-between shadow-sm hover:shadow-md transition">
                                                     <div class="flex items-center overflow-hidden">
@@ -205,12 +208,8 @@
                                         <p class="text-sm text-gray-500 italic">Nenhum anexo encontrado para esta manutenção.</p>
                                     @endif
                                 </div>
-                                <div class="space-y-1">
-                                    <p><strong>Descrição:</strong><br>{{ $manutencao->descricao ? : 'Não definido'}}</p>
-                                </div>
-                                
-                            </div>                        
-                        </td>
+                            </div>
+                        </td>                        
                     </tr>
                     @empty
                         <tr>
@@ -219,7 +218,6 @@
                             </td>
                         </tr>
                     @endforelse
-                    
                 </tbody>
             </table>
         </div>
