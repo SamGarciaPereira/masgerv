@@ -27,9 +27,6 @@ class Orcamento extends Model
         'valor' => 'decimal:2',
     ];
 
-    /**
-     * Define o relacionamento: um Orçamento pertence a um Cliente.
-     */
     public function cliente(): BelongsTo
     {
         return $this->belongsTo(Cliente::class);
@@ -37,5 +34,10 @@ class Orcamento extends Model
 
     public function processo(){
         return $this->hasOne(Processo::class);
+    }
+
+    public function anexos()
+    {
+        return $this->morphMany(Anexo::class, 'anexable');
     }
 }

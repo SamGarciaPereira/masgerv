@@ -79,6 +79,7 @@ class OrcamentoController extends Controller
 
     public function edit(Orcamento $orcamento)
     {
+        $orcamento->load('anexos');
         $clientes = Cliente::orderBy('nome')->get();
         return view('orcamento.edit', compact('orcamento', 'clientes'));
     }
