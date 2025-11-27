@@ -7,10 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Anexo;
 use Illuminate\Support\Facades\Storage;
 
-class AnexoController extends Controller
-{
-    public function store(Request $request)
-    {
+class AnexoController extends Controller{
+    public function store(Request $request){
         $request->validate([
             'arquivo' => 'required|file|mimes:pdf,jpg,png,jpeg|max:10240', 
             'model_id' => 'required|integer',
@@ -36,8 +34,7 @@ class AnexoController extends Controller
         return back()->with('error', 'Erro ao enviar arquivo.');
     }
 
-    public function destroy(Anexo $anexo)
-    {
+    public function destroy(Anexo $anexo){
         if (Storage::disk('public')->exists($anexo->caminho)) {
             Storage::disk('public')->delete($anexo->caminho);
         }
@@ -47,18 +44,16 @@ class AnexoController extends Controller
         return back()->with('success', 'Anexo removido com sucesso!');
     }
     
-    public function download(Anexo $anexo)
-    {
+    public function download(Anexo $anexo){
         if (Storage::disk('public')->exists($anexo->caminho)) {
             return Storage::disk('public')->download($anexo->caminho, $anexo->nome_original);
         }
         return back()->with('error', 'Arquivo não encontrado.');
     }
 
-    public function show(Anexo $anexo)
-    {
+    public function show(Anexo $anexo, $filename){
         if (Storage::disk('public')->exists($anexo->caminho)) {
-            return Storage::disk('public')->response($anexo->caminho);
+            return Storage::disk('public')->response($anexo->caminho, $anexo->nome_original);
         }
         
         return back()->with('error', 'Arquivo não encontrado.');

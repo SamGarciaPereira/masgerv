@@ -161,7 +161,7 @@
                                                     </div>
 
                                                     <div class="flex items-center gap-2 ml-2">
-                                                        <a href="{{ route('anexos.show', $anexo->id) }}" target="_blank" 
+                                                        <a href="{{ route('anexos.show', ['anexo' => $anexo->id, 'filename' => $anexo->nome_original]) }}" target="_blank" 
                                                         class="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition" 
                                                         title="Visualizar">
                                                             <i class="bi bi-eye-fill"></i>
