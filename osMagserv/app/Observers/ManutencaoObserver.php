@@ -4,7 +4,7 @@ namespace App\Observers;
 
 use App\Models\Activity;
 use App\Models\Manutencao;
-use Illuminate\Support\Facades\Log; // Para registar erros
+use Illuminate\Support\Facades\Log;
 
 class ManutencaoObserver
 {
@@ -15,29 +15,23 @@ class ManutencaoObserver
     {
         try {
             $descricao = "Manutenção {$manutencao->tipo}";
+            
             if ($manutencao->tipo === 'Corretiva' && $manutencao->chamado) {
                 $descricao .= " (Chamado: {$manutencao->chamado})";
             }
-            $clienteInfo = $manutencao->cliente_id ? " para o cliente ID {$manutencao->cliente_id}" : "";
+            $nomeCliente = $manutencao->cliente ? $manutencao->cliente->nome : 'N/A';
+            
+            $clienteInfo = $manutencao->cliente_id ? " para o cliente {$nomeCliente}" : "";
             $descricao .= " foi agendada{$clienteInfo}.";
 
             Activity::create([
-                'cliente_id' => $manutencao->cliente_id, 
-                'descricao' => $descricao
+                'description' => $descricao
             ]);
+
         } catch (\Exception $e) {
             Log::error("Erro ao criar Activity no ManutencaoObserver (created): " . $e->getMessage());
         }
     }
-
-    /**
-     * Handle the Manutencao "updating" event.
-     */
-    public function updating(Manutencao $manutencao): void
-    {
-        
-    }
-
 
     /**
      * Handle the Manutencao "updated" event.
@@ -45,24 +39,29 @@ class ManutencaoObserver
     public function updated(Manutencao $manutencao): void
     {
        try {
-            $changes = $manutencao->getChanges();
-            unset($changes['updated_at']);
-
-            if (empty($changes)) {
+            if (!$manutencao->isDirty()) {
                 return;
             }
 
             $descricao = "Manutenção {$manutencao->tipo}";
-             if ($manutencao->tipo === 'Corretiva' && $manutencao->chamado) {
+            
+            if ($manutencao->tipo === 'Corretiva' && $manutencao->chamado) {
                  $descricao .= " (Chamado: {$manutencao->chamado})";
-             }
-             $clienteInfo = $manutencao->cliente_id ? " para o cliente ID {$manutencao->cliente_id}" : "";
-             $descricao .= " foi atualizada{$clienteInfo}.";
+            }
+            
+            $nomeCliente = $manutencao->cliente ? $manutencao->cliente->nome : 'N/A';
+            
+            $clienteInfo = $manutencao->cliente_id ? " para o cliente {$nomeCliente}" : "";
+            $descricao .= " foi atualizada{$clienteInfo}.";
+
+            if ($manutencao->isDirty('status')) {
+                $descricao .= " Status alterado para: {$manutencao->status}.";
+            }
 
             Activity::create([
-                'cliente_id' => $manutencao->cliente_id,
-                'descricao' => $descricao
+                'description' => $descricao
             ]);
+
         } catch (\Exception $e) {
             Log::error("Erro ao criar Activity no ManutencaoObserver (updated): " . $e->getMessage());
         }
@@ -75,34 +74,23 @@ class ManutencaoObserver
     {
         try {
             $descricao = "Manutenção {$manutencao->tipo}";
-             if ($manutencao->tipo === 'Corretiva' && $manutencao->chamado) {
+            
+            if ($manutencao->tipo === 'Corretiva' && $manutencao->chamado) {
                  $descricao .= " (Chamado: {$manutencao->chamado})";
-             }
-             $clienteInfo = $manutencao->cliente_id ? " do cliente ID {$manutencao->cliente_id}" : "";
-             $descricao .= "{$clienteInfo} foi deletada.";
+            }
+            
+            // Obtém o nome do cliente
+            $nomeCliente = $manutencao->cliente ? $manutencao->cliente->nome : 'N/A';
+            
+            $clienteInfo = $manutencao->cliente_id ? " do cliente {$nomeCliente}" : "";
+            $descricao .= "{$clienteInfo} foi deletada.";
 
             Activity::create([
-                'cliente_id' => $manutencao->cliente_id,
-                'descricao' => $descricao
+                'description' => $descricao
             ]);
+            
         } catch (\Exception $e) {
             Log::error("Erro ao criar Activity no ManutencaoObserver (deleted): " . $e->getMessage());
         }
-    }
-
-    /**
-     * Handle the Manutencao "restored" event.
-     */
-    public function restored(Manutencao $manutencao): void
-    {
-        //
-    }
-
-    /**
-     * Handle the Manutencao "force deleted" event.
-     */
-    public function forceDeleted(Manutencao $manutencao): void
-    {
-        //
     }
 }
