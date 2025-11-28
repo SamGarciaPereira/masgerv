@@ -37,10 +37,30 @@ class DashboardController extends Controller
         $orcamentosStats = $getStats(Orcamento::whereMonth('created_at', $mes)->whereYear('created_at', $ano));
         
         $prevStats = $getStats(Manutencao::where('tipo', 'Preventiva')
-            ->whereMonth('data_inicio_atendimento', $mes)->whereYear('data_inicio_atendimento', $ano));
-            
+            ->where(function($query) use ($mes, $ano) {
+                $query->where(function($q) use ($mes, $ano) {
+                    $q->whereNotNull('data_inicio_atendimento')
+                    ->whereMonth('data_inicio_atendimento', $mes)
+                    ->whereYear('data_inicio_atendimento', $ano);
+                })->orWhere(function($q) use ($mes, $ano) {
+                    $q->whereNull('data_inicio_atendimento')
+                    ->whereMonth('created_at', $mes)
+                    ->whereYear('created_at', $ano);
+                });
+            }));
+
         $corrStats = $getStats(Manutencao::where('tipo', 'Corretiva')
-            ->whereMonth('data_inicio_atendimento', $mes)->whereYear('data_inicio_atendimento', $ano));
+            ->where(function($query) use ($mes, $ano) {
+                $query->where(function($q) use ($mes, $ano) {
+                    $q->whereNotNull('data_inicio_atendimento')
+                    ->whereMonth('data_inicio_atendimento', $mes)
+                    ->whereYear('data_inicio_atendimento', $ano);
+                })->orWhere(function($q) use ($mes, $ano) {
+                    $q->whereNull('data_inicio_atendimento')
+                    ->whereMonth('created_at', $mes)
+                    ->whereYear('created_at', $ano);
+                });
+            }));
 
         $receberStats = $getSumStats(ContasReceber::whereMonth('data_vencimento', $mes)->whereYear('data_vencimento', $ano));
         $pagarStats = $getSumStats(ContasPagar::whereMonth('data_vencimento', $mes)->whereYear('data_vencimento', $ano));
@@ -85,7 +105,7 @@ class DashboardController extends Controller
         $dadosReceita = $getDailyStatusData(ContasReceber::class);
         $dadosDespesa = $getDailyStatusData(ContasPagar::class);
 
-        $atividades = Activity::latest()->take(7)->get();
+        $atividades = Activity::latest()->take(10)->get();
 
         return view('index', compact(
             'atividades', 'processosStats', 'orcamentosStats', 'prevStats', 
