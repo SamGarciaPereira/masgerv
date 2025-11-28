@@ -225,7 +225,7 @@ Route::post('/webhook', function (Request $request) {
                 // LÓGICA DE SOLICITAÇÃO
                 Solicitacao::create([
                     'tipo' => 'orcamento',
-                    'status' => 'pendente',
+                    'status' => 'Pendente',
                     'data_solicitacao' => Carbon::now(), 
                     'dados' => [
                         'cliente_id' => $conversation['data']['cliente_id'],
@@ -281,7 +281,7 @@ Route::post('/webhook', function (Request $request) {
             try {
                 Solicitacao::create([
                     'tipo' => 'manutencao_corretiva',
-                    'status' => 'pendente',
+                    'status' => 'Pendente',
                     'data_solicitacao' => Carbon::now(), 
                     'dados' => [
                         'cliente_id' => $conversation['data']['cliente_id'],
