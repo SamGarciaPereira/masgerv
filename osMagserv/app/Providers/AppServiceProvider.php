@@ -8,12 +8,14 @@ use App\Models\Processo;
 use App\Models\ContasPagar;
 use App\Models\ContasReceber;
 use App\Models\Manutencao;
+use App\Models\Solicitacao;
 use App\Observers\ClienteObserver;
 use App\Observers\OrcamentoObserver;
 use App\Observers\ProcessoObserver;
 use App\Observers\ContasPagarObserver;
 use App\Observers\ContasReceberObserver;
 use App\Observers\ManutencaoObserver;
+use App\Observers\SolicitacaoObserver;
 use Illuminate\Support\ServiceProvider;
 use Carbon\Carbon;
 
@@ -42,5 +44,6 @@ class AppServiceProvider extends ServiceProvider
         ContasReceber::observe(ContasReceberObserver::class);
         Orcamento::observe(OrcamentoObserver::class);
         Manutencao::observe(ManutencaoObserver::class);
+        Solicitacao::observe(SolicitacaoObserver::class);
     }
 }

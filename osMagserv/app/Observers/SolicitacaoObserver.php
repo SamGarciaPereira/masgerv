@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Models\Activity; 
 use App\Models\Solicitacao;
 
 class SolicitacaoObserver
@@ -11,7 +12,21 @@ class SolicitacaoObserver
      */
     public function created(Solicitacao $solicitacao): void
     {
-        //
+        $horario = $solicitacao->data_solicitacao 
+            ? $solicitacao->data_solicitacao->format('H:i') 
+            : now()->format('H:i');
+
+        if($solicitacao->tipo === 'orcamento') {
+            $tipoTexto = 'orçamento';
+        } elseif($solicitacao->tipo === 'manutencao_corretiva') {
+            $tipoTexto = 'manutenção corretiva';
+        } else {
+            $tipoTexto = $solicitacao->tipo;
+        }
+
+        Activity::create([
+            'description' => "Nova solicitação (#{$solicitacao->id}) de {$tipoTexto}, às {$horario}",
+        ]);
     }
 
     /**
@@ -19,7 +34,14 @@ class SolicitacaoObserver
      */
     public function updated(Solicitacao $solicitacao): void
     {
-        //
+        if ($solicitacao->isDirty('status')) {
+            $novoStatus = $solicitacao->status;
+            if (in_array($novoStatus, ['Aceita', 'Recusada'])) {
+                Activity::create([
+                    'description' => "Solicitação #{$solicitacao->id} foi {$novoStatus}",
+                ]);
+            }
+        }
     }
 
     /**
