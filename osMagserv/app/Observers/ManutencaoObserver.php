@@ -8,6 +8,20 @@ use Illuminate\Support\Facades\Log;
 
 class ManutencaoObserver
 {
+
+    public function creating(Manutencao $manutencao): void
+    {
+        $generator = new CodeGeneratorService();
+
+        if (empty($manutencao->chamado)) {
+            $cliente = $manutencao->cliente ?? Cliente::find($manutencao->cliente_id);
+            
+            if ($cliente) {
+                $manutencao->chamado = $generator->gerarCodigoManutencao($cliente, $manutencao->tipo);
+            }
+        }
+    }
+
     /**
      * Handle the Manutencao "created" event.
      */

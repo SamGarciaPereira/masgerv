@@ -8,6 +8,17 @@ use App\Models\Processo;
 
 class OrcamentoObserver
 {
+
+    public function creating(Orcamento $orcamento): void
+    {
+        $generator = new CodeGeneratorService();
+
+        if (empty($orcamento->numero_proposta)) {
+            $cliente = $orcamento->cliente ?? Cliente::find($orcamento->cliente_id);
+            $orcamento->numero_proposta = $generator->gerarCodigoOrcamento($cliente);
+        }
+    }
+
     /**
      * Handle the Orcamento "created" event.
      */
