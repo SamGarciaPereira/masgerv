@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany; 
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Cliente extends Model
 {
@@ -27,4 +29,16 @@ class Cliente extends Model
         'cidade',
         'estado',
     ];
+
+    public function contratos(): HasMany
+    {
+        return $this->hasMany(Contrato::class);
+    }
+
+    public function contratoAtivo(): HasOne
+    {
+        return $this->hasOne(Contrato::class)
+                    ->where('ativo', true)
+                    ->latestOfMany(); 
+    }
 }

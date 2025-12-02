@@ -35,12 +35,6 @@
                     @error('cliente_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
-                    <label for="chamado" class="block text-sm font-medium text-gray-700 mb-2">Chamado</label>
-                    <input type="text" id="chamado" name="chamado" value="{{ old('chamado') }}"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
-                    @error('chamado') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                </div>
-                <div>
                     <label for="data_inicio_atendimento" class="block text-sm font-medium text-gray-700 mb-2">Data Início Atendimento</label>
                     <input type="date" id="data_inicio_atendimento" name="data_inicio_atendimento" value="{{ old('data_inicio_atendimento') }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                     @error('data_inicio_atendimento') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror

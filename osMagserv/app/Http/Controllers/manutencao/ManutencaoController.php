@@ -124,7 +124,10 @@ class ManutencaoController extends Controller
                 $query->latest(); 
                 break;
         }
-        return $query->get();
+        return $query->where('tipo', $tipo)
+                     ->with(['cliente.contratoAtivo', 'anexos']) 
+                     ->latest()
+                     ->paginate(10);
     }
 
     public function createOrcamento(Manutencao $manutencao)

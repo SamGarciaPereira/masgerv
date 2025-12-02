@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\Activity;
 use App\Models\Manutencao;
+use App\Services\CodeGeneratorService;
 use Illuminate\Support\Facades\Log;
 
 class ManutencaoObserver

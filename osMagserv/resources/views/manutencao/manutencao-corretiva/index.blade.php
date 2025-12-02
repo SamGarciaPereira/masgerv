@@ -97,10 +97,15 @@
                             <div class="text-sm font-medium text-gray-900">{{ $manutencao->cliente->nome }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900">{{ $manutencao->chamado ?? "N/A" }}
-                            </div>
+                            @if($manutencao->chamado)
+                                <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-mono font-bold border border-gray-300 select-all">
+                                    {{ $manutencao->chamado }}
+                                </span>
+                            @else
+                                <span class="text-xs text-gray-400 italic">N/A</span>
+                            @endif
                         </td>
-                         <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900">{{ $manutencao->data_inicio_atendimento ?? 'Não definido'}}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
@@ -156,8 +161,41 @@
                     <tr id="details-{{ $manutencao->id }}" class="hidden details-row">
                         <td colspan="8" class="px-6 py-4 bg-gray-50">
                             <div class="flex flex-col md:flex-row gap-6 items-start">
-                                <div class="flex flex-col gap-2 md:w-1/3 text-gray-500 text-sm">
-                                    <p><strong>Descrição:</strong><br>{{ $manutencao->descricao ? : 'Não definido'}}</p>
+                                
+                                <div class="flex flex-col gap-4 md:w-1/3 text-gray-500 text-sm">
+                                    
+                                    <div>
+                                        <p><strong>Descrição:</strong><br>{{ $manutencao->descricao ?: 'Não definido' }}</p>
+                                    </div>
+
+                                    <div class="pt-4 border-t border-gray-200">
+                                        <p class="font-bold text-gray-500 mb-2">
+                                            Contrato Vigente
+                                        </p>
+                                        
+                                        @if($manutencao->cliente && $manutencao->cliente->contratoAtivo)
+                                            <div class="bg-blue-50 border border-blue-200 rounded-md p-3">
+                                                <div class="flex justify-between items-center mb-1">
+                                                    <span class="text-xs font-bold uppercase text-blue-600">Nº Contrato</span>
+                                                    <span class="px-2 py-0.5 rounded-full bg-green-100 text-green-800 text-xs border border-green-200">Ativo</span>
+                                                </div>
+                                                <p class="text-lg font-bold text-blue-900 font-mono mb-1">
+                                                    {{ $manutencao->cliente->contratoAtivo->numero_contrato }}
+                                                </p>
+                                                <p class="text-xs text-blue-700">
+                                                    Validade: 
+                                                    {{ $manutencao->cliente->contratoAtivo->data_inicio ? \Carbon\Carbon::parse($manutencao->cliente->contratoAtivo->data_inicio)->format('d/m/Y') : '?' }} 
+                                                    a 
+                                                    {{ $manutencao->cliente->contratoAtivo->data_fim ? \Carbon\Carbon::parse($manutencao->cliente->contratoAtivo->data_fim)->format('d/m/Y') : '?' }}
+                                                </p>
+                                            </div>
+                                        @else
+                                            <div class="bg-gray-100 border border-gray-200 rounded-md p-3">
+                                                <p class="text-xs text-gray-500 italic">Cliente sem contrato ativo no momento.</p>
+                                            </div>
+                                        @endif
+                                    </div>
+
                                 </div>
                                 <div class="flex flex-col gap-2 md:w-2/3">
                                     <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center">
