@@ -51,9 +51,10 @@
                     <i class="sidebar-text bi bi-chevron-down text-xs w-0 opacity-0" id="arrow-manutencao"></i>
                 </button>
                 <div id="submenu-manutencao" class="hidden flex-col mt-1 pl-10">
-                    <a href="{{ route('manutencoes.index') }}" class="sidebar-text text-sm text-gray-300 p-1 rounded-md hover:bg-gray-700 w-full opacity-0">Relatórios</a>
+                    <a href="{{ route('contratos.index') }}" class="sidebar-text text-sm text-gray-300 p-1 rounded-md hover:bg-gray-700 w-full opacity-0">Contratos</a>
                     <a href="{{ route('manutencoes.corretiva.index') }}" class="sidebar-text text-sm text-gray-300 p-1 rounded-md hover:bg-gray-700 w-full opacity-0">Manutenções Corretivas</a>
                     <a href="{{ route('manutencoes.preventiva.index') }}" class="sidebar-text text-sm text-gray-300 p-1 rounded-md hover:bg-gray-700 w-full opacity-0">Manutenções Preventivas</a>
+                    <a href="{{ route('manutencoes.index') }}" class="sidebar-text text-sm text-gray-300 p-1 rounded-md hover:bg-gray-700 w-full opacity-0">Relatórios</a>
                 </div>
             </div>
             @if (auth()->user()->isAdmin())

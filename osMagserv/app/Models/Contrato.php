@@ -15,8 +15,19 @@ class Contrato extends Model
         'ativo',
     ];
 
+    protected $casts = [
+        'data_inicio' => 'date',
+        'data_fim' => 'date',
+        'ativo' => 'boolean', 
+    ];
+
     public function cliente(): BelongsTo
     {
         return $this->belongsTo(Cliente::class);
+    }
+
+    public function anexos()
+    {
+        return $this->morphMany(Anexo::class, 'anexable');
     }
 }

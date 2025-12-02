@@ -10,6 +10,7 @@
     use App\Http\Controllers\financeiro\ContasReceberController;
     use App\Http\Controllers\AuthController;
     use App\Http\Controllers\anexo\AnexoController;
+    use App\Http\Controllers\contrato\ContratoController;
 
     //ROTAS DE AUTENTICAÇÃO
     Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -42,6 +43,7 @@
         Route::resource('clientes', ClienteController::class);
         Route::resource('orcamentos', OrcamentoController::class);
         Route::resource('processos', ProcessoController::class);
+        Route::resource('contratos', ContratoController::class);
         Route::resource('manutencoes', ManutencaoController::class)
             ->parameters(['manutencoes' => 'manutencao'])
             ->only(['index', 'store', 'update', 'destroy']);
@@ -66,11 +68,3 @@
         Route::get('/anexos/{anexo}/download', [AnexoController::class, 'download'])->name('anexos.download');
         Route::get('/anexos/{anexo}/{filename}', [AnexoController::class, 'show'])->name('anexos.show');
     });
-
-
-
-
-
-
-
-
