@@ -203,6 +203,5 @@
 
 </div> <x-modal model-type="App\Models\Contrato" />
 
-@vite('resources/js/app.js')
 @endsection
 

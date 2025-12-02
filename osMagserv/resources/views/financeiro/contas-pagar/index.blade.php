@@ -188,6 +188,4 @@
 
 </div> <x-modal model-type="App\Models\ContasPagar" />
 
-
-@vite('resources/js/app.js')
 @endsection    

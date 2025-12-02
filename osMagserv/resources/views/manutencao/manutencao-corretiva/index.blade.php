@@ -225,6 +225,4 @@
 
 </div> <x-modal model-type="App\Models\Manutencao" />
 
-
-@vite('resources/js/app.js')
 @endsection

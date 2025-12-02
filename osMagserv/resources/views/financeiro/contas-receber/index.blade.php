@@ -196,5 +196,4 @@
 
 </div> <x-modal model-type="App\Models\ContasReceber" />
 
-@vite('resources/js/app.js')
 @endsection
