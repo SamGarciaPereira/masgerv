@@ -17,6 +17,7 @@ class Cliente extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'matriz_id',
         'nome',
         'documento',
         'responsavel',
@@ -29,6 +30,14 @@ class Cliente extends Model
         'cidade',
         'estado',
     ];
+
+    public function matriz(){
+        return $this->belongsTo(Cliente::class, 'matriz_id');
+    }
+
+    public function filiais(){
+        return $this->hasMany(Cliente::class, 'matriz_id');
+    }
 
     public function contratos(): HasMany
     {

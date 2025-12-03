@@ -15,6 +15,10 @@ return new class extends Migration
     {
         Schema::create('clientes', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('matriz_id')
+                  ->nullable()
+                  ->constrained('clientes')
+                  ->onDelete('cascade');
             $table->string('nome');
             $table->string('documento')->unique();
             $table->string('responsavel');

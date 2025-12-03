@@ -19,7 +19,7 @@
         @csrf
         @method('PUT') 
         
-        <h2 class="text-xl font-semibold text-gray-800 border-b pb-4 mb-6">Informações Pessoais</h2>
+        <h2 class="text-xl font-semibold text-gray-800 pb-4 mb-6">Informações Pessoais</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
                 <label for="nome" class="block text-sm font-medium text-gray-700 mb-2">Nome Completo / Razão Social</label>
@@ -43,7 +43,7 @@
             </div>
         </div>
 
-        <h2 class="text-xl font-semibold text-gray-800 border-b pb-4 mt-10 mb-6">Endereço</h2>
+        <h2 class="text-xl font-semibold text-gray-800 pb-4 mt-10 mb-6">Endereço</h2>
         <div class="grid grid-cols-1 md:grid-cols-6 gap-6">
             <div class="md:col-span-2">
                 <label for="cep" class="block text-sm font-medium text-gray-700 mb-2">CEP</label>
@@ -71,7 +71,7 @@
             </div>
         </div>
 
-        <div class="flex justify-end mt-10 pt-6 border-t">
+        <div class="flex justify-end mt-10 pt-6">
             <a href="{{ route('clientes.index') }}" class="bg-gray-200 text-gray-700 hover:bg-gray-300 font-medium py-2 px-6 rounded-lg mr-4">
                 Cancelar
             </a>

@@ -10,7 +10,7 @@ class ClienteController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Cliente::query();
+        $query = Cliente::with(['matriz', 'filiais']);
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function($q) use ($search) {
@@ -42,12 +42,16 @@ class ClienteController extends Controller
 
     public function create()
     {
-        return view('cliente.create');
+        $clientes = Cliente::whereNull('matriz_id')
+                           ->orderBy('nome')
+                           ->get();
+        return view('cliente.create', compact ('clientes'));
     }
 
     public function store(Request $request)
     {
         $validatedData = $request->validate([
+            'matriz_id' => 'nullable|exists:clientes,id',
             'nome' => 'required|string|max:255',
             'documento' => 'nullable|string|max:20',
             'responsavel' => 'required|string|max:255',
@@ -76,7 +80,12 @@ class ClienteController extends Controller
      */
     public function edit(Cliente $cliente)
     {
-        return view('cliente.edit', compact('cliente'));
+        $clientes = Cliente::whereNull('matriz_id')
+                           ->where('id', '!=', $cliente->id)
+                           ->orderBy('nome')
+                           ->get();
+                           
+        return view('cliente.edit', compact('cliente', 'clientes'));
     }
 
     /**
@@ -85,6 +94,7 @@ class ClienteController extends Controller
     public function update(Request $request, Cliente $cliente)
     {
         $validatedData = $request->validate([
+            'matriz_id' => 'nullable|exists:clientes,id',
             'nome' => 'required|string|max:255',
             'documento' => 'nullable|string|max:20',
             'responsavel' => 'required|string|max:255',
@@ -97,6 +107,10 @@ class ClienteController extends Controller
             'cidade' => 'nullable|string|max:100',
             'estado' => 'nullable|string|max:50',
         ]);
+
+        if (isset($validatedData['matriz_id']) && $validatedData['matriz_id'] == $cliente->id) {
+            return back()->withErrors(['matriz_id' => 'Um cliente não pode ser matriz de si mesmo.']);
+        }
 
         if (isset($validatedData['documento'])) {
         $validatedData['documento'] = preg_replace('/[^0-9]/', '', $validatedData['documento']);
