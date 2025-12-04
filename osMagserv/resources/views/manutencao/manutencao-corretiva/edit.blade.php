@@ -6,7 +6,7 @@
     <div class="flex justify-between items-center mb-8">
         <div>
             <h1 class="text-3xl font-bold text-gray-900">Editar Manutenção Corretiva</h1>
-            <p class="text-gray-600 mt-1">Altere os dados da manutenção corretiva com o chamado
+            <p class="text-gray-600 mt-1">Altere os dados da manutenção corretiva com a OS
                 {{ $manutencao->chamado }}, para o cliente {{ $manutencao->cliente->nome ?? 'N/A' }}.</p>
         </div>
         <a href="{{ route('manutencoes.corretiva.index') }}" class="bg-gray-200 text-gray-700 hover:bg-gray-300 font-medium py-2 px-4 rounded-lg">Voltar para a Lista</a>
