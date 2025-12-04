@@ -98,16 +98,7 @@
                             {{ $conta->data_vencimento ? \Carbon\Carbon::parse($conta->data_vencimento)->format('d/m/Y') : 'Não definida' }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            @php
-                                $statusClass = [
-                                    'Pendente' => 'bg-yellow-100 text-yellow-800',
-                                    'Pago' => 'bg-green-100 text-green-800',
-                                    'Atrasado' => 'bg-red-100 text-red-800',
-                                ][$conta->status] ?? 'bg-gray-100 text-gray-800';
-                            @endphp
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $statusClass }}">
-                                {{ $conta->status }}
-                            </span>
+                            <x-status-badge :status="$conta->status" />
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <div class="flex items-center space-x-4">

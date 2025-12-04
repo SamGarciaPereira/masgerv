@@ -111,19 +111,7 @@
                         </td>
 
                         <td class="px-6 py-4 whitespace-nowrap text-sm">
-                            @php
-                                $statusColors = [
-                                    'Pendente' => 'bg-yellow-100 text-yellow-800',
-                                    'Agendada' => 'bg-orange-100 text-orange-800',
-                                    'Em Andamento' => 'bg-blue-100 text-blue-800',
-                                    'Concluída' => 'bg-green-100 text-green-800',
-                                    'Cancelada' => 'bg-red-100 text-red-800',
-                                ];
-                                $color = $statusColors[$manutencao->status] ?? 'bg-gray-100 text-gray-800';
-                            @endphp
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $color }}">
-                                {{ $manutencao->status }}
-                            </span>
+                            <x-status-badge :status="$manutencao->status" />
                         </td>
 
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
