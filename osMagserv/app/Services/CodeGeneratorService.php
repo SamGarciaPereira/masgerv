@@ -19,7 +19,7 @@ class CodeGeneratorService
     public function gerarCodigoManutencao(Cliente $cliente, string $tipo)
     {
         $now = Carbon::now();
-        $anoMes = $now->format('Ym'); // Ex: 202511
+        $anoMes = $now->format('mY'); // Ex: 112025
         $estado = $cliente->uf ?? 'PR'; // Padrão PR se não tiver UF
         
         $tipoLetra = ($tipo === 'Preventiva') ? 'P' : 'C';
@@ -47,7 +47,7 @@ class CodeGeneratorService
     public function gerarCodigoOrcamento(Cliente $cliente = null)
     {
         $now = Carbon::now();
-        $anoMes = $now->format('Ym');
+        $anoMes = $now->format('mY');
         $estado = $cliente ? ($cliente->uf ?? 'PR') : 'PR';
 
         // Número Sequencial Global de Orçamentos

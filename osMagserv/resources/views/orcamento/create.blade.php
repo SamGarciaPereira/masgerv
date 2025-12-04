@@ -35,13 +35,6 @@
                 </div>
 
                 <div>
-                    <label for="numero_proposta" class="block text-sm font-medium text-gray-700 mb-2">Nº da Proposta</label>
-                    <input type="text" id="numero_proposta" name="numero_proposta" value="{{ old('numero_proposta') }}"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
-                    @error('numero_proposta') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
-                </div>
-
-                <div>
                     <label for="data_envio" class="block text-sm font-medium text-gray-700 mb-2">Data de Envio</label>
                     <input type="date" id="data_envio" name="data_envio" value="{{ old('data_envio') }}"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">

@@ -80,13 +80,21 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     @forelse ($orcamentos as $orcamento)
-                        <tr class="hover:bg-gray-50">
+                        <tr>
                             <td class="px-6 py-4">
                                 <button class="toggle-details-btn text-gray-500 hover:text-gray-800" data-target-id="{{ $orcamento->id }}">
                                     <i class="bi bi-chevron-down toggle-arrow inline-block transition-transform duration-300"></i>
                                 </button>
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ $orcamento->numero_proposta }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                @if($orcamento->numero_proposta)
+                                    <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-mono font-bold border border-gray-300 select-all">
+                                        {{ $orcamento->numero_proposta }}
+                                    </span>
+                                @else
+                                    <span class="text-xs text-gray-400 italic">N/A</span>
+                                @endif
+                            </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $orcamento->cliente->nome ?? 'N/A' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">R$ {{ number_format($orcamento->valor, 2, ',', '.') }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm">
