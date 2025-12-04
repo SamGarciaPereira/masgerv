@@ -28,16 +28,12 @@ class ManutencaoController extends Controller
             'cliente_id' => 'required|exists:clientes,id',
             'tipo' => ['required', Rule::in(['Preventiva', 'Corretiva'])],
             'chamado' => 'nullable|string|max:255',
-            'solicitante' => 'required|string|max:255',
+            'solicitante' => 'nullable|string|max:255',
             'descricao' => 'required|string',
             'data_inicio_atendimento' => 'nullable|date',
             'data_fim_atendimento' => 'nullable|date|after_or_equal:data_inicio_atendimento',
             'status' => ['required', Rule::in(['Pendente', 'Agendada', 'Em Andamento', 'Concluída', 'Cancelada'])],
         ]);
-
-        if ($validatedData['tipo'] === 'Preventiva') {
-            $validatedData['chamado'] = null;
-        }
 
         Manutencao::create($validatedData);
 

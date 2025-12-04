@@ -89,8 +89,7 @@
                         <td class="px-6 py-4">
                             <button class="toggle-details-btn text-gray-500 hover:text-gray-800"
                                 data-target-id="{{ $manutencao->id }}">
-                                <i
-                                    class="bi bi-chevron-down toggle-arrow inline-block transition-transform duration-300"></i>
+                                <i class="bi bi-chevron-down toggle-arrow inline-block transition-transform duration-300"></i>
                             </button>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
