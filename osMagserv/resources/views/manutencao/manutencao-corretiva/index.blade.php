@@ -106,10 +106,10 @@
                             @endif
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900">{{ $manutencao->data_inicio_atendimento ?? 'Não definido'}}</div>
+                            <div class="text-sm font-medium text-gray-900">{{ $manutencao->data_inicio_atendimento ? $manutencao->data_inicio_atendimento->format('d/m/Y') : 'Não definido' }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-medium text-gray-900">{{ $manutencao->data_fim_atendimento ?? 'Não definido' }}</div>
+                            <div class="text-sm font-medium text-gray-900">{{ $manutencao->data_fim_atendimento ? $manutencao->data_fim_atendimento->format('d/m/Y') : 'Não definido' }}</div>
                         </td>
                          <td class="px-6 py-4 whitespace-nowrap">
                             <div class="text-sm font-medium text-gray-900">{{ $manutencao->solicitante }}</div>
@@ -165,38 +165,52 @@
                                 <div class="flex flex-col gap-4 md:w-1/3 text-gray-500 text-sm">
                                     
                                     <div>
-                                        <p><strong>Descrição:</strong><br>{{ $manutencao->descricao ?: 'Não definido' }}</p>
+                                        <p class="font-bold text-gray-700 mb-1">Descrição:</p>
+                                        <p>{{ $manutencao->descricao ?: 'Não definido' }}</p>
                                     </div>
 
+                                    @php
+                                        // Chama a função do Model que verifica se tem contrato direto ou herda da Matriz
+                                        $contratoVigente = $manutencao->cliente ? $manutencao->cliente->contratoAtivo() : null;
+                                    @endphp
+
                                     <div class="pt-4 border-t border-gray-200">
-                                        <p class="font-bold text-gray-500 mb-2">
-                                            Contrato Vigente
+                                        <p class="font-bold text-gray-700 mb-2">
+                                            <i class="bi bi-file-text mr-1"></i> Contrato Vigente
                                         </p>
                                         
-                                        @if($manutencao->cliente && $manutencao->cliente->contratoAtivo)
-                                            <div class="bg-blue-50 border border-blue-200 rounded-md p-3">
+                                        @if($contratoVigente)
+                                            <div class="bg-blue-50 border border-blue-200 rounded-md p-3 shadow-sm">
                                                 <div class="flex justify-between items-center mb-1">
                                                     <span class="text-xs font-bold uppercase text-blue-600">Nº Contrato</span>
-                                                    <span class="px-2 py-0.5 rounded-full bg-green-100 text-green-800 text-xs border border-green-200">Ativo</span>
+                                                    <span class="px-2 py-0.5 rounded-full bg-green-100 text-green-800 text-xs border border-green-200 font-bold">Ativo</span>
                                                 </div>
-                                                <p class="text-lg font-bold text-blue-900 font-mono mb-1">
-                                                    {{ $manutencao->cliente->contratoAtivo->numero_contrato }}
+                                                <p class="text-lg font-bold text-blue-900 font-mono mb-1 tracking-tight">
+                                                    {{ $contratoVigente->numero_contrato }}
                                                 </p>
-                                                <p class="text-xs text-blue-700">
+                                                
+                                                <p class="text-xs text-blue-700 mb-1">
                                                     Validade: 
-                                                    {{ $manutencao->cliente->contratoAtivo->data_inicio ? \Carbon\Carbon::parse($manutencao->cliente->contratoAtivo->data_inicio)->format('d/m/Y') : '?' }} 
+                                                    {{ $contratoVigente->data_inicio ? \Carbon\Carbon::parse($contratoVigente->data_inicio)->format('d/m/Y') : '?' }} 
                                                     a 
-                                                    {{ $manutencao->cliente->contratoAtivo->data_fim ? \Carbon\Carbon::parse($manutencao->cliente->contratoAtivo->data_fim)->format('d/m/Y') : '?' }}
+                                                    {{ $contratoVigente->data_fim ? \Carbon\Carbon::parse($contratoVigente->data_fim)->format('d/m/Y') : '?' }}
                                                 </p>
+
+                                                @if($manutencao->cliente->matriz_id && !$manutencao->cliente->contratos->contains($contratoVigente->id))
+                                                    <p class="text-[10px] text-blue-500 italic border-t border-blue-100 pt-1 mt-1">
+                                                        <i class="bi bi-info-circle mr-1"></i> Contrato herdado da Matriz
+                                                    </p>
+                                                @endif
                                             </div>
                                         @else
-                                            <div class="bg-gray-100 border border-gray-200 rounded-md p-3">
-                                                <p class="text-xs text-gray-500 italic">Cliente sem contrato ativo no momento.</p>
+                                            <div class="bg-gray-100 border border-gray-200 rounded-md p-3 text-center">
+                                                <p class="text-xs text-gray-500 italic">Cliente sem contrato ativo (Próprio ou Matriz).</p>
                                             </div>
                                         @endif
                                     </div>
 
                                 </div>
+
                                 <div class="flex flex-col gap-2 md:w-2/3">
                                     <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center">
                                         <i class="bi bi-folder2-open mr-1"></i> Arquivos Anexados
@@ -212,7 +226,6 @@
                                                         @else
                                                             <i class="bi bi-file-earmark-image-fill text-blue-500 text-xl mr-3 flex-shrink-0"></i>
                                                         @endif
-                                                        
                                                         <div class="truncate">
                                                             <p class="text-sm font-medium text-gray-700 truncate" title="{{ $anexo->nome_original }}">
                                                                 {{ $anexo->nome_original }}
@@ -220,30 +233,19 @@
                                                             <p class="text-xs text-gray-400">{{ $anexo->created_at->format('d/m/Y H:i') }}</p>
                                                         </div>
                                                     </div>
-
                                                     <div class="flex items-center gap-2 ml-2">
-                                                        <a href="{{ route('anexos.show', ['anexo' => $anexo->id, 'filename' => $anexo->nome_original]) }}" target="_blank" 
-                                                        class="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition" 
-                                                        title="Visualizar">
-                                                            <i class="bi bi-eye-fill"></i>
-                                                        </a>
-                                                        <a href="{{ route('anexos.download', $anexo->id) }}" 
-                                                        class="p-1.5 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded transition" 
-                                                        title="Baixar">
-                                                            <i class="bi bi-download"></i>
-                                                        </a>
+                                                        <a href="{{ route('anexos.show', ['anexo' => $anexo->id, 'filename' => $anexo->nome_original]) }}" target="_blank" class="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition"><i class="bi bi-eye-fill"></i></a>
+                                                        <a href="{{ route('anexos.download', $anexo->id) }}" class="p-1.5 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded transition"><i class="bi bi-download"></i></a>
                                                         <form action="{{ route('anexos.destroy', $anexo->id) }}" method="POST" onsubmit="return confirm('Excluir arquivo?');" class="inline">
                                                             @csrf @method('DELETE')
-                                                            <button type="submit" class="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition" title="Excluir">
-                                                                <i class="bi bi-trash"></i>
-                                                            </button>
+                                                            <button type="submit" class="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition"><i class="bi bi-trash"></i></button>
                                                         </form>
                                                     </div>
                                                 </div>
                                             @endforeach
                                         </div>
                                     @else
-                                        <p class="text-sm text-gray-500 italic">Nenhum anexo encontrado para esta manutenção.</p>
+                                        <p class="text-sm text-gray-500 italic">Nenhum anexo encontrado.</p>
                                     @endif
                                 </div>
                             </div>

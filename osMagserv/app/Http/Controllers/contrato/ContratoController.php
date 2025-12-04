@@ -6,97 +6,92 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Contrato;
 use App\Models\Cliente;
-
+use App\Services\CodeGeneratorService;
 
 class ContratoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         $query = Contrato::query();
         if ($request->filled('search')) {
             $search = $request->input('search');
-            $query->whereHas('cliente', function($q) use ($search) {
+            $query->whereHas('clientes', function($q) use ($search) {
                 $q->where('nome', 'like', "%{$search}%");
             })->orWhere('numero_contrato', 'like', "%{$search}%");    
         }
-        $contratos = $query->with('cliente')->latest()->paginate(10);
+        $contratos = $query->with(['clientes.filiais', 'anexos'])
+                           ->latest()
+                           ->paginate(10);
         return view('contrato.index', compact('contratos'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        $clientes = Cliente::orderBy('nome')->get();
+        $clientes = Cliente::whereNull('matriz_id')
+                           ->orderBy('nome')
+                           ->get();
         return view('contrato.create', compact('clientes'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $validatedData = $request->validate([
-            'cliente_id' => 'required|exists:clientes,id',
+            'clientes' => 'required|array|min:1',
+            'clientes.*' => 'exists:clientes,id',
             'data_inicio' => 'required|date',
             'data_fim' => 'nullable|date|after_or_equal:data_inicio',
-            'ativo' => '    boolean',
         ]);
+
+        $validatedData['ativo'] = true;
+
+        $matriz = Cliente::find($request->clientes[0]);
+        
+        $generator = new CodeGeneratorService();
+        $validatedData['numero_contrato'] = $generator->gerarCodigoContrato($matriz);
 
         $contrato = Contrato::create($validatedData);
 
+        $contrato->clientes()->attach($request->clientes);
+
         return redirect()->route('contratos.index')
-                         ->with('success', "Contrato '{$contrato->numero_contrato}' criado com sucesso.");
+                         ->with('success', "Contrato '{$contrato->numero_contrato}' criado para a Matriz (e filiais).");
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Contrato $contrato)
     {
-        $contrato->load('anexos');
-        $clientes = Cliente::orderBy('nome')->get();
+        $contrato->load('clientes');
+        $clientes = Cliente::whereNull('matriz_id')
+                           ->orderBy('nome')
+                           ->get();
         return view('contrato.edit', compact('contrato', 'clientes'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Contrato $contrato)
     {
         $validatedData = $request->validate([
-            'cliente_id' => 'required|exists:clientes,id',
-            'data_inicio' => 'nullable|date',
+            'clientes' => 'required|array|min:1',
+            'clientes.*' => 'exists:clientes,id',
+            'data_inicio' => 'required|date',
             'data_fim' => 'nullable|date|after_or_equal:data_inicio',
             'ativo' => 'boolean',
         ]);
 
-        $contrato->update($validatedData);
+        $contrato->update([
+            'data_inicio' => $validatedData['data_inicio'],
+            'data_fim' => $validatedData['data_fim'],
+            'ativo' => $request->has('ativo') ? $validatedData['ativo'] : $contrato->ativo,
+        ]);
+
+        $contrato->clientes()->sync($request->clientes);
 
         return redirect()->route('contratos.index')
             ->with('success', 'Contrato atualizado com sucesso!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Contrato $contrato)
     {
         $contrato->delete();
-
         return redirect()->route('contratos.index')
-                         ->with('success', "Contrato '{$contrato->numero_contrato}' excluído com sucesso.");
+                         ->with('success', "Contrato excluído com sucesso.");
     }
 }

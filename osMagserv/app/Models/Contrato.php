@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Contrato extends Model
 {
     protected $fillable = [
-        'cliente_id',
         'numero_contrato',
         'data_inicio',
         'data_fim',
@@ -21,9 +20,9 @@ class Contrato extends Model
         'ativo' => 'boolean', 
     ];
 
-    public function cliente(): BelongsTo
+    public function clientes()
     {
-        return $this->belongsTo(Cliente::class);
+        return $this->belongsToMany(Cliente::class, 'cliente_contrato');
     }
 
     public function anexos()

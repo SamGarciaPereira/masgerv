@@ -13,7 +13,12 @@ class ManutencaoController extends Controller
 {
     public function index()
     {
-        $manutencoes = Manutencao::with('cliente', 'anexos')->latest()->get();
+        $manutencoes = Manutencao::with([
+            'cliente.contratos', 
+            'cliente.matriz.contratos', 
+            'anexos'
+        ])->latest()->get();
+        
         return view('manutencao.index', compact('manutencoes'));
     }
 
@@ -74,7 +79,6 @@ class ManutencaoController extends Controller
         }
     }
 
-
     public function destroy(Manutencao $manutencao)
     {
         $tipo = $manutencao->tipo;
@@ -89,17 +93,15 @@ class ManutencaoController extends Controller
 
     private function filtrarManutencoes(Request $request, $tipo)
     {
-        $query = Manutencao::where('tipo', $tipo)->with('cliente', 'anexos');
+        $query = Manutencao::query(); 
 
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function($q) use ($search) {
                 $q->where('descricao', 'like', "%{$search}%")
-                  ->orWhere('data_inicio_atendimento', 'like', "%{$search}%")
-                  ->orWhere('data_fim_atendimento', 'like', "%{$search}%")
-                  ->orWhere('descricao', 'like', "%{$search}%")
                   ->orWhere('solicitante', 'like', "%{$search}%")
                   ->orWhere('chamado', 'like', "%{$search}%")
+                  // Busca no nome do cliente também
                   ->orWhereHas('cliente', function($q2) use ($search) {
                       $q2->where('nome', 'like', "%{$search}%");
                   });
@@ -110,6 +112,7 @@ class ManutencaoController extends Controller
             $query->where('status', $request->input('status'));
         }
 
+        
         switch ($request->input('ordem')) {
             case 'antigos':
                 $query->oldest(); 
@@ -124,9 +127,13 @@ class ManutencaoController extends Controller
                 $query->latest(); 
                 break;
         }
+
         return $query->where('tipo', $tipo)
-                     ->with(['cliente.contratoAtivo', 'anexos']) 
-                     ->latest()
+                     ->with([
+                        'cliente.contratos',       
+                        'cliente.matriz.contratos', 
+                        'anexos'
+                     ]) 
                      ->paginate(10);
     }
 
@@ -154,7 +161,7 @@ class ManutencaoController extends Controller
 
     public function createCorretiva()
     {
-        $clientes = Cliente::all();
+        $clientes = Cliente::orderBy('nome')->get();
         return view('manutencao.manutencao-corretiva.create', compact('clientes'));
     }
 
@@ -164,7 +171,7 @@ class ManutencaoController extends Controller
         if ($manutencao->tipo !== 'Corretiva') {
             abort(404);
         }
-        $clientes = Cliente::all();
+        $clientes = Cliente::orderBy('nome')->get();
         return view('manutencao.manutencao-corretiva.edit', compact('manutencao', 'clientes'));
     }
 
@@ -176,7 +183,7 @@ class ManutencaoController extends Controller
 
     public function createPreventiva()
     {
-        $clientes = Cliente::all();
+        $clientes = Cliente::orderBy('nome')->get();
         return view('manutencao.manutencao-preventiva.create', compact('clientes'));
     }
 
@@ -186,7 +193,7 @@ class ManutencaoController extends Controller
         if ($manutencao->tipo !== 'Preventiva') {
              abort(404);
         }
-        $clientes = Cliente::all();
+        $clientes = Cliente::orderBy('nome')->get();
         return view('manutencao.manutencao-preventiva.edit', compact('manutencao', 'clientes'));
     }
 }

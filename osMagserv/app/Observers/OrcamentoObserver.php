@@ -5,6 +5,8 @@ namespace App\Observers;
 use App\Models\Activity;
 use App\Models\Orcamento;
 use App\Models\Processo;
+use App\Services\CodeGeneratorService;
+
 
 class OrcamentoObserver
 {

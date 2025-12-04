@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany; 
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Cliente extends Model
 {
@@ -39,15 +40,31 @@ class Cliente extends Model
         return $this->hasMany(Cliente::class, 'matriz_id');
     }
 
-    public function contratos(): HasMany
+    public function contratos()
     {
-        return $this->hasMany(Contrato::class);
+        return $this->belongsToMany(Contrato::class, 'cliente_contrato');
     }
 
-    public function contratoAtivo(): HasOne
+    public function contratoAtivo()
     {
-        return $this->hasOne(Contrato::class)
+        $contratoDireto = $this->belongsToMany(Contrato::class, 'cliente_contrato')
                     ->where('ativo', true)
-                    ->latestOfMany(); 
+                    ->latest()
+                    ->first();
+        
+        if($contratoDireto){
+            return $contratoDireto;
+        }
+
+        if ($this->matriz_id) {
+            return $this->matriz->contratoAtivo(); 
+        }
+
+        return null;
+    }
+    
+    public function getContratoVigenteAttribute()
+    {
+        return $this->contratoAtivo();
     }
 }
