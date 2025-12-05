@@ -12,10 +12,12 @@ class ContasPagar extends Model
         'danfe',
         'valor',
         'data_vencimento',
+        'data_pagamento',
         'status',
     ];
     protected $casts = [
         'data_vencimento' => 'date',
+        'data_pagamento' => 'date'
     ];
 
     public function anexos()

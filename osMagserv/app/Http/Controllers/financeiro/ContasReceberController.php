@@ -72,8 +72,15 @@ class ContasReceberController extends Controller
             'nf' => 'nullable|string|max:100',
             'valor' => 'required|numeric|min:0.01',
             'data_vencimento' => 'required|date',
+            'data_recebimento' => 'required_if:status,Pago|nullable|date',
             'status' => 'required|in:Pendente,Pago,Atrasado',
+        ],[
+            'data_recebimento.required_if' => 'A Data de Recebimento é obrigatória quando o status é Pago',
         ]);
+
+        if($validatedData['data_recebimento'] !== null){
+            $validatedData['status'] = 'Pago';
+        }
 
         ContasReceber::create($validatedData);
 
@@ -107,8 +114,15 @@ class ContasReceberController extends Controller
             'descricao' => 'required|string|max:255',
             'valor' => 'required|numeric|min:0.01',
             'data_vencimento' => 'required|date',
+            'data_recebimento' => 'required_if:status,Pago|nullable|date',
             'status' => 'required|in:Pendente,Pago,Atrasado',
+        ],[
+            'data_recebimento.required_if' => 'A Data de Recebimento é obrigatória quando o status é Pago',
         ]);
+
+        if($validatedData['data_recebimento'] !== null){
+            $validatedData['status'] = 'Pago';
+        }
 
         $contasReceber->update($validatedData);
 

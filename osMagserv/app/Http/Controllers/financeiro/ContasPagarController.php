@@ -71,8 +71,15 @@ class ContasPagarController extends Controller
             'danfe' => 'nullable|string|max:100',
             'valor' => 'required|numeric|min:0.01',
             'data_vencimento' => 'required|date',
+            'data_pagamento' => 'required_if:status,Pago|nullable|date',
             'status' => 'required|in:Pendente,Pago,Atrasado',
+        ], [
+            'data_pagamento.required_if' => 'A Data de Pagamento é obrigatória quando o status é Pago',
         ]);
+
+        if($validatedData['data_pagamento'] !== null){
+            $validatedData['status'] = 'Pago';
+        }
 
         ContasPagar::create($validatedData);
 
@@ -108,8 +115,15 @@ class ContasPagarController extends Controller
             'danfe' => 'nullable|string|max:100',
             'valor' => 'required|numeric|min:0.01',
             'data_vencimento' => 'required|date',
+            'data_pagamento' => 'required_if:status,Pago|nullable|date',
             'status' => 'required|in:Pendente,Pago,Atrasado',
+        ],[
+            'data_pagamento.required_if' => 'A Data de Pagamento é obrigatória quando o status é Pago',
         ]);     
+
+        if($validatedData['data_pagamento'] !== null){
+            $validatedData['status'] = 'Pago';
+        }
 
         $contasPagar->update($validatedData);
 

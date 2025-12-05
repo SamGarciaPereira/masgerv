@@ -13,11 +13,13 @@ class ContasReceber extends Model
         'nf',
         'valor',
         'data_vencimento',
+        'data_recebimento',
         'status',
     ];
 
     protected $casts = [
         'data_vencimento' => 'date',
+        'data_recebimento' => 'date'
     ];
 
     public function processo()
