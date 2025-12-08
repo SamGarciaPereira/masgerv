@@ -20,7 +20,7 @@ class CodeGeneratorService
     public function gerarCodigoManutencao(Cliente $cliente, string $tipo)
     {
         $now = Carbon::now();
-        $anoMes = $now->format('mY'); // Ex: 112025
+        $anoMes = $now->format('my'); // Ex: 1125
         $estado = $cliente->uf ?? 'PR'; // Padrão PR se não tiver UF
         
         $tipoLetra = ($tipo === 'Preventiva') ? 'P' : 'C';
@@ -46,7 +46,7 @@ class CodeGeneratorService
      */
     public function formatarCodigoOrcamento(Cliente $cliente, Carbon $data, int $sequencial)
     {
-        $anoMes = $data->format('mY'); // 122025
+        $anoMes = $data->format('my'); // 1225
         $estado = $cliente->uf ?? 'PR';
         $sequenciaStr = str_pad($sequencial, 3, '0', STR_PAD_LEFT);
 
