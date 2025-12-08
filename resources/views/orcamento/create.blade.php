@@ -35,6 +35,18 @@
                 </div>
 
                 <div>
+                    <label for="numero_manual" class="block text-sm font-medium text-gray-700 mb-2">Número da Proposta</label>
+                    <div class="flex items-center">
+                        <input type="number" id="numero_manual" name="numero_manual" value="{{ old('numero_manual') }}"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="Ex: 005">
+                    </div>
+                    @error('numero_manual') 
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p> 
+                    @enderror
+                </div>
+
+                <div>
                     <label for="data_envio" class="block text-sm font-medium text-gray-700 mb-2">Data de Envio</label>
                     <input type="date" id="data_envio" name="data_envio" value="{{ old('data_envio') }}"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">

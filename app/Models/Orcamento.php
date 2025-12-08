@@ -10,6 +10,8 @@ class Orcamento extends Model
 {
     use HasFactory;
 
+    public $numero_manual;
+
     protected $fillable = [
         'cliente_id',
         'numero_proposta',

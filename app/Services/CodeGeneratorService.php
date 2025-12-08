@@ -7,6 +7,7 @@ use App\Models\Contrato;
 use App\Models\Orcamento;
 use App\Models\Cliente;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class CodeGeneratorService
 {
@@ -41,21 +42,54 @@ class CodeGeneratorService
     }
 
     /**
-     * Gera código para Orçamento
-     * Formato: EST-BASE-YYYYMM-O-PPP(3)
+     * Formata a string do código (Centraliza a regra visual)
      */
-    public function gerarCodigoOrcamento(Cliente $cliente = null)
+    public function formatarCodigoOrcamento(Cliente $cliente, Carbon $data, int $sequencial)
+    {
+        $anoMes = $data->format('mY'); // 122025
+        $estado = $cliente->uf ?? 'PR';
+        $sequenciaStr = str_pad($sequencial, 3, '0', STR_PAD_LEFT);
+
+        return "{$estado}-{$this->base}-{$anoMes}-O-{$sequenciaStr}";
+    }
+
+    /**
+     * Gera o código (Automático ou Manual)
+     */
+    public function gerarCodigoOrcamento(Cliente $cliente = null, ?int $numeroManual = null)
     {
         $now = Carbon::now();
-        $anoMes = $now->format('mY');
-        $estado = $cliente ? ($cliente->uf ?? 'PR') : 'PR';
+        $cliente = $cliente ?? new Cliente(['uf' => 'PR']);
 
-        // Número Sequencial Global de Orçamentos
-        $countProposta = Orcamento::count() + 1;
-        $propostaStr = str_pad($countProposta, 3, '0', STR_PAD_LEFT);
+        if ($numeroManual !== null) {
+            return $this->formatarCodigoOrcamento($cliente, $now, $numeroManual);
+        }
 
-        // Resultado Ex: PR-01-202511-O-005
-        return "{$estado}-{$this->base}-{$anoMes}-O-{$propostaStr}";
+        
+        // Prefixo para busca no banco (Ex: PR-01-122025-O-)
+        $prefixoBusca = $this->formatarCodigoOrcamento($cliente, $now, 0);
+        $prefixoBusca = substr($prefixoBusca, 0, strrpos($prefixoBusca, '-') + 1); 
+
+        $ultimoOrcamento = Orcamento::where('numero_proposta', 'like', "{$prefixoBusca}%")
+            ->orderBy('id', 'desc')
+            ->first();
+
+        if ($ultimoOrcamento) {
+            $partes = explode('-', $ultimoOrcamento->numero_proposta);
+            $ultimoNumero = (int) end($partes);
+            $proximoSequencial = $ultimoNumero + 1;
+        } else {
+            $proximoSequencial = 1;
+        }
+
+        $codigoFinal = $this->formatarCodigoOrcamento($cliente, $now, $proximoSequencial);
+        
+        while (Orcamento::where('numero_proposta', $codigoFinal)->exists()) {
+            $proximoSequencial++;
+            $codigoFinal = $this->formatarCodigoOrcamento($cliente, $now, $proximoSequencial);
+        }
+
+        return $codigoFinal;
     }
 
     /**

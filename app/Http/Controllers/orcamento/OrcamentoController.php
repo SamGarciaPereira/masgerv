@@ -7,6 +7,7 @@ use App\Models\Cliente;
 use App\Models\Orcamento;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use App\Services\CodeGeneratorService;
 
 class OrcamentoController extends Controller
 {
@@ -62,7 +63,7 @@ class OrcamentoController extends Controller
     {
         $validatedData = $request->validate([
             'cliente_id' => 'required|exists:clientes,id',
-            'numero_proposta' => 'nullable|string|max:255|unique:orcamentos',
+            'numero_manual' => 'nullable|integer|min:1',
             'data_envio' => 'nullable|date', 
             'valor' => 'nullable|numeric|min:0',
             'status' => 'required|string|in:Pendente,Em Andamento,Enviado,Aprovado',
@@ -71,11 +72,28 @@ class OrcamentoController extends Controller
             'data_aprovacao' => 'nullable|date',
         ]);
 
-        Orcamento::create($validatedData);
+        if ($request->filled('numero_manual')) {
+            $generator = new CodeGeneratorService();
+            $cliente = Cliente::find($request->cliente_id);
+            
+            $codigoProvavel = $generator->formatarCodigoOrcamento($cliente, now(), $request->numero_manual);
+
+            if (Orcamento::where('numero_proposta', $codigoProvavel)->exists()) {
+                return back()
+                    ->withInput()
+                    ->withErrors(['numero_manual' => "A proposta {$codigoProvavel} já existe."]);
+            }
+        }
+
+        $orcamento = new Orcamento($validatedData);
+        $orcamento->numero_manual = $request->numero_manual; 
+        $orcamento->save();
 
         return redirect()->route('orcamentos.index')
             ->with('success', 'Orçamento cadastrado com sucesso!');
     }
+
+    
 
     public function edit(Orcamento $orcamento)
     {

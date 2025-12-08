@@ -11,14 +11,19 @@ use App\Services\CodeGeneratorService;
 class OrcamentoObserver
 {
 
-    public function creating(Orcamento $orcamento): void
+   public function creating(Orcamento $orcamento): void
     {
-        $generator = new CodeGeneratorService();
-
-        if (empty($orcamento->numero_proposta)) {
-            $cliente = $orcamento->cliente ?? Cliente::find($orcamento->cliente_id);
-            $orcamento->numero_proposta = $generator->gerarCodigoOrcamento($cliente);
+        if (!empty($orcamento->numero_proposta)) {
+            return;
         }
+
+        $generator = new CodeGeneratorService();
+        $cliente = $orcamento->cliente ?? \App\Models\Cliente::find($orcamento->cliente_id);
+
+        $orcamento->numero_proposta = $generator->gerarCodigoOrcamento(
+            $cliente, 
+            $orcamento->numero_manual 
+        );
     }
 
     /**
