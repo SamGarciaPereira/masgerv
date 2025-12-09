@@ -122,7 +122,7 @@
                                             {{ $cliente->estado ?? 'N/A' }}</p>
                                     </div>
                                     <div class="space-y-1">
-                                        <p class="mb-0"><strong>E-mail:</strong> {{ $cliente->email }}</p>
+                                        <p class="mb-0"><strong>E-mail:</strong> {{ $cliente->email ?? 'Não informado'}}</p>
                                     </div>
                                 </div>
                                 <div class="mb-4 p-2 border-t border-gray-100">
