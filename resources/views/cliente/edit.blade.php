@@ -41,6 +41,22 @@
                 <label for="telefone" class="block text-sm font-medium text-gray-700 mb-2">Telefone</label>
                 <input type="tel" id="telefone" name="telefone" value="{{ $cliente->telefone }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
             </div>
+            <div>
+                <label for="matriz_id" class="block text-sm font-medium text-gray-700 mb-2">
+                    Vincular a uma Matriz (Opcional)
+                </label>
+                <select name="matriz_id" id="matriz_id" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                    <option value="">Este cliente é uma Matriz / Unidade Única</option>
+                        @foreach($clientes as $c)
+                            @if(!isset($cliente) || $cliente->id !== $c->id)
+                                <option value="{{ $c->id }}" 
+                                    {{ (old('matriz_id', $cliente->matriz_id ?? '') == $c->id) ? 'selected' : '' }}>
+                                    {{ $c->nome }}
+                                </option>
+                            @endif
+                        @endforeach
+                </select>
+            </div>
         </div>
 
         <h2 class="text-xl font-semibold text-gray-800 pb-4 mt-10 mb-6">Endereço</h2>
