@@ -27,15 +27,15 @@
             </div>
             <div>
                 <label for="documento" class="block text-sm font-medium text-gray-700 mb-2">CPF / CNPJ</label>
-                <input type="text" id="documento" name="documento" value="{{ $cliente->documento }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                <input type="text" id="documento" name="documento" value="{{ $cliente->documento }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" required>
             </div>
             <div>
                 <label for="responsavel" class="block text-sm font-medium text-gray-700 mb-2">Responsável</label>
-                <input type="text" id="responsavel" name="responsavel" value="{{ $cliente->responsavel }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" required>
+                <input type="text" id="responsavel" name="responsavel" value="{{ $cliente->responsavel }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
             </div>
             <div>
                 <label for="email" class="block text-sm font-medium text-gray-700 mb-2">E-mail</label>
-                <input type="email" id="email" name="email" value="{{ $cliente->email }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" required>
+                <input type="email" id="email" name="email" value="{{ $cliente->email }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
             </div>
             <div>
                 <label for="telefone" class="block text-sm font-medium text-gray-700 mb-2">Telefone</label>

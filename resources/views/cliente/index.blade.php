@@ -89,7 +89,7 @@
                                 <div class="text-sm text-gray-500">{{ $cliente->documento }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-500">{{ $cliente->responsavel }}</div>
+                                <div class="text-sm text-gray-500">{{ $cliente->responsavel ?? 'Não informado' }}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-500">{{ $cliente->telefone ?? 'Não informado' }}</div>
@@ -117,9 +117,9 @@
                             <td colspan="6" class="px-6 py-2 bg-gray-50">
                                 <div class="p-2 text-sm text-gray-700 grid grid-cols-1 md:grid-cols-2 gap-2 max-h-40 overflow-auto">
                                     <div class="space-y-1">
-                                        <p class="mb-0"><strong>Endereço:</strong> {{ $cliente->logradouro }},
-                                            {{ $cliente->numero }}, {{ $cliente->bairro }}, {{ $cliente->cidade }},
-                                            {{ $cliente->estado }}</p>
+                                        <p class="mb-0"><strong>Endereço:</strong> {{ $cliente->logradouro ?? 'N/A' }},
+                                            {{ $cliente->numero ?? 'N/A' }}, {{ $cliente->bairro ?? 'N/A' }}, {{ $cliente->cidade ?? 'N/A' }},
+                                            {{ $cliente->estado ?? 'N/A' }}</p>
                                     </div>
                                     <div class="space-y-1">
                                         <p class="mb-0"><strong>E-mail:</strong> {{ $cliente->email }}</p>
@@ -189,5 +189,4 @@
             </table>
         </div>
     </div>
-
 @endsection

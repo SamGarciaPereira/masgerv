@@ -5,6 +5,7 @@ namespace App\Http\Controllers\cliente;
 use App\Http\Controllers\Controller;
 use App\Models\Cliente;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ClienteController extends Controller
 {
@@ -53,16 +54,20 @@ class ClienteController extends Controller
         $validatedData = $request->validate([
             'matriz_id' => 'nullable|exists:clientes,id',
             'nome' => 'required|string|max:255',
-            'documento' => 'nullable|string|max:20',
-            'responsavel' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:clientes,email',
-            'telefone' => 'nullable|string|max:20',
+            'documento' => 'required|string|max:20|unique:clientes,documento',
+            'responsavel' => 'nullable|string|max:255',
+            'email' => 'nullable|email|max:255|unique:clientes,email',
+            'telefone' => 'nullable|string|max:20|unique:clientes,telefone',
             'cep' => 'nullable|string|max:10',
             'logradouro' => 'nullable|string|max:255',
             'numero' => 'nullable|string|max:20',
             'bairro' => 'nullable|string|max:100',
             'cidade' => 'nullable|string|max:100',
             'estado' => 'nullable|string|max:50',
+        ], [
+            'documento.unique' => 'Este CPF/CNPJ já está cadastrado.',
+            'email.unique' => 'Este e-mail já está em uso.',
+            'telefone.unique' => 'Este telefone já está vinculado a outro cliente.',
         ]);
 
         if (isset($validatedData['documento'])) {
@@ -96,16 +101,35 @@ class ClienteController extends Controller
         $validatedData = $request->validate([
             'matriz_id' => 'nullable|exists:clientes,id',
             'nome' => 'required|string|max:255',
-            'documento' => 'nullable|string|max:20',
-            'responsavel' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:clientes,email,' . $cliente->id,
-            'telefone' => 'nullable|string|max:20',
+            'documento' => [
+                'required',
+                'string',
+                'max:20',
+                Rule::unique('clientes', 'documento')->ignore($cliente->id),
+            ],
+            'responsavel' => 'nullable|string|max:255',
+            'email' => [
+                'nullable',
+                'email',
+                'max:255',
+                Rule::unique('clientes', 'email')->ignore($cliente->id),
+            ],
+            'telefone' => [
+                'nullable',
+                'string',
+                'max:20',
+                Rule::unique('clientes', 'telefone')->ignore($cliente->id),
+            ],
             'cep' => 'nullable|string|max:10',
             'logradouro' => 'nullable|string|max:255',
             'numero' => 'nullable|string|max:20',
             'bairro' => 'nullable|string|max:100',
             'cidade' => 'nullable|string|max:100',
             'estado' => 'nullable|string|max:50',
+        ], [
+            'documento.unique' => 'Este CPF/CNPJ já está cadastrado.',
+            'email.unique' => 'Este e-mail já está em uso.',
+            'telefone.unique' => 'Este telefone já está vinculado a outro cliente.',
         ]);
 
         if (isset($validatedData['matriz_id']) && $validatedData['matriz_id'] == $cliente->id) {
