@@ -51,6 +51,13 @@
                     <option value="Atrasado" {{ old('status') == 'Atrasado' ? 'selected' : '' }}>Atrasado</option>
                 </select>
             </div>
+            <div>
+                <label for="fixa" class="block text-sm font-medium text-gray-700 mb-2">Conta Fixa?</label>
+                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 max-h-60 overflow-y-auto">
+                    <input type="checkbox" id="fixa" name="fixa" value="1" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" {{ old('fixa') ? 'checked' : '' }}>
+                    <span class="text-sm font-medium text-gray-700 mb-2">Sim</span>
+                </div>
+            </div>
         </div>
 
         <div class="flex justify-end mt-10 pt-6">

@@ -14,10 +14,12 @@ class ContasPagar extends Model
         'data_vencimento',
         'data_pagamento',
         'status',
+        'fixa',
     ];
     protected $casts = [
         'data_vencimento' => 'date',
-        'data_pagamento' => 'date'
+        'data_pagamento' => 'date',
+        'fixa' => 'boolean',
     ];
 
     public function anexos()

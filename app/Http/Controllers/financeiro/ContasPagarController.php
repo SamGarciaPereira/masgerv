@@ -47,9 +47,10 @@ class ContasPagarController extends Controller
                 break;
         }
 
-        $contasPagar = $query->get();
+        $contasFixas = $query->clone()->where('fixa', true)->paginate(10, ['*'], 'page_fixas');
+        $contasVariaveis = $query->clone()->where('fixa', false)->paginate(10, ['*'], 'page_variaveis');
 
-        return view('financeiro.contas-pagar.index', compact('contasPagar'));
+        return view('financeiro.contas-pagar.index', compact('contasFixas', 'contasVariaveis'));
     }
 
     /**
@@ -73,13 +74,16 @@ class ContasPagarController extends Controller
             'data_vencimento' => 'required|date',
             'data_pagamento' => 'required_if:status,Pago|nullable|date',
             'status' => 'required|in:Pendente,Pago,Atrasado',
+            'fixa' => 'sometimes|boolean',
         ], [
             'data_pagamento.required_if' => 'A Data de Pagamento é obrigatória quando o status é Pago',
         ]);
 
-        if($validatedData['data_pagamento'] !== null){
+        if(isset($validatedData['data_pagamento']) && $validatedData['data_pagamento'] !== null){
             $validatedData['status'] = 'Pago';
         }
+
+        $validatedData['fixa'] = $request->boolean('fixa');
 
         ContasPagar::create($validatedData);
 
@@ -117,13 +121,16 @@ class ContasPagarController extends Controller
             'data_vencimento' => 'required|date',
             'data_pagamento' => 'required_if:status,Pago|nullable|date',
             'status' => 'required|in:Pendente,Pago,Atrasado',
+            'fixa' => 'sometimes|boolean',
         ],[
             'data_pagamento.required_if' => 'A Data de Pagamento é obrigatória quando o status é Pago',
         ]);     
 
-        if($validatedData['data_pagamento'] !== null){
+        if(isset($validatedData['data_pagamento']) && $validatedData['data_pagamento'] !== null){
             $validatedData['status'] = 'Pago';
         }
+
+        $validatedData['fixa'] = $request->boolean('fixa');
 
         $contasPagar->update($validatedData);
 
