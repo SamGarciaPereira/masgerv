@@ -13,6 +13,7 @@ use App\Models\Manutencao;
 use App\Models\ContasReceber;
 use App\Models\ContasPagar;
 use App\Models\Solicitacao;
+use App\Models\Contrato;
 
 class DashboardController extends Controller
 {
@@ -20,6 +21,9 @@ class DashboardController extends Controller
     {
         $mes = (int) $request->input('mes', now()->month);
         $ano = (int) $request->input('ano', now()->year);
+
+        $dataInicioFiltro = Carbon::create($ano, $mes, 1)->startOfMonth();
+        $dataFimFiltro    = Carbon::create($ano, $mes, 1)->endOfMonth();
         
         $getStats = function($query) {
             return $query->groupBy('status')
@@ -61,6 +65,21 @@ class DashboardController extends Controller
                     ->whereYear('created_at', $ano);
                 });
             }));
+
+        $totalContratos = Contrato::count();
+
+        $ativosCount = Contrato::where('ativo', true)
+            ->whereDate('data_inicio', '<=', $dataFimFiltro)
+            ->whereDate('data_fim', '>=', $dataInicioFiltro)
+            ->count();
+
+        $inativosCount = $totalContratos - $ativosCount;
+        if ($inativosCount < 0) $inativosCount = 0;
+
+        $contratosStats = array_filter([
+            'Ativo'   => $ativosCount,
+            'Inativo' => $inativosCount
+        ], fn($valor) => $valor > 0);
 
         $receberStats = $getSumStats(ContasReceber::whereMonth('data_vencimento', $mes)->whereYear('data_vencimento', $ano));
         $pagarStats = $getSumStats(ContasPagar::whereMonth('data_vencimento', $mes)->whereYear('data_vencimento', $ano));
@@ -109,7 +128,7 @@ class DashboardController extends Controller
 
         return view('index', compact(
             'atividades', 'processosStats', 'orcamentosStats', 'prevStats', 
-            'corrStats', 'receberStats', 'pagarStats', 'solicitacoesStats',
+            'corrStats', 'receberStats', 'pagarStats', 'solicitacoesStats', 'contratosStats',
             'labelsGrafico', 'dadosReceita', 'dadosDespesa',
             'mes', 'ano'
         ));

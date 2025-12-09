@@ -40,9 +40,9 @@
         foreach($stats as $status => $val) {
             $displayVal = $isMoney ? 'R$ ' . number_format($val, 2, ',', '.') : $val;
             $color = match($status) {
-                'Concluída', 'Aprovado', 'Aceita', 'Finalizado', 'Pago' => 'bg-green-500',
+                'Concluída', 'Aprovado', 'Aceita', 'Finalizado', 'Pago', 'Ativo' => 'bg-green-500',
                 'Pendente', 'Em Aberto', 'Agendada' => 'bg-yellow-500',
-                'Cancelada', 'Recusado', 'Recusada', 'Atrasado' => 'bg-red-500',
+                'Cancelada', 'Recusado', 'Recusada', 'Atrasado', 'Inativo' => 'bg-red-500',
                 'Em Andamento', 'Enviado' => 'bg-blue-500',
                 'Faturado' => 'bg-purple-500',
                 default => 'bg-gray-400'
@@ -92,6 +92,21 @@
         </div>
         <div class="border-t border-gray-100 pt-2">
             {!! renderStatusList($orcamentosStats) !!}
+        </div>
+    </div>
+
+    <div class="bg-white p-4 rounded-lg shadow-md border-t-4 border-black-500 hover:shadow-lg transition">
+        <div class="flex justify-between items-start mb-2">
+            <div>
+                <p class="text-md font-bold text-gray-500 tracking-wide">Contratos</p>
+                <h3 class="text-3xl font-bold text-gray-800">{{ array_sum($contratosStats) }}</h3>
+            </div>
+            <div class="bg-indigo-50 text-black-600 p-2 rounded-lg">
+                <i class="bi bi-file-earmark-check-fill text-xl"></i>
+            </div>
+        </div>
+        <div class="border-t border-gray-100 pt-2">
+            {!! renderStatusList($contratosStats) !!}
         </div>
     </div>
 

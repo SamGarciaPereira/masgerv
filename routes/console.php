@@ -9,3 +9,5 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('financeiro:atualizar-atrasados')->daily();
+
+Schedule::command('contratos:verificar-validade')->daily();
