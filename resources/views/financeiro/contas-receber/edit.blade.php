@@ -23,15 +23,15 @@
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <div class="lg:col-span-3">
-                <label for="descricao" class="block text-sm font-medium text-gray-700 mb-2">Descrição</label>
+                <label for="descricao" class="block text-sm font-medium text-gray-700 mb-2">Descrição <span class="text-red-500">*</span></label>
                 <input type="text" id="descricao" name="descricao" value="{{ old('descricao', $contasReceber->descricao) }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" required>
             </div>
             <div>
-                <label for="valor" class="block text-sm font-medium text-gray-700 mb-2">Valor (R$)</label>
+                <label for="valor" class="block text-sm font-medium text-gray-700 mb-2">Valor (R$) <span class="text-red-500">*</span></label>
                 <input type="number" step="0.01" id="valor" name="valor" value="{{ old('valor', $contasReceber->valor) }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" required>
             </div>
             <div>
-                <label for="data_vencimento" class="block text-sm font-medium text-gray-700 mb-2">Data de Vencimento</label>
+                <label for="data_vencimento" class="block text-sm font-medium text-gray-700 mb-2">Data de Vencimento <span class="text-red-500">*</span></label>
                 <input type="date" id="data_vencimento" name="data_vencimento" value="{{ old('data_vencimento', $contasReceber->data_vencimento?->format('Y-m-d')) }}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" required>
             </div>
             <div>
@@ -43,7 +43,7 @@
             </div>
             
             <div>
-                <label for="status" class="block text-sm font-medium text-gray-700 mb-2">Status</label>
+                <label for="status" class="block text-sm font-medium text-gray-700 mb-2">Status <span class="text-red-500">*</span></label>
                 <select id="status" name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" required>
                     <option value="Pendente" {{ $contasReceber->status == 'Pendente' ? 'selected' : '' }}>Pendente</option>
                     <option value="Pago" {{ $contasReceber->status == 'Pago' ? 'selected' : '' }}>Pago</option>

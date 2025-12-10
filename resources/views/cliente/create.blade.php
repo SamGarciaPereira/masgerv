@@ -23,11 +23,11 @@
                     <h2 class="text-xl font-semibold text-gray-800 pb-4 mb-6">Informações Pessoais</h2>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label for="nome" class="block text-sm font-medium text-gray-700 mb-2">Nome Completo / Razão Social</label>
+                            <label for="nome" class="block text-sm font-medium text-gray-700 mb-2">Nome Completo / Razão Social <span class="text-red-500">*</span></label>
                             <input type="text" id="nome" name="nome" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="Ex: João da Silva ou Magserv LTDA" required>
                         </div>
                         <div>
-                            <label for="documento" class="block text-sm font-medium text-gray-700 mb-2">CPF / CNPJ</label>
+                            <label for="documento" class="block text-sm font-medium text-gray-700 mb-2">CPF / CNPJ <span class="text-red-500">*</span></label>
                             <input type="text" id="documento" name="documento" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="Ex: 123.456.789-00" required>
                             @error('documento')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
