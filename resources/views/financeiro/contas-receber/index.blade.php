@@ -126,54 +126,68 @@
                     </tr>
                     <tr id="details-{{ $conta->id }}" class="hidden details-row bg-gray-50 border-b border-gray-200">
                         <td colspan="8" class="px-6 py-4">
-                            <div class="flex flex-col gap-2">
-                                <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center">
-                                    <i class="bi bi-folder2-open mr-1"></i> Arquivos Anexados
-                                </h4>
-                                
-                                @if($conta->anexos && $conta->anexos->count() > 0)
-                                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                                        @foreach($conta->anexos as $anexo)
-                                            <div class="bg-white border border-gray-200 rounded-md p-3 flex items-center justify-between shadow-sm hover:shadow-md transition">
-                                                <div class="flex items-center overflow-hidden">
-                                                    @if(Str::endsWith(strtolower($anexo->nome_original), '.pdf'))
-                                                        <i class="bi bi-file-earmark-pdf-fill text-red-500 text-xl mr-3 flex-shrink-0"></i>
-                                                    @else
-                                                        <i class="bi bi-file-earmark-image-fill text-blue-500 text-xl mr-3 flex-shrink-0"></i>
-                                                    @endif
-                                                    
-                                                    <div class="truncate">
-                                                        <p class="text-sm font-medium text-gray-700 truncate" title="{{ $anexo->nome_original }}">
-                                                            {{ $anexo->nome_original }}
-                                                        </p>
-                                                        <p class="text-xs text-gray-400">{{ $anexo->created_at->format('d/m/Y H:i') }}</p>
+                            <div class="flex flex-col md:flex-row gap-6 justify-between items-start">
+                                <div class="flex-1 w-full">
+                                    <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 flex items-center">
+                                        <i class="bi bi-folder2-open mr-1"></i> Arquivos Anexados
+                                    </h4>
+                                    @if($conta->anexos && $conta->anexos->count() > 0)
+                                        <div class="flex flex-wrap gap-3">
+                                            @foreach($conta->anexos as $anexo)
+                                                <div class="flex-1 min-w-[200px] bg-white border border-gray-200 rounded-md p-3 flex items-center justify-between shadow-sm hover:shadow-md transition">
+                                                    <div class="flex items-center overflow-hidden min-w-0">
+                                                        @if(Str::endsWith(strtolower($anexo->nome_original), '.pdf'))
+                                                            <i class="bi bi-file-earmark-pdf-fill text-red-500 text-xl mr-3 flex-shrink-0"></i>
+                                                        @else
+                                                            <i class="bi bi-file-earmark-image-fill text-blue-500 text-xl mr-3 flex-shrink-0"></i>
+                                                        @endif
+                                                        <div class="truncate">
+                                                            <p class="text-sm font-medium text-gray-700 truncate" title="{{ $anexo->nome_original }}">
+                                                                {{ $anexo->nome_original }}
+                                                            </p>
+                                                            <p class="text-xs text-gray-400">{{ $anexo->created_at->format('d/m/Y H:i') }}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="flex items-center gap-2 ml-2 flex-shrink-0">
+                                                        <a href="{{ route('anexos.show', ['anexo' => $anexo->id, 'filename' => $anexo->nome_original]) }}" target="_blank" 
+                                                        class="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition" title="Ver">
+                                                            <i class="bi bi-eye-fill"></i>
+                                                        </a>
+                                                        <a href="{{ route('anexos.download', $anexo->id) }}" 
+                                                        class="p-1.5 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded transition" title="Baixar">
+                                                            <i class="bi bi-download"></i>
+                                                        </a>
+                                                        <form action="{{ route('anexos.destroy', $anexo->id) }}" method="POST" onsubmit="return confirm('Excluir arquivo?');" class="inline">
+                                                            @csrf @method('DELETE')
+                                                            <button type="submit" class="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition" title="Excluir">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        </form>
                                                     </div>
                                                 </div>
-
-                                                <div class="flex items-center gap-2 ml-2">
-                                                    <a href="{{ route('anexos.show', ['anexo' => $anexo->id, 'filename' => $anexo->nome_original]) }}" target="_blank" 
-                                                    class="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition" 
-                                                    title="Visualizar">
-                                                        <i class="bi bi-eye-fill"></i>
-                                                    </a>
-                                                    <a href="{{ route('anexos.download', $anexo->id) }}" 
-                                                    class="p-1.5 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded transition" 
-                                                    title="Baixar">
-                                                        <i class="bi bi-download"></i>
-                                                    </a>
-                                                    <form action="{{ route('anexos.destroy', $anexo->id) }}" method="POST" onsubmit="return confirm('Excluir arquivo?');" class="inline">
-                                                        @csrf @method('DELETE')
-                                                        <button type="submit" class="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition" title="Excluir">
-                                                            <i class="bi bi-trash"></i>
-                                                        </button>
-                                                    </form>
-                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @else
+                                        <p class="text-sm text-gray-500 italic">Nenhum anexo encontrado para esta conta.</p>
+                                    @endif
+                                </div>
+                                <div class="flex-shrink-0 md:w-64">
+                                    @if($conta->last_user_id)
+                                        <div class="bg-blue-50 border border-blue-200 rounded-md p-3">
+                                            <div class="mb-2">
+                                                <span class="px-2 py-0.5 bg-blue-100 text-blue-800 rounded text-xs font-bold border border-blue-200 uppercase inline-flex items-center">
+                                                    <i class="bi bi-clock-history mr-1"></i> Última Alteração
+                                                </span>
                                             </div>
-                                        @endforeach
-                                    </div>
-                                @else
-                                    <p class="text-sm text-gray-500 italic">Nenhum anexo encontrado para esta conta.</p>
-                                @endif
+                                            <p class="text-sm mb-1 text-gray-600">
+                                                {{ $conta->updated_at->format('d/m/Y') }} às {{ $conta->updated_at->format('H:i') }}
+                                            </p>
+                                            <p class="text-sm text-gray-600">
+                                                Por: <strong class="text-blue-800">{{ $conta->editor->name ?? 'Sistema' }}</strong>
+                                            </p>
+                                        </div>
+                                    @endif      
+                                </div>
                             </div>
                         </td>
                     </tr>

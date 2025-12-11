@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\HasLastUser;
 
 class ContasPagar extends Model
 {
+    use HasLastUser;
+
     protected $fillable = [
         'fornecedor',
         'descricao',
@@ -15,6 +18,7 @@ class ContasPagar extends Model
         'data_pagamento',
         'status',
         'fixa',
+        'last_user_id',
     ];
     protected $casts = [
         'data_vencimento' => 'date',

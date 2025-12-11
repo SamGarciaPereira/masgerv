@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\HasLastUser;
 
 class ContasReceber extends Model
 {
+    use HasLastUser;
+
     protected $fillable = [
         'processo_id',
         'cliente_id',
@@ -15,6 +18,7 @@ class ContasReceber extends Model
         'data_vencimento',
         'data_recebimento',
         'status',
+        'last_user_id',
     ];
 
     protected $casts = [
