@@ -80,7 +80,7 @@ class ProcessoController extends Controller
      */
     public function edit(Processo $processo)
     {
-
+        $processo->load('contasReceber.pagamentosParciais');
         return view('processo.edit', compact('processo'));
     }
 

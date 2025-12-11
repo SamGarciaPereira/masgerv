@@ -15,7 +15,7 @@ class ContasReceberController extends Controller
      */
     public function index(Request $request)
     {
-       $query = ContasReceber::query();
+       $query = ContasReceber::with('pagamentosParciais');
 
         if ($request->filled('search')) {
             $search = $request->input('search');
