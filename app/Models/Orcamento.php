@@ -5,10 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Traits\HasLastUser;
 
 class Orcamento extends Model
 {
     use HasFactory;
+    use HasLastUser;
 
     public $numero_manual;
 
@@ -21,6 +23,7 @@ class Orcamento extends Model
         'valor',
         'revisao',
         'status',
+        'last_user_id',
     ];
 
     protected $casts = [

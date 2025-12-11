@@ -13,6 +13,8 @@ class Anexo extends Model
         'anexable_type',
     ];
 
+    protected $touches = ['anexable'];
+
     public function anexable()
     {
         return $this->morphTo();

@@ -50,6 +50,9 @@ class OrcamentoObserver
                 'status' => 'Em Aberto',
             ]);
         }
+        if($orcamento->processo){
+            $orcamento->processo->touch();
+        }
     }
 
     /**

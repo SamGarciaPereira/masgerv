@@ -127,7 +127,24 @@
                                         <p><strong>Data de Aprovação:</strong> {{ $orcamento->data_aprovacao ? \Carbon\Carbon::parse($orcamento->data_aprovacao)->format('d/m/Y') : 'Não definida' }}</p>
                                         <p><strong>Revisão:</strong> {{ $orcamento->revisao }}</p>
                                     </div>
-                                    <div class="flex flex-col gap-2 md:w-2/3">
+                                    <div class="flex flex-col gap-2 md:w-1/3">
+                                        @if($orcamento->last_user_id)
+                                            <div class="bg-blue-50 border border-blue-200 rounded-md p-3">
+                                                <div class="gap-2 mb-1">
+                                                    <span class="px-2 py-0.5 bg-blue-100 text-blue-800 rounded text-xs font-bold border border-blue-200 mb-2 uppercase">
+                                                        <i class="bi bi-clock-history mr-1"></i> Última Alteração
+                                                    </span>
+                                                </div>
+                                                <p class="text-sm mb-1 text-gray-600">
+                                                    {{ $orcamento->updated_at->format('d/m/Y') }} às {{ $orcamento->updated_at->format('H:i') }}
+                                                </p>
+                                                <p class="text-sm text-gray-600">
+                                                    Por: <strong class="text-blue-800">{{ $orcamento->editor->name ?? 'Sistema' }}</strong>
+                                                </p>
+                                            </div>
+                                        @endif      
+                                    </div>
+                                    <div class="flex flex-col gap-2 md:w-1/3">
                                         <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center">
                                             <i class="bi bi-folder2-open mr-1"></i> Arquivos Anexados
                                         </h4>
