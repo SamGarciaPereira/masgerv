@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany; 
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use App\Traits\HasLastUser;
 
 class Cliente extends Model
 {
     use HasFactory;
+    use HasLastUser;
 
     /**
      * The attributes that are mass assignable.
@@ -30,6 +32,7 @@ class Cliente extends Model
         'bairro',
         'cidade',
         'estado',
+        'last_user_id',
     ];
 
     public function matriz(){

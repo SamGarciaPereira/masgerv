@@ -96,12 +96,10 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex items-center space-x-4">
-                                    <!-- Botão Editar -->
                                     <a href="{{ route('clientes.edit', $cliente->id) }}"
                                         class="text-indigo-600 hover:text-indigo-900" title="Editar">
                                         <i class="bi bi-pencil-fill text-base"></i>
                                     </a>
-                                    <!-- Formulário para Remover -->
                                     <form action="{{ route('clientes.destroy', $cliente->id) }}" method="POST"
                                         onsubmit="return confirm('Tem certeza que deseja remover este cliente?');">
                                         @csrf
@@ -125,56 +123,73 @@
                                         <p class="mb-0"><strong>E-mail:</strong> {{ $cliente->email ?? 'Não informado'}}</p>
                                     </div>
                                 </div>
-                                <div class="mb-4 p-2 border-t border-gray-100">
-                                    <p class="text-sm font-bold text-gray-500 mb-2">Estrutura Corporativa</p>
-
-                                    @if($cliente->matriz)
-                                        <div class="bg-blue-50 border border-blue-200 rounded-md p-3">
-                                            <div class="flex items-center gap-2 mb-1">
-                                                <span class="px-2 py-0.5 bg-blue-100 text-blue-800 rounded text-xs font-bold border border-blue-200">
-                                                    FILIAL
-                                                </span>
+                                <div class="flex flex-col md:flex-row gap-4">
+                                    <div class="p-2 border-t border-gray-100">
+                                        @if($cliente->last_user_id)
+                                            <div class="bg-blue-50 border border-blue-200 rounded-md p-3">
+                                                <div class="gap-2 mb-1">
+                                                    <span class="px-2 py-0.5 bg-blue-100 text-blue-800 rounded text-xs font-bold border border-blue-200 mb-2 uppercase">
+                                                        <i class="bi bi-clock-history mr-1"></i> Última Alteração
+                                                    </span>
+                                                </div>
+                                                <p class="text-sm mb-1 text-gray-600">
+                                                    {{ $cliente->updated_at->format('d/m/Y') }} às {{ $cliente->updated_at->format('H:i') }}
+                                                </p>
+                                                <p class="text-sm text-gray-600">
+                                                    Por: <strong class="text-blue-800">{{ $cliente->editor->name ?? 'Sistema' }}</strong>
+                                                </p>
                                             </div>
-                                            <p class="text-sm text-gray-600">
-                                                Vinculada à Matriz: 
-                                                <a href="{{ route('clientes.edit', $cliente->matriz->id) }}" class="font-bold text-blue-600 hover:underline">
-                                                    {{ $cliente->matriz->nome }}
-                                                </a>
-                                            </p>
-                                        </div>
-
-                                    @elseif($cliente->filiais->count() > 0)
-                                        <div class="bg-purple-50 border border-purple-200 rounded-md p-3">
-                                            <div class="flex items-center gap-2 mb-2">
-                                                <span class="px-2 py-0.5 bg-purple-100 text-purple-800 rounded text-xs font-bold border border-purple-200">
-                                                    MATRIZ
-                                                </span>
-                                                <span class="text-xs text-purple-600 font-medium">
-                                                    {{ $cliente->filiais->count() }} unidade(s) vinculada(s)
-                                                </span>
+                                        @endif      
+                                    </div>
+                                    <div class="p-2 border-t border-gray-100">
+                                        @if($cliente->matriz)
+                                            <div class="bg-blue-50 border border-blue-200 rounded-md p-3">
+                                                <div class="flex items-center gap-2 mb-1">
+                                                    <span class="px-2 py-0.5 bg-blue-100 text-blue-800 rounded text-xs font-bold border border-blue-200">
+                                                        FILIAL
+                                                    </span>
+                                                </div>
+                                                <p class="text-sm text-gray-600">
+                                                    Vinculada à Matriz: 
+                                                    <a href="{{ route('clientes.edit', $cliente->matriz->id) }}" class="font-bold text-blue-600 hover:underline">
+                                                        {{ $cliente->matriz->nome }}
+                                                    </a>
+                                                </p>
                                             </div>
-                                            
-                                            <div class="pl-2 border-l-2 border-purple-200">
-                                                <p class="text-xs text-gray-500 mb-1">Filiais:</p>
-                                                <ul class="text-sm text-gray-700 space-y-1">
-                                                    @foreach($cliente->filiais as $filial)
-                                                        <li class="flex items-center">
-                                                            <i class="bi bi-arrow-return-right text-gray-400 mr-2 text-xs"></i>
-                                                            {{ $filial->nome }}
-                                                        </li>
-                                                    @endforeach
-                                                </ul>
-                                            </div>
-                                        </div>
 
-                                    @else
-                                        <div class="flex items-center gap-2">
-                                            <span class="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs font-bold border border-gray-200">
-                                                UNIDADE ÚNICA
-                                            </span>
-                                            <span class="text-xs text-gray-400 italic">Não possui vínculos.</span>
-                                        </div>
-                                    @endif
+                                        @elseif($cliente->filiais->count() > 0)
+                                            <div class="bg-purple-50 border border-purple-200 rounded-md p-3">
+                                                <div class="flex items-center gap-2 mb-2">
+                                                    <span class="px-2 py-0.5 bg-purple-100 text-purple-800 rounded text-xs font-bold border border-purple-200">
+                                                        MATRIZ
+                                                    </span>
+                                                    <span class="text-xs text-purple-600 font-medium">
+                                                        {{ $cliente->filiais->count() }} unidade(s) vinculada(s)
+                                                    </span>
+                                                </div>
+                                                
+                                                <div class="pl-2 border-l-2 border-purple-200">
+                                                    <p class="text-xs text-gray-500 mb-1">Filiais:</p>
+                                                    <ul class="text-sm text-gray-700 space-y-1">
+                                                        @foreach($cliente->filiais as $filial)
+                                                            <li class="flex items-center">
+                                                                <i class="bi bi-arrow-return-right text-gray-400 mr-2 text-xs"></i>
+                                                                {{ $filial->nome }}
+                                                            </li>
+                                                        @endforeach
+                                                    </ul>
+                                                </div>
+                                            </div>
+
+                                        @else
+                                            <div class="flex items-center gap-2">
+                                                <span class="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-xs font-bold border border-gray-200">
+                                                    UNIDADE ÚNICA
+                                                </span>
+                                                <span class="text-xs text-gray-400 italic">Não possui vínculos.</span>
+                                            </div>
+                                        @endif
+                                    </div>
                                 </div>
                             </td>
                         </tr>
