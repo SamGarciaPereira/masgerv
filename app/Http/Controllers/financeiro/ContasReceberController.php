@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\financeiro;
 
 use App\Http\Controllers\Controller;
-use App\Models\ContasReceber;
 use App\Models\Cliente;
-use App\Models\Processo;
+use App\Models\ContasReceber;
 use Illuminate\Http\Request;
 
 class ContasReceberController extends Controller
@@ -15,20 +14,20 @@ class ContasReceberController extends Controller
      */
     public function index(Request $request)
     {
-       $query = ContasReceber::with('pagamentosParciais');
+        $query = ContasReceber::with('pagamentosParciais');
 
         if ($request->filled('search')) {
             $search = $request->input('search');
-            $query->where(function($q) use ($search) {
-                 $q->where('descricao', 'like', "%{$search}%")
-                  ->orWhere('nf', 'like', "%{$search}%")
-                  ->orWhereHas('cliente', function($q2) use ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('descricao', 'like', "%{$search}%")
+                    ->orWhere('nf', 'like', "%{$search}%")
+                    ->orWhereHas('cliente', function ($q2) use ($search) {
                         $q2->where('nome', 'like', "%{$search}%");
-                  });
+                    });
             });
         }
 
-        if($request->filled('status')){
+        if ($request->filled('status')) {
             $query->where('status', $request->input('status'));
         }
 
@@ -58,6 +57,7 @@ class ContasReceberController extends Controller
     public function create()
     {
         $clientes = Cliente::orderBy('nome')->get();
+
         return view('financeiro.contas-receber.create', compact('clientes'));
     }
 
@@ -74,27 +74,24 @@ class ContasReceberController extends Controller
             'data_vencimento' => 'required|date',
             'data_recebimento' => 'required_if:status,Pago|nullable|date',
             'status' => 'required|in:Pendente,Pago,Atrasado',
-        ],[
+        ], [
             'data_recebimento.required_if' => 'A Data de Recebimento é obrigatória quando o status é Pago',
         ]);
 
-        if($validatedData['data_recebimento'] !== null){
+        if ($validatedData['data_recebimento'] !== null) {
             $validatedData['status'] = 'Pago';
         }
 
         ContasReceber::create($validatedData);
 
         return redirect()->route('financeiro.contas-receber.index')
-                         ->with('success', 'Conta a receber cadastrada com sucesso!');
+            ->with('success', 'Conta a receber cadastrada com sucesso!');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
-    {
-    
-    }
+    public function show(string $id) {}
 
     /**
      * Show the form for editing the specified resource.
@@ -102,7 +99,7 @@ class ContasReceberController extends Controller
     public function edit(ContasReceber $contasReceber)
     {
         return view('financeiro.contas-receber.edit', compact('contasReceber'));
-    }   
+    }
 
     /**
      * Update the specified resource in storage.
@@ -116,18 +113,18 @@ class ContasReceberController extends Controller
             'data_vencimento' => 'required|date',
             'data_recebimento' => 'required_if:status,Pago|nullable|date',
             'status' => 'required|in:Pendente,Pago,Atrasado',
-        ],[
+        ], [
             'data_recebimento.required_if' => 'A Data de Recebimento é obrigatória quando o status é Pago',
         ]);
 
-        if($validatedData['data_recebimento'] !== null){
+        if ($validatedData['data_recebimento'] !== null) {
             $validatedData['status'] = 'Pago';
         }
 
         $contasReceber->update($validatedData);
 
         return redirect()->route('financeiro.contas-receber.index')
-                         ->with('success', 'Conta a receber atualizada com sucesso!');
+            ->with('success', 'Conta a receber atualizada com sucesso!');
     }
 
     /**
@@ -138,6 +135,6 @@ class ContasReceberController extends Controller
         $contasReceber->delete();
 
         return redirect()->route('financeiro.contas-receber.index')
-                         ->with('success', 'Conta a receber removida com sucesso!');
+            ->with('success', 'Conta a receber removida com sucesso!');
     }
 }

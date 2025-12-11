@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\PagamentoParcial;
 use App\Models\ContasReceber;
+use App\Models\PagamentoParcial;
+use Illuminate\Http\Request;
 
 class PagamentoParcialController extends Controller
 {
@@ -21,12 +21,12 @@ class PagamentoParcialController extends Controller
         ]);
 
         $contaReceber = ContasReceber::findOrFail($validatedData['contas_receber_id']);
-        
+
         // Verifica se o valor não excede o saldo restante
         $saldoRestante = $contaReceber->saldoRestante();
         if ($validatedData['valor'] > $saldoRestante) {
             return redirect()->back()
-                ->withErrors(['valor' => "O valor do pagamento (R$ " . number_format($validatedData['valor'], 2, ',', '.') . ") excede o saldo restante (R$ " . number_format($saldoRestante, 2, ',', '.') . ")"])
+                ->withErrors(['valor' => 'O valor do pagamento (R$ '.number_format($validatedData['valor'], 2, ',', '.').') excede o saldo restante (R$ '.number_format($saldoRestante, 2, ',', '.').')'])
                 ->withInput();
         }
 

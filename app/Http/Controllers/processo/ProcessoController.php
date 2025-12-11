@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\processo;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Processo;
+use Illuminate\Http\Request;
 
 class ProcessoController extends Controller
 {
@@ -13,21 +13,21 @@ class ProcessoController extends Controller
      */
     public function index(Request $request)
     {
-       $query = Processo::with('orcamento.cliente', 'orcamento.anexos', 'anexos');
+        $query = Processo::with('orcamento.cliente', 'orcamento.anexos', 'anexos');
 
         if ($request->filled('search')) {
             $search = $request->input('search');
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('nf', 'like', "%{$search}%")
-                  ->orWhereHas('orcamento', function($q2) use ($search) {
-                      $q2->where('numero_proposta', 'like', "%{$search}%")
-                         ->orWhere('escopo', 'like', "%{$search}%")
-                         ->orWhere('valor', 'like', "%{$search}%")
-                         ->orWhereHas('cliente', function($q3) use ($search) {
-                             $q3->where('nome', 'like', "%{$search}%")
-                                ->orWhere('email', 'like', "%{$search}%");
-                         });
-                  });
+                    ->orWhereHas('orcamento', function ($q2) use ($search) {
+                        $q2->where('numero_proposta', 'like', "%{$search}%")
+                            ->orWhere('escopo', 'like', "%{$search}%")
+                            ->orWhere('valor', 'like', "%{$search}%")
+                            ->orWhereHas('cliente', function ($q3) use ($search) {
+                                $q3->where('nome', 'like', "%{$search}%")
+                                    ->orWhere('email', 'like', "%{$search}%");
+                            });
+                    });
             });
         }
 
@@ -42,12 +42,13 @@ class ProcessoController extends Controller
             case 'faturamento':
                 $query->orderByDesc('data_faturamento');
                 break;
-            default: 
+            default:
                 $query->latest();
                 break;
         }
 
-        $processos = $query->paginate(200); 
+        $processos = $query->paginate(200);
+
         return view('processo.index', compact('processos'));
     }
 
@@ -81,6 +82,7 @@ class ProcessoController extends Controller
     public function edit(Processo $processo)
     {
         $processo->load('contasReceber.pagamentosParciais');
+
         return view('processo.edit', compact('processo'));
     }
 
@@ -96,10 +98,10 @@ class ProcessoController extends Controller
 
         if ($validatedData['status'] === 'Faturado') {
             $processo->load('orcamento');
-           if (empty($processo->orcamento->valor) || $processo->orcamento->valor <= 0) {
+            if (empty($processo->orcamento->valor) || $processo->orcamento->valor <= 0) {
                 return redirect()->back()
-                                 ->withInput()
-                                 ->withErrors(['faturamento' => 'Não é possível faturar um processo cujo orçamento não tem um valor definido maior que zero.']);
+                    ->withInput()
+                    ->withErrors(['faturamento' => 'Não é possível faturar um processo cujo orçamento não tem um valor definido maior que zero.']);
             }
         }
 

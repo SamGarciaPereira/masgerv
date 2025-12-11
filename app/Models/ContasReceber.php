@@ -19,7 +19,7 @@ class ContasReceber extends Model
 
     protected $casts = [
         'data_vencimento' => 'date',
-        'data_recebimento' => 'date'
+        'data_recebimento' => 'date',
     ];
 
     public function processo()
@@ -32,7 +32,8 @@ class ContasReceber extends Model
         return $this->belongsTo(Cliente::class);
     }
 
-    public function anexos(){
+    public function anexos()
+    {
         return $this->morphMany(Anexo::class, 'anexable');
     }
 

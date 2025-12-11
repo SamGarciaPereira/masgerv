@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Traits\HasLastUser;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Processo extends Model
 {
@@ -18,11 +18,13 @@ class Processo extends Model
         'last_user_id',
     ];
 
-    public function orcamento(){
+    public function orcamento()
+    {
         return $this->belongsTo(Orcamento::class);
     }
 
-    public function anexos(){
+    public function anexos()
+    {
         return $this->morphMany(Anexo::class, 'anexable');
     }
 
@@ -30,5 +32,4 @@ class Processo extends Model
     {
         return $this->hasMany(ContasReceber::class);
     }
-    
 }
