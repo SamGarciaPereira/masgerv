@@ -25,20 +25,23 @@ class PagamentoParcialController extends Controller
         // Verifica se o valor não excede o saldo restante
         $saldoRestante = $contaReceber->saldoRestante();
         if ($validatedData['valor'] > $saldoRestante) {
+            $valorFormatado = number_format($validatedData['valor'], 2, ',', '.');
+            $saldoFormatado = number_format($saldoRestante, 2, ',', '.');
+            $mensagem = sprintf(
+                'O valor do pagamento (R$ %s) excede o saldo restante (R$ %s).',
+                $valorFormatado,
+                $saldoFormatado
+            );
+
             return redirect()->back()
-                ->withErrors(['valor' => 'O valor do pagamento (R$ '.number_format($validatedData['valor'], 2, ',', '.').') excede o saldo restante (R$ '.number_format($saldoRestante, 2, ',', '.').')'])
+                ->withErrors(['valor' => $mensagem])
                 ->withInput();
         }
 
         PagamentoParcial::create($validatedData);
 
-        // Atualiza o status da conta se estiver totalmente pago
-        if ($contaReceber->isTotalmentePago()) {
-            $contaReceber->update(['status' => 'Pago']);
-        } else {
-            // Se há pagamentos parciais mas não está totalmente pago, marca como Pendente
-            $contaReceber->update(['status' => 'Pendente']);
-        }
+        // Atualiza o status da conta automaticamente
+        $contaReceber->atualizarStatus();
 
         return redirect()->back()
             ->with('success', 'Pagamento parcial registrado com sucesso!');
@@ -52,12 +55,8 @@ class PagamentoParcialController extends Controller
         $contaReceber = $pagamentoParcial->contasReceber;
         $pagamentoParcial->delete();
 
-        // Atualiza o status da conta após remover o pagamento
-        if ($contaReceber->isTotalmentePago()) {
-            $contaReceber->update(['status' => 'Pago']);
-        } else {
-            $contaReceber->update(['status' => 'Pendente']);
-        }
+        // Atualiza o status da conta automaticamente
+        $contaReceber->atualizarStatus();
 
         return redirect()->back()
             ->with('success', 'Pagamento parcial removido com sucesso!');

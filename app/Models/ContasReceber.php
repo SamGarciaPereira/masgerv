@@ -63,6 +63,20 @@ class ContasReceber extends Model
      */
     public function isTotalmentePago()
     {
-        return $this->saldoRestante() <= 0;
+        return $this->saldoRestante() <= 0.01; // Using small epsilon for floating point comparison
+    }
+
+    /**
+     * Atualiza o status baseado no saldo e data de vencimento
+     */
+    public function atualizarStatus()
+    {
+        if ($this->isTotalmentePago()) {
+            $this->update(['status' => 'Pago']);
+        } elseif ($this->data_vencimento && $this->data_vencimento->isPast()) {
+            $this->update(['status' => 'Atrasado']);
+        } else {
+            $this->update(['status' => 'Pendente']);
+        }
     }
 }
