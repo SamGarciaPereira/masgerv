@@ -70,9 +70,10 @@
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Descrição</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valor</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valor Total</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pago</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Saldo</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Vencimento</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Recebimento</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
                 </tr>
@@ -95,11 +96,10 @@
                             @endif
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">R$ {{ number_format($conta->valor, 2, ',', '.') }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-medium">R$ {{ number_format($conta->totalPago(), 2, ',', '.') }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-medium">R$ {{ number_format($conta->saldoRestante(), 2, ',', '.') }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                             {{ $conta->data_vencimento ? \Carbon\Carbon::parse($conta->data_vencimento)->format('d/m/Y') : 'Não definida' }}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {{ $conta->data_recebimento ? \Carbon\Carbon::parse($conta->data_recebimento)->format('d/m/Y') : 'Não definida' }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <x-status-badge :status="$conta->status" />
@@ -125,55 +125,102 @@
                         </td>
                     </tr>
                     <tr id="details-{{ $conta->id }}" class="hidden details-row bg-gray-50 border-b border-gray-200">
-                        <td colspan="8" class="px-6 py-4">
-                            <div class="flex flex-col gap-2">
-                                <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center">
-                                    <i class="bi bi-folder2-open mr-1"></i> Arquivos Anexados
-                                </h4>
-                                
-                                @if($conta->anexos && $conta->anexos->count() > 0)
-                                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                                        @foreach($conta->anexos as $anexo)
-                                            <div class="bg-white border border-gray-200 rounded-md p-3 flex items-center justify-between shadow-sm hover:shadow-md transition">
-                                                <div class="flex items-center overflow-hidden">
-                                                    @if(Str::endsWith(strtolower($anexo->nome_original), '.pdf'))
-                                                        <i class="bi bi-file-earmark-pdf-fill text-red-500 text-xl mr-3 flex-shrink-0"></i>
-                                                    @else
-                                                        <i class="bi bi-file-earmark-image-fill text-blue-500 text-xl mr-3 flex-shrink-0"></i>
-                                                    @endif
-                                                    
-                                                    <div class="truncate">
-                                                        <p class="text-sm font-medium text-gray-700 truncate" title="{{ $anexo->nome_original }}">
-                                                            {{ $anexo->nome_original }}
-                                                        </p>
-                                                        <p class="text-xs text-gray-400">{{ $anexo->created_at->format('d/m/Y H:i') }}</p>
+                        <td colspan="9" class="px-6 py-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Pagamentos Parciais -->
+                                @if($conta->processo)
+                                <div class="flex flex-col gap-2">
+                                    <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center">
+                                        <i class="bi bi-cash-stack mr-1"></i> Pagamentos Parciais
+                                    </h4>
+                                    
+                                    @if($conta->pagamentosParciais && $conta->pagamentosParciais->count() > 0)
+                                        <div class="flex flex-col gap-2">
+                                            @foreach($conta->pagamentosParciais as $pagamento)
+                                                <div class="bg-white border border-gray-200 rounded-md p-3 flex items-center justify-between shadow-sm">
+                                                    <div class="flex items-center gap-3">
+                                                        <i class="bi bi-check-circle-fill text-green-500 text-xl"></i>
+                                                        <div>
+                                                            <p class="text-sm font-medium text-gray-700">
+                                                                R$ {{ number_format($pagamento->valor, 2, ',', '.') }}
+                                                            </p>
+                                                            <p class="text-xs text-gray-400">{{ $pagamento->data_pagamento->format('d/m/Y') }}</p>
+                                                            @if($pagamento->observacao)
+                                                            <p class="text-xs text-gray-500 italic">{{ $pagamento->observacao }}</p>
+                                                            @endif
+                                                        </div>
                                                     </div>
                                                 </div>
-
-                                                <div class="flex items-center gap-2 ml-2">
-                                                    <a href="{{ route('anexos.show', ['anexo' => $anexo->id, 'filename' => $anexo->nome_original]) }}" target="_blank" 
-                                                    class="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition" 
-                                                    title="Visualizar">
-                                                        <i class="bi bi-eye-fill"></i>
-                                                    </a>
-                                                    <a href="{{ route('anexos.download', $anexo->id) }}" 
-                                                    class="p-1.5 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded transition" 
-                                                    title="Baixar">
-                                                        <i class="bi bi-download"></i>
-                                                    </a>
-                                                    <form action="{{ route('anexos.destroy', $anexo->id) }}" method="POST" onsubmit="return confirm('Excluir arquivo?');" class="inline">
-                                                        @csrf @method('DELETE')
-                                                        <button type="submit" class="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition" title="Excluir">
-                                                            <i class="bi bi-trash"></i>
-                                                        </button>
-                                                    </form>
-                                                </div>
+                                            @endforeach
+                                            <div class="bg-blue-50 border border-blue-200 rounded-md p-3 mt-2">
+                                                <a href="{{ route('processos.edit', $conta->processo->id) }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                                    <i class="bi bi-plus-circle mr-1"></i> Gerenciar Pagamentos no Processo
+                                                </a>
                                             </div>
-                                        @endforeach
-                                    </div>
-                                @else
-                                    <p class="text-sm text-gray-500 italic">Nenhum anexo encontrado para esta conta.</p>
+                                        </div>
+                                    @else
+                                        <p class="text-sm text-gray-500 italic mb-2">Nenhum pagamento parcial registrado.</p>
+                                        @if($conta->saldoRestante() > 0)
+                                        <div class="bg-blue-50 border border-blue-200 rounded-md p-3">
+                                            <a href="{{ route('processos.edit', $conta->processo->id) }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                                <i class="bi bi-plus-circle mr-1"></i> Adicionar Pagamento no Processo
+                                            </a>
+                                        </div>
+                                        @endif
+                                    @endif
+                                </div>
                                 @endif
+
+                                <!-- Arquivos Anexados -->
+                                <div class="flex flex-col gap-2">
+                                    <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center">
+                                        <i class="bi bi-folder2-open mr-1"></i> Arquivos Anexados
+                                    </h4>
+                                    
+                                    @if($conta->anexos && $conta->anexos->count() > 0)
+                                        <div class="flex flex-col gap-3">
+                                            @foreach($conta->anexos as $anexo)
+                                                <div class="bg-white border border-gray-200 rounded-md p-3 flex items-center justify-between shadow-sm hover:shadow-md transition">
+                                                    <div class="flex items-center overflow-hidden">
+                                                        @if(Str::endsWith(strtolower($anexo->nome_original), '.pdf'))
+                                                            <i class="bi bi-file-earmark-pdf-fill text-red-500 text-xl mr-3 flex-shrink-0"></i>
+                                                        @else
+                                                            <i class="bi bi-file-earmark-image-fill text-blue-500 text-xl mr-3 flex-shrink-0"></i>
+                                                        @endif
+                                                        
+                                                        <div class="truncate">
+                                                            <p class="text-sm font-medium text-gray-700 truncate" title="{{ $anexo->nome_original }}">
+                                                                {{ $anexo->nome_original }}
+                                                            </p>
+                                                            <p class="text-xs text-gray-400">{{ $anexo->created_at->format('d/m/Y H:i') }}</p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="flex items-center gap-2 ml-2">
+                                                        <a href="{{ route('anexos.show', ['anexo' => $anexo->id, 'filename' => $anexo->nome_original]) }}" target="_blank" 
+                                                        class="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded transition" 
+                                                        title="Visualizar">
+                                                            <i class="bi bi-eye-fill"></i>
+                                                        </a>
+                                                        <a href="{{ route('anexos.download', $anexo->id) }}" 
+                                                        class="p-1.5 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded transition" 
+                                                        title="Baixar">
+                                                            <i class="bi bi-download"></i>
+                                                        </a>
+                                                        <form action="{{ route('anexos.destroy', $anexo->id) }}" method="POST" onsubmit="return confirm('Excluir arquivo?');" class="inline">
+                                                            @csrf @method('DELETE')
+                                                            <button type="submit" class="p-1.5 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded transition" title="Excluir">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @else
+                                        <p class="text-sm text-gray-500 italic">Nenhum anexo encontrado para esta conta.</p>
+                                    @endif
+                                </div>
                             </div>
                         </td>
                     </tr>

@@ -11,6 +11,7 @@
     use App\Http\Controllers\AuthController;
     use App\Http\Controllers\anexo\AnexoController;
     use App\Http\Controllers\contrato\ContratoController;
+    use App\Http\Controllers\PagamentoParcialController;
 
     //ROTAS DE AUTENTICAÇÃO
     Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -67,4 +68,8 @@
         Route::delete('/anexos/{anexo}', [AnexoController::class, 'destroy'])->name('anexos.destroy');
         Route::get('/anexos/{anexo}/download', [AnexoController::class, 'download'])->name('anexos.download');
         Route::get('/anexos/{anexo}/{filename}', [AnexoController::class, 'show'])->name('anexos.show');
+
+        //ROTAS DE PAGAMENTOS PARCIAIS
+        Route::post('/pagamentos-parciais', [PagamentoParcialController::class, 'store'])->name('pagamentos-parciais.store');
+        Route::delete('/pagamentos-parciais/{pagamentoParcial}', [PagamentoParcialController::class, 'destroy'])->name('pagamentos-parciais.destroy');
     });

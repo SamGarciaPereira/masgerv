@@ -19,7 +19,7 @@ class ContasReceber extends Model
 
     protected $casts = [
         'data_vencimento' => 'date',
-        'data_recebimento' => 'date'
+        'data_recebimento' => 'date',
     ];
 
     public function processo()
@@ -32,7 +32,51 @@ class ContasReceber extends Model
         return $this->belongsTo(Cliente::class);
     }
 
-    public function anexos(){
+    public function anexos()
+    {
         return $this->morphMany(Anexo::class, 'anexable');
+    }
+
+    public function pagamentosParciais()
+    {
+        return $this->hasMany(PagamentoParcial::class, 'contas_receber_id');
+    }
+
+    /**
+     * Calcula o total pago através de pagamentos parciais
+     */
+    public function totalPago()
+    {
+        return $this->pagamentosParciais()->sum('valor');
+    }
+
+    /**
+     * Calcula o saldo restante a receber
+     */
+    public function saldoRestante()
+    {
+        return $this->valor - $this->totalPago();
+    }
+
+    /**
+     * Verifica se está totalmente pago
+     */
+    public function isTotalmentePago()
+    {
+        return $this->saldoRestante() <= 0.01; // Using small epsilon for floating point comparison
+    }
+
+    /**
+     * Atualiza o status baseado no saldo e data de vencimento
+     */
+    public function atualizarStatus()
+    {
+        if ($this->isTotalmentePago()) {
+            $this->update(['status' => 'Pago']);
+        } elseif ($this->data_vencimento && $this->data_vencimento->isPast()) {
+            $this->update(['status' => 'Atrasado']);
+        } else {
+            $this->update(['status' => 'Pendente']);
+        }
     }
 }
