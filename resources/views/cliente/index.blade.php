@@ -125,23 +125,6 @@
                                 </div>
                                 <div class="flex flex-col md:flex-row gap-4">
                                     <div class="p-2 border-t border-gray-100">
-                                        @if($cliente->last_user_id)
-                                            <div class="bg-blue-50 border border-blue-200 rounded-md p-3">
-                                                <div class="gap-2 mb-1">
-                                                    <span class="px-2 py-0.5 bg-blue-100 text-blue-800 rounded text-xs font-bold border border-blue-200 mb-2 uppercase">
-                                                        <i class="bi bi-clock-history mr-1"></i> Última Alteração
-                                                    </span>
-                                                </div>
-                                                <p class="text-sm mb-1 text-gray-600">
-                                                    {{ $cliente->updated_at->format('d/m/Y') }} às {{ $cliente->updated_at->format('H:i') }}
-                                                </p>
-                                                <p class="text-sm text-gray-600">
-                                                    Por: <strong class="text-blue-800">{{ $cliente->editor->name ?? 'Sistema' }}</strong>
-                                                </p>
-                                            </div>
-                                        @endif      
-                                    </div>
-                                    <div class="p-2 border-t border-gray-100">
                                         @if($cliente->matriz)
                                             <div class="bg-blue-50 border border-blue-200 rounded-md p-3">
                                                 <div class="flex items-center gap-2 mb-1">
@@ -189,6 +172,23 @@
                                                 <span class="text-xs text-gray-400 italic">Não possui vínculos.</span>
                                             </div>
                                         @endif
+                                    </div>
+                                    <div class="p-2 border-t border-gray-100">
+                                        @if($cliente->last_user_id)
+                                            <div class="bg-blue-50 border border-blue-200 rounded-md p-3">
+                                                <div class="gap-2 mb-1">
+                                                    <span class="px-2 py-0.5 bg-blue-100 text-blue-800 rounded text-xs font-bold border border-blue-200 mb-2 uppercase">
+                                                        <i class="bi bi-clock-history mr-1"></i> Última Alteração
+                                                    </span>
+                                                </div>
+                                                <p class="text-sm mb-1 text-gray-600">
+                                                    {{ $cliente->updated_at->format('d/m/Y') }} às {{ $cliente->updated_at->format('H:i') }}
+                                                </p>
+                                                <p class="text-sm text-gray-600">
+                                                    Por: <strong class="text-blue-800">{{ $cliente->editor->name ?? 'Sistema' }}</strong>
+                                                </p>
+                                            </div>
+                                        @endif      
                                     </div>
                                 </div>
                             </td>
