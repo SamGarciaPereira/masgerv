@@ -21,7 +21,7 @@ class ContratoController extends Controller
         }
         $contratos = $query->with(['clientes.filiais', 'anexos'])
                            ->latest()
-                           ->paginate(10);
+                           ->paginate(100);
         return view('contrato.index', compact('contratos'));
     }
 

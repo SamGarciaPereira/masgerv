@@ -130,7 +130,7 @@ class ManutencaoController extends Controller
                         'cliente.matriz.contratos', 
                         'anexos'
                      ]) 
-                     ->paginate(10);
+                     ->paginate(100);
     }
 
     public function createOrcamento(Manutencao $manutencao)

@@ -49,7 +49,7 @@ class OrcamentoController extends Controller
                 break;
         }
 
-        $orcamentos = $query->paginate(10); 
+        $orcamentos = $query->paginate(200); 
         return view('orcamento.index', compact('orcamentos'));
     }
 

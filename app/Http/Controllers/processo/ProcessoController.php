@@ -47,7 +47,7 @@ class ProcessoController extends Controller
                 break;
         }
 
-        $processos = $query->paginate(10); 
+        $processos = $query->paginate(200); 
         return view('processo.index', compact('processos'));
     }
 

@@ -34,7 +34,7 @@ class ClienteController extends Controller
                 break;
         }
 
-        $clientes = $query->orderBy('nome')->paginate(10);
+        $clientes = $query->orderBy('nome')->paginate(100);
         return view('cliente.index', compact('clientes'));
 
         

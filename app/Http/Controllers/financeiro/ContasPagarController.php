@@ -47,8 +47,8 @@ class ContasPagarController extends Controller
                 break;
         }
 
-        $contasFixas = $query->clone()->where('fixa', true)->paginate(10, ['*'], 'page_fixas');
-        $contasVariaveis = $query->clone()->where('fixa', false)->paginate(10, ['*'], 'page_variaveis');
+        $contasFixas = $query->clone()->where('fixa', true)->paginate(100, ['*'], 'page_fixas');
+        $contasVariaveis = $query->clone()->where('fixa', false)->paginate(100, ['*'], 'page_variaveis');
 
         return view('financeiro.contas-pagar.index', compact('contasFixas', 'contasVariaveis'));
     }
