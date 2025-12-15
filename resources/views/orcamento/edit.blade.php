@@ -20,16 +20,23 @@
             @csrf
             @method('PUT')
 
+            @php
+                $prefixoNumero = Str::beforeLast($orcamento->numero_proposta, '-');
+                $sufixoNumero = Str::afterLast($orcamento->numero_proposta, '-');
+            @endphp
+
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <div class="lg:col-span-2">
-                    <label for="cliente_id" class="block text-sm font-medium text-gray-700 mb-2">Cliente <span class="text-red-500">*</span></label>
+                    <label for="cliente_id" class="block text-sm font-medium text-gray-700 mb-2">Cliente <span
+                            class="text-red-500">*</span></label>
                     <select id="cliente_id" name="cliente_id"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                         required>
                         <option value="">Selecione um cliente</option>
                         @foreach($clientes as $cliente)
                             <option value="{{ $cliente->id }}" {{ old('cliente_id', $orcamento->cliente_id) == $cliente->id ? 'selected' : '' }}>
-                                {{ $cliente->nome }}</option>
+                                {{ $cliente->nome }}
+                            </option>
                         @endforeach
                     </select>
                     @error('cliente_id') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
@@ -37,15 +44,24 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">Nº Proposta</label>
-                    <div class="w-full px-4 py-2 bg-gray-100 border border-gray-200 rounded-lg text-gray-600 font-mono font-bold">
-                        {{ $orcamento->numero_proposta ?? 'Em processamento...' }}
+                    <div class="flex gap-2">
+                        <div class="w-full px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-600 font-mono font-bold">
+                            <input type="text" value="{{ $prefixoNumero }}" readonly
+                            class="w-full px-4 py-2 bg-gray-100 text-gray-600">
+                        </div>
+
+                        <input type="number" id="numero_proposta_sufixo" name="numero_proposta_sufixo"
+                            value="{{ old('numero_proposta_sufixo', ltrim($sufixoNumero, '0')) }}"
+                            class="w-28 px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+                            min="0" max="999" required>
                     </div>
-                    <input type="hidden" name="chamado" value="{{ $orcamento->numero_proposta }}">
-                </div>
+                    @error('numero_proposta_sufixo') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                </div>  
 
                 <div>
                     <label for="data_envio" class="block text-sm font-medium text-gray-700 mb-2">Data de Envio</label>
-                    <input type="date" id="data_envio" name="data_envio" value="{{ old('data_envio', optional($orcamento->data_envio)->format('Y-m-d')) }}"
+                    <input type="date" id="data_envio" name="data_envio"
+                        value="{{ old('data_envio', optional($orcamento->data_envio)->format('Y-m-d')) }}"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                     @error('data_envio') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
@@ -56,23 +72,29 @@
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                     @error('valor') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
-                
+
                 <div>
-                    <label for="data_aprovacao" class="block text-sm font-medium text-gray-700 mb-2">Data de Aprovação</label>
-                    <input type="date" id="data_aprovacao" name="data_aprovacao" value="{{ old('data_aprovacao', optional($orcamento->data_aprovacao)->format('Y-m-d')) }}"
+                    <label for="data_aprovacao" class="block text-sm font-medium text-gray-700 mb-2">Data de
+                        Aprovação</label>
+                    <input type="date" id="data_aprovacao" name="data_aprovacao"
+                        value="{{ old('data_aprovacao', optional($orcamento->data_aprovacao)->format('Y-m-d')) }}"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                     @error('data_aprovacao') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
 
                 <div>
-                    <label for="status" class="block text-sm font-medium text-gray-700 mb-2">Status <span class="text-red-500">*</span></label>
+                    <label for="status" class="block text-sm font-medium text-gray-700 mb-2">Status <span
+                            class="text-red-500">*</span></label>
                     <select id="status" name="status"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                         required>
-                        <option value="Pendente" {{ old('status', $orcamento->status) == 'Pendente' ? 'selected' : '' }}>Pendente</option>
+                        <option value="Pendente" {{ old('status', $orcamento->status) == 'Pendente' ? 'selected' : '' }}>
+                            Pendente</option>
                         <option value="Em Andamento" {{ old('status', $orcamento->status) == 'Em Andamento' ? 'selected' : '' }}>Em Andamento</option>
-                        <option value="Enviado" {{ old('status', $orcamento->status) == 'Enviado' ? 'selected' : '' }}>Enviado</option>
-                        <option value="Aprovado" {{ old('status', $orcamento->status) == 'Aprovado' ? 'selected' : '' }}>Aprovado</option>
+                        <option value="Enviado" {{ old('status', $orcamento->status) == 'Enviado' ? 'selected' : '' }}>Enviado
+                        </option>
+                        <option value="Aprovado" {{ old('status', $orcamento->status) == 'Aprovado' ? 'selected' : '' }}>
+                            Aprovado</option>
                     </select>
                     @error('status') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
@@ -87,8 +109,7 @@
                 <div class="lg:col-span-3">
                     <label for="escopo" class="block text-sm font-medium text-gray-700 mb-2">Escopo / Descrição</label>
                     <textarea id="escopo" name="escopo" rows="4"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                        >{{ old('escopo', $orcamento->escopo) }}</textarea>
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">{{ old('escopo', $orcamento->escopo) }}</textarea>
                     @error('escopo') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>

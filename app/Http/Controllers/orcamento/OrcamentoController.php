@@ -8,6 +8,7 @@ use App\Models\Orcamento;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Services\CodeGeneratorService;
+use Illuminate\Support\Str;
 
 class OrcamentoController extends Controller
 {
@@ -17,13 +18,13 @@ class OrcamentoController extends Controller
 
         if ($request->filled('search')) {
             $search = $request->input('search');
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('numero_proposta', 'like', "%{$search}%")
-                  ->orWhere('escopo', 'like', "%{$search}%") 
-                  ->orWhereHas('cliente', function($q2) use ($search) {
-                      $q2->where('nome', 'like', "%{$search}%")
-                         ->orWhere('email', 'like', "%{$search}%"); 
-                  });
+                    ->orWhere('escopo', 'like', "%{$search}%")
+                    ->orWhereHas('cliente', function ($q2) use ($search) {
+                        $q2->where('nome', 'like', "%{$search}%")
+                            ->orWhere('email', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -44,12 +45,12 @@ class OrcamentoController extends Controller
             case 'aprovacao':
                 $query->orderByDesc('data_aprovacao');
                 break;
-            default: 
+            default:
                 $query->latest();
                 break;
         }
 
-        $orcamentos = $query->paginate(200); 
+        $orcamentos = $query->paginate(200);
         return view('orcamento.index', compact('orcamentos'));
     }
 
@@ -64,7 +65,7 @@ class OrcamentoController extends Controller
         $validatedData = $request->validate([
             'cliente_id' => 'required|exists:clientes,id',
             'numero_manual' => 'nullable|integer|min:1',
-            'data_envio' => 'nullable|date', 
+            'data_envio' => 'nullable|date',
             'valor' => 'nullable|numeric|min:0',
             'status' => 'required|string|in:Pendente,Em Andamento,Enviado,Aprovado',
             'revisao' => 'nullable|integer|min:0',
@@ -75,7 +76,7 @@ class OrcamentoController extends Controller
         if ($request->filled('numero_manual')) {
             $generator = new CodeGeneratorService();
             $cliente = Cliente::find($request->cliente_id);
-            
+
             $codigoProvavel = $generator->formatarCodigoOrcamento($cliente, now(), $request->numero_manual);
 
             if (Orcamento::where('numero_proposta', $codigoProvavel)->exists()) {
@@ -86,14 +87,14 @@ class OrcamentoController extends Controller
         }
 
         $orcamento = new Orcamento($validatedData);
-        $orcamento->numero_manual = $request->numero_manual; 
+        $orcamento->numero_manual = $request->numero_manual;
         $orcamento->save();
 
         return redirect()->route('orcamentos.index')
             ->with('success', 'Orçamento cadastrado com sucesso!');
     }
 
-    
+
 
     public function edit(Orcamento $orcamento)
     {
@@ -106,7 +107,7 @@ class OrcamentoController extends Controller
     {
         $validatedData = $request->validate([
             'cliente_id' => 'required|exists:clientes,id',
-            'numero_proposta' => ['nullable', 'string', 'max:255', Rule::unique('orcamentos')->ignore($orcamento->id)],
+            'numero_proposta_sufixo' => ['required', 'integer', 'min:0', 'max:999'],
             'data_envio' => 'nullable|date',
             'valor' => 'nullable|numeric|min:0',
             'status' => 'required|string|in:Pendente,Em Andamento,Enviado,Aprovado',
@@ -115,6 +116,15 @@ class OrcamentoController extends Controller
             'data_aprovacao' => 'nullable|date',
         ]);
 
+        $prefixo = Str::beforeLast($orcamento->numero_proposta, '-');
+        $sufixo = (int) $validatedData['numero_proposta_sufixo'];
+        $novoNumero = $prefixo . '-' . str_pad($sufixo, 3, '0', STR_PAD_LEFT);
+
+        if (Orcamento::where('numero_proposta', $novoNumero)->where('id', '!=', $orcamento->id)->exists()) {
+            return back()->withInput()->withErrors(['numero_proposta_sufixo' => 'Esta proposta já existe.']);
+        }
+
+        $validatedData['numero_proposta'] = $novoNumero;
         $validatedData['data_envio'] = $validatedData['data_envio'] ?? null;
         $validatedData['data_aprovacao'] = $validatedData['data_aprovacao'] ?? null;
 
