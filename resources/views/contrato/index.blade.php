@@ -190,7 +190,7 @@
                                     </div>
                                 </div>
 
-                                <div class="flex flex-col gap-3 md:w-2/3">
+                                <div class="flex flex-col gap-3 md:w-1/3">
                                     <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider flex items-center">
                                         <i class="bi bi-folder2-open mr-2"></i> Arquivos do Contrato
                                     </h4>
@@ -230,6 +230,23 @@
                                             <p class="text-sm text-gray-400">Nenhum anexo encontrado.</p>
                                         </div>
                                     @endif
+                                </div>
+                                <div class="flex flex-col gap-2 md:w-1/3">
+                                    @if($contrato->last_user_id)
+                                        <div class="bg-blue-50 border border-blue-200 rounded-md p-3">
+                                            <div class="gap-2 mb-1">
+                                                <span class="px-2 py-0.5 bg-blue-100 text-blue-800 rounded text-xs font-bold border border-blue-200 mb-2 uppercase">
+                                                    <i class="bi bi-clock-history mr-1"></i> Última Alteração
+                                                </span>
+                                            </div>
+                                            <p class="text-sm mb-1 text-gray-600">
+                                                {{ $contrato->updated_at->format('d/m/Y') }} às {{ $contrato->updated_at->format('H:i') }}
+                                            </p>
+                                            <p class="text-sm text-gray-600">
+                                                Por: <strong class="text-blue-800">{{ $contrato->editor->name ?? 'Sistema' }}</strong>
+                                            </p>
+                                        </div>
+                                    @endif      
                                 </div>
                             </div>
                         </td>                        

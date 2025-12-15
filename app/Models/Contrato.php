@@ -4,14 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Traits\HasLastUser;
 
 class Contrato extends Model
 {
+    use HasLastUser;
+
     protected $fillable = [
         'numero_contrato',
         'data_inicio',
         'data_fim',
         'ativo',
+        'last_user_id',
     ];
 
     protected $casts = [
