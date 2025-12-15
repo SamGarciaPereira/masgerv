@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\HasLastUser;
 
 class Manutencao extends Model
 {
+    use HasLastUser;
+
     protected $table = 'manutencoes';
 
     protected $fillable = [
@@ -17,6 +20,7 @@ class Manutencao extends Model
         'data_fim_atendimento',
         'tipo',
         'status',   
+        'last_user_id'
     ];
 
     protected $casts = [
