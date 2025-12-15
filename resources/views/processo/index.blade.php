@@ -88,7 +88,15 @@
                             </button>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-blue-600">{{ $processo->nf ?? 'N/A' }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ $processo->orcamento->numero_proposta ?? 'N/A' }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            @if($processo->orcamento->numero_proposta)
+                                <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs font-mono font-bold border border-gray-300 select-all">
+                                    {{ $processo->orcamento->numero_proposta }}
+                                </span>
+                            @else
+                                <span class="text-xs text-gray-400 italic">N/A</span>
+                            @endif
+                        </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $processo->orcamento->cliente->nome ?? 'N/A' }} </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">R$ {{ number_format($processo->orcamento->valor ?? 0, 2, ',', '.') }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
