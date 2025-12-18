@@ -94,27 +94,49 @@ class DashboardController extends Controller
         }
 
         $getDailyStatusData = function($modelClass) use ($mes, $ano, $diasNoMes) {
-            $contas = $modelClass::whereMonth('data_vencimento', $mes)
-                ->whereYear('data_vencimento', $ano)
-                ->get();
+            $campoDataPagamento = ($modelClass === ContasPagar::class) ? 'data_pagamento' : 'data_recebimento';
+            
+            $statusPagos = ['Pago', 'Concluída', 'Finalizado'];
+
+            $contas = $modelClass::where(function($query) use ($mes, $ano, $campoDataPagamento, $statusPagos) {
+                $query->where(function($q) use ($mes, $ano, $campoDataPagamento, $statusPagos) {
+                    $q->whereIn('status', $statusPagos)
+                      ->whereMonth($campoDataPagamento, $mes)
+                      ->whereYear($campoDataPagamento, $ano);
+                })
+                ->orWhere(function($q) use ($mes, $ano, $statusPagos) {
+                    $q->whereNotIn('status', $statusPagos)
+                      ->whereMonth('data_vencimento', $mes)
+                      ->whereYear('data_vencimento', $ano);
+                });
+            })->get();
 
             $pago = array_fill(0, $diasNoMes, 0);
             $pendente = array_fill(0, $diasNoMes, 0);
             $atrasado = array_fill(0, $diasNoMes, 0);
 
             foreach ($contas as $conta) {
-                $diaIndex = (int)$conta->data_vencimento->format('d') - 1;
-                
                 $status = ucfirst(strtolower(trim($conta->status))); 
+                $isPago = in_array($status, $statusPagos);
 
-                if ($status === 'Pago' || $status === 'Concluída' || $status === 'Finalizado') {
-                    $pago[$diaIndex] += $conta->valor;
-                } 
-                elseif ($status === 'Atrasado' || $status === 'Vencido') {
-                    $atrasado[$diaIndex] += $conta->valor;
-                } 
-                else {
-                    $pendente[$diaIndex] += $conta->valor;
+                if ($isPago) {
+                    $dataReferencia = $conta->$campoDataPagamento;
+                } else {
+                    $dataReferencia = $conta->data_vencimento;
+                }
+
+                if ($dataReferencia && $dataReferencia->month == $mes && $dataReferencia->year == $ano) {
+                    $diaIndex = (int)$dataReferencia->format('d') - 1;
+                    
+                    if ($isPago) {
+                        $pago[$diaIndex] += $conta->valor;
+                    } 
+                    elseif ($status === 'Atrasado' || $status === 'Vencido') {
+                        $atrasado[$diaIndex] += $conta->valor;
+                    } 
+                    else {
+                        $pendente[$diaIndex] += $conta->valor;
+                    }
                 }
             }
 
