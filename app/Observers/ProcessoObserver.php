@@ -23,20 +23,7 @@ class ProcessoObserver
      */
     public function updated(Processo $processo)
     {
-        if ($processo->isDirty('status') && $processo->status === 'Faturado') {
-            $processo->load('orcamento.cliente');
-            if ($processo->orcamento) {
-                ContasReceber::create([
-                    'descricao' => 'Faturamento do orçamento: ' . $processo->orcamento->numero_proposta,
-                    'valor' => $processo->orcamento->valor,
-                    'data_vencimento' => null,
-                    'status' => 'Pendente',
-                    'cliente_id' => $processo->orcamento->cliente_id,
-                    'processo_id' => $processo->id,
-                    'nf' => $processo->nf,
-                ]);
-            }
-        } else if ($processo->wasChanged()) {
+        if ($processo->wasChanged()) {
             $processo->load('orcamento');
             Activity::create([
                 'description' => "O processo para o orçamento '{$processo->orcamento->numero_proposta}' foi atualizado."

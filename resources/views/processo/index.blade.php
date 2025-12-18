@@ -101,13 +101,40 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">R$ {{ number_format($processo->orcamento->valor ?? 0, 2, ',', '.') }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             @php
-                                $statusClass = [
-                                    'Em Aberto' => 'bg-yellow-100 text-yellow-800',
-                                    'Finalizado' => 'bg-blue-100 text-blue-800',
-                                    'Faturado' => 'bg-green-100 text-green-800',
-                                ][$processo->status] ?? 'bg-gray-100 text-gray-800';
+                                $statusLabel = $processo->status;
+                                $statusClass = 'bg-gray-100 text-gray-800';
+                                $detalheFinanceiro = '';
+
+                                if ($processo->status == 'Faturado') {
+                                    $totalParcelas = $processo->contasReceber->sum('valor');
+                                    $valorOrcamento = $processo->orcamento->valor;
+                        
+                                    if (abs($totalParcelas - $valorOrcamento) > 0.01) {
+                                        $statusLabel = 'Faturado (Parcial)';
+                                        $statusClass = 'bg-orange-100 text-orange-800'; // Laranja para chamar atenção
+                                        $porcentagem = ($valorOrcamento > 0) ? ($totalParcelas / $valorOrcamento) * 100 : 0;
+                                        $detalheFinanceiro = number_format($porcentagem, 0) . '% (' . number_format($totalParcelas, 2, ',', '.') . ')';
+                                    } else {
+                                        $statusLabel = 'Faturado (Total)';
+                                        $statusClass = 'bg-green-100 text-green-800';
+                                    }
+                                } elseif ($processo->status == 'Em Aberto') {
+                                    $statusClass = 'bg-yellow-100 text-yellow-800';
+                                } elseif ($processo->status == 'Finalizado') {
+                                    $statusClass = 'bg-blue-100 text-blue-800';
+                                }
                             @endphp
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $statusClass }}">{{ $processo->status }}</span>
+
+                            <div class="flex flex-col items-start">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $statusClass }}">
+                                    {{ $statusLabel }}
+                                </span>
+                                @if($detalheFinanceiro)
+                                    <span class="text-[10px] text-gray-500 mt-1 ml-1" title="Valor Faturado">
+                                        {{ $detalheFinanceiro }}
+                                    </span>
+                                @endif
+                            </div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                             <a href="{{ route('processos.edit', $processo->id) }}" class="text-indigo-600 hover:text-indigo-900" title="Gerenciar Processo">

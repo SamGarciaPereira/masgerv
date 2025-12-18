@@ -26,4 +26,9 @@ class Processo extends Model
         return $this->morphMany(Anexo::class, 'anexable');
     }
     
+    public function contasReceber()
+    {
+        return $this->hasMany(ContasReceber::class);
+    }
+    
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\processo;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Processo;
+use App\Models\ContasReceber;
 
 class ProcessoController extends Controller
 {
@@ -13,7 +14,7 @@ class ProcessoController extends Controller
      */
     public function index(Request $request)
     {
-       $query = Processo::with('orcamento.cliente', 'orcamento.anexos', 'anexos');
+       $query = Processo::with('orcamento.cliente', 'orcamento.anexos', 'anexos', 'contasReceber');
 
         if ($request->filled('search')) {
             $search = $request->input('search');
@@ -40,7 +41,7 @@ class ProcessoController extends Controller
                 $query->oldest();
                 break;
             case 'faturamento':
-                $query->orderByDesc('data_faturamento');
+                $query->orderByDesc('created_at');
                 break;
             default: 
                 $query->latest();
@@ -80,7 +81,7 @@ class ProcessoController extends Controller
      */
     public function edit(Processo $processo)
     {
-
+        $processo->load(['orcamento', 'contasReceber']);
         return view('processo.edit', compact('processo'));
     }
 
@@ -92,20 +93,75 @@ class ProcessoController extends Controller
         $validatedData = $request->validate([
             'status' => 'required|in:Em Aberto,Finalizado,Faturado',
             'nf' => 'nullable|string|max:255',
+            'parcelas' => 'nullable|array',
+            'parcelas.*.descricao' => 'required|string',
+            'parcelas.*.valor' => 'required|numeric|min:0',
+            'parcelas.*.data_vencimento' => 'nullable|date',
+            'parcelas.*.nf' => 'nullable|string',
         ]);
 
-        if ($validatedData['status'] === 'Faturado') {
-            $processo->load('orcamento');
-           if (empty($processo->orcamento->valor) || $processo->orcamento->valor <= 0) {
-                return redirect()->back()
-                                 ->withInput()
-                                 ->withErrors(['faturamento' => 'Não é possível faturar um processo cujo orçamento não tem um valor definido maior que zero.']);
+        $parcelasIdsMantidos = [];
+        $totalParcelas = 0;
+
+        if ($request->has('parcelas')) {
+            foreach ($request->parcelas as $dadosParcela) {
+                $totalParcelas += $dadosParcela['valor'];
             }
         }
 
-        $processo->update($validatedData);
+        $valorOrcamento = $processo->orcamento->valor;
+        if ($totalParcelas > ($valorOrcamento + 0.01)) {
+            return back()->withInput()->withErrors([
+                'status' => "O valor total das parcelas (R$ " . number_format($totalParcelas, 2, ',', '.') . ") excede o valor do orçamento (R$ " . number_format($valorOrcamento, 2, ',', '.') . ")."
+            ]);
+        }
 
-        return redirect()->route('processos.index')->with('success', 'Status do processo atualizado com sucesso!');
+        if ($request->has('parcelas')) {
+            foreach ($request->parcelas as $dadosParcela) {
+                $data = [
+                    'processo_id' => $processo->id,
+                    'cliente_id' => $processo->orcamento->cliente_id,
+                    'descricao' => $dadosParcela['descricao'],
+                    'valor' => $dadosParcela['valor'],
+                    'data_vencimento' => $dadosParcela['data_vencimento'],
+                    'nf' => $dadosParcela['nf'] ?? null,
+                    'status' => isset($dadosParcela['id']) 
+                                ? ContasReceber::find($dadosParcela['id'])->status 
+                                : 'Pendente',
+                ];
+
+                $totalParcelas += $data['valor'];
+
+                if (isset($dadosParcela['id'])) {
+                    $conta = ContasReceber::find($dadosParcela['id']);
+                    if ($conta && $conta->processo_id == $processo->id) {
+                        $conta->update($data);
+                        $parcelasIdsMantidos[] = $conta->id;
+                    }
+                } else {
+                    $novaConta = ContasReceber::create($data);
+                    $parcelasIdsMantidos[] = $novaConta->id;
+                }
+            }
+        }
+
+        $processo->contasReceber()->whereNotIn('id', $parcelasIdsMantidos)->delete();
+
+        if ($validatedData['status'] === 'Faturado') {
+            $valorOrcamento = $processo->orcamento->valor;
+            
+            if (empty($valorOrcamento) || $valorOrcamento <= 0) {
+                 return back()->withInput()->withErrors(['status' => 'O orçamento não possui valor definido.']);
+            }
+        }
+
+        $processo->update([
+            'status' => $validatedData['status'],
+            'nf' => $validatedData['nf']
+        ]);
+
+        return redirect()->route('processos.index')
+            ->with('success', 'Processo atualizado com sucesso!');
     }
 
     /**
