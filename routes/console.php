@@ -11,3 +11,5 @@ Artisan::command('inspire', function () {
 Schedule::command('financeiro:atualizar-atrasados')->daily();
 
 Schedule::command('contratos:verificar-validade')->daily();
+
+Schedule::command('financeiro:renovar-fixas')->yearlyOn(1, 1, '01:00');

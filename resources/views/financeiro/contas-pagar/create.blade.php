@@ -17,46 +17,73 @@
 <div class="bg-white p-8 rounded-lg shadow-md">
     <form action="{{ route('financeiro.contas-pagar.store') }}" method="POST">
         @csrf
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
             <div>
                 <label for="fornecedor" class="block text-sm font-medium text-gray-700 mb-2">Fornecedor <span class="text-red-500">*</span></label>
                 <input type="text" id="fornecedor" name="fornecedor" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" required>
             </div>
+            
             <div>
-                <label for="valor" class="block text-sm font-medium text-gray-700 mb-2">Valor (R$) <span class="text-red-500">*</span></label>
-                <input type="number" step="0.01" id="valor" name="valor" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="Ex: 1500.50" required>
-            </div>
-            <div>
-                <label for="danfe" class="block text-sm font-medium text-gray-700 mb-2">DANFE</label>
-                <input type="text" id="danfe" name="danfe" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" placeholder="Ex: 1700">
-            </div>
-            <div class="lg:col-span-3">
                 <label for="descricao" class="block text-sm font-medium text-gray-700 mb-2">Descrição <span class="text-red-500">*</span></label>
                 <input type="text" id="descricao" name="descricao" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" required>
             </div>
+
             <div>
-                <label for="data_vencimento" class="block text-sm font-medium text-gray-700 mb-2">Data de Vencimento <span class="text-red-500">*</span></label>
-                <input type="date" id="data_vencimento" name="data_vencimento" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" required>
+                <label for="danfe" class="block text-sm font-medium text-gray-700 mb-2">DANFE</label>
+                <input type="text" id="danfe" name="danfe" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
             </div>
+
             <div>
-                <label for="data_pagamento" class="block text-sm font-medium text-gray-700 mb-2">Data de Pagamento</label>
-                <input type="date" id="data_pagamento" name="data_pagamento" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                <label for="valor" class="block text-sm font-medium text-gray-700 mb-2">Valor (R$) <span class="text-red-500">*</span></label>
+                <input type="number" step="0.01" id="valor" name="valor" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" required>
             </div>
+
             <div>
                 <label for="status" class="block text-sm font-medium text-gray-700 mb-2">Status <span class="text-red-500">*</span></label>
                 <select id="status" name="status" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500" required>
-                    <option value="Pendente" {{ old('status') == 'Pendente' ? 'selected' : '' }}>Pendente</option>
-                    <option value="Pago" {{ old('status') == 'Pago' ? 'selected' : '' }}>Pago</option>
-                    <option value="Atrasado" {{ old('status') == 'Atrasado' ? 'selected' : '' }}>Atrasado</option>
+                    <option value="Pendente" selected>Pendente</option>
+                    <option value="Pago">Pago</option>
+                    <option value="Atrasado">Atrasado</option>
                 </select>
             </div>
+
             <div>
-                <label for="fixa" class="block text-sm font-medium text-gray-700 mb-2">Conta Fixa?</label>
-                <div class="bg-gray-50 p-4 rounded-lg border border-gray-200 max-h-60 overflow-y-auto">
-                    <input type="checkbox" id="fixa" name="fixa" value="1" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" {{ old('fixa') ? 'checked' : '' }}>
-                    <span class="text-sm font-medium text-gray-700 mb-2">Sim</span>
-                </div>
+                <label for="tipo_recorrencia" class="block text-sm font-medium text-gray-700 mb-2">Tipo de Lançamento <span class="text-red-500">*</span></label>
+                <select id="tipo_recorrencia" name="tipo_recorrencia" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                    <option value="unica" selected>Conta Única</option>
+                    <option value="parcelada">Conta Parcelada</option>
+                    <option value="fixa">Conta Fixa (Mensal)</option>
+                </select>
+            </div>
+        </div>
+
+        <hr class="border-gray-200 my-6">
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 bg-gray-50 p-6 rounded-lg border border-gray-200">
+            
+            <div id="div_qtd_parcelas" class="hidden">
+                <label for="qtd_parcelas" class="block text-sm font-medium text-gray-700 mb-2">Qtd. Parcelas <span class="text-red-500">*</span></label>
+                <input type="number" id="qtd_parcelas" name="qtd_parcelas" min="2" max="120" value="2" 
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+            </div>
+
+            <div id="div_dia_fixo" class="hidden">
+                <label for="dia_fixo" class="block text-sm font-medium text-gray-700 mb-2">Dia do Vencimento (Todo mês) <span class="text-red-500">*</span></label>
+                <input type="number" id="dia_fixo" name="dia_fixo" min="1" max="31" placeholder="Ex: 10" 
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                <p class="text-xs text-gray-500 mt-1">Repetirá este dia até Dezembro.</p>
+            </div>
+
+            <div id="div_data_vencimento">
+                <label for="data_vencimento" id="label_vencimento" class="block text-sm font-medium text-gray-700 mb-2">Data Vencimento <span class="text-red-500">*</span></label>
+                <input type="date" id="data_vencimento" name="data_vencimento" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+            </div>
+
+            <div id="div_data_pagamento">
+                <label for="data_pagamento" class="block text-sm font-medium text-gray-700 mb-2">Data Pagamento</label>
+                <input type="date" id="data_pagamento" name="data_pagamento" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                <p id="aviso_pagamento_parcial" class="hidden text-xs text-orange-600 mt-1 font-bold">Atenção: Será aplicado apenas à 1ª parcela.</p>
             </div>
         </div>
 
@@ -71,4 +98,5 @@
     </form>
 </div>
 
+@vite('resources/js/app.js')
 @endsection
