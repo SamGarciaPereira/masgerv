@@ -95,8 +95,8 @@
                                     <span class="text-xs text-gray-400 italic">N/A</span>
                                 @endif
                             </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $orcamento->cliente->nome ?? 'N/A' }}</td>
-                            <td class="max-w-[45ch] truncate px-6 py-4 whitespace-nowrap text-sm text-gray-500" title="{{ $orcamento->escopo ? : 'Não definido'}}">{{ $orcamento->escopo ? : 'Não definido'}}</td>
+                            <td class="max-w-[226px] truncate py-4 whitespace-nowrap text-sm text-gray-500" title="{{ $orcamento->cliente->nome ?? 'N/A' }}">{{ $orcamento->cliente->nome ?? 'N/A' }}</td>
+                            <td class="max-w-[265px] truncate px-6 py-4 whitespace-nowrap text-sm text-gray-500" title="{{ $orcamento->escopo ? : 'Não definido'}}">{{ $orcamento->escopo ? : 'Não definido'}}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm">
                                 <x-status-badge :status="$orcamento->status" />
                             </td>
