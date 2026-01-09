@@ -46,7 +46,7 @@ class CodeGeneratorService
      */
     public function formatarCodigoOrcamento(Cliente $cliente, Carbon $data, int $sequencial)
     {
-        $anoMes = $data->format('my'); // 1225
+        $anoMes = $data->format('my');
         $estado = $cliente->uf ?? 'PR';
         $sequenciaStr = str_pad($sequencial, 3, '0', STR_PAD_LEFT);
 
@@ -56,19 +56,18 @@ class CodeGeneratorService
     /**
      * Gera o código (Automático ou Manual)
      */
-    public function gerarCodigoOrcamento(Cliente $cliente = null, ?int $numeroManual = null)
+    public function gerarCodigoOrcamento(Cliente $cliente = null, ?int $numeroManual = null, ?Carbon $dataReferencia = null)
     {
-        $now = Carbon::now();
+        $dataBase = $dataReferencia ?? Carbon::now();
+
         $cliente = $cliente ?? new Cliente(['uf' => 'PR']);
 
         if ($numeroManual !== null) {
-            return $this->formatarCodigoOrcamento($cliente, $now, $numeroManual);
+            return $this->formatarCodigoOrcamento($cliente, $dataBase, $numeroManual);
         }
 
-        
-        // Prefixo para busca no banco (Ex: PR-01-122025-O-)
-        $prefixoBusca = $this->formatarCodigoOrcamento($cliente, $now, 0);
-        $prefixoBusca = substr($prefixoBusca, 0, strrpos($prefixoBusca, '-') + 1); 
+        $prefixoBusca = $this->formatarCodigoOrcamento($cliente, $dataBase, 0);
+        $prefixoBusca = substr($prefixoBusca, 0, strrpos($prefixoBusca, '-') + 1);
 
         $ultimoOrcamento = Orcamento::where('numero_proposta', 'like', "{$prefixoBusca}%")
             ->orderBy('id', 'desc')
@@ -82,11 +81,11 @@ class CodeGeneratorService
             $proximoSequencial = 1;
         }
 
-        $codigoFinal = $this->formatarCodigoOrcamento($cliente, $now, $proximoSequencial);
-        
+        $codigoFinal = $this->formatarCodigoOrcamento($cliente, $dataBase, $proximoSequencial);
+
         while (Orcamento::where('numero_proposta', $codigoFinal)->exists()) {
             $proximoSequencial++;
-            $codigoFinal = $this->formatarCodigoOrcamento($cliente, $now, $proximoSequencial);
+            $codigoFinal = $this->formatarCodigoOrcamento($cliente, $dataBase, $proximoSequencial);
         }
 
         return $codigoFinal;

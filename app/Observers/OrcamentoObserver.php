@@ -20,11 +20,14 @@ class OrcamentoObserver
         $generator = new CodeGeneratorService();
         $cliente = $orcamento->cliente ?? \App\Models\Cliente::find($orcamento->cliente_id);
 
+        $dataReferencia = $orcamento->data_envio ?? now();
+
         $orcamento->numero_proposta = $generator->gerarCodigoOrcamento(
             $cliente, 
-            $orcamento->numero_manual 
+            $orcamento->numero_manual,
+            $dataReferencia,
         );
-    }
+}
 
     /**
      * Handle the Orcamento "created" event.
