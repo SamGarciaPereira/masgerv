@@ -4,8 +4,6 @@
 
 @section('content')
 
-    
-
     <div class="flex justify-between items-center mb-8">
         <div>
             <h1 class="text-3xl font-bold text-gray-900">Gestão de Processos</h1>
@@ -23,7 +21,7 @@
                         <i class="bi bi-search text-gray-400"></i>
                     </div>
                     <input type="text" name="search" id="search" value="{{ request('search') }}" 
-                           placeholder="Nº Proposta, Cliente ou Escopo..."
+                           placeholder="Nº Proposta, Cliente ou Demanda..."
                            class="w-full pl-10 px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500">
                 </div>
             </div>
@@ -148,7 +146,7 @@
                     <tr id="details-{{ $processo->id }}" class="hidden details-row">
                         <td colspan="8" class="px-6 py-4 bg-gray-50">
                             <div class="text-gray-500 p-2 mb-4 border-b border-gray-200">
-                                <p><strong>Escopo:</strong><br>{{ $processo->orcamento->escopo ? : 'Não definido'}} </p>
+                                <p><strong>Demanda:</strong><br>{{ $processo->orcamento->escopo ? : 'Não definido'}} </p>
                             </div>
                             <div class="flex flex-col md:flex-row gap-6 items-start">     
                                 <div class="flex flex-col gap-2 md:w-1/3">

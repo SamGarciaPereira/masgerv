@@ -25,7 +25,7 @@
                         <i class="bi bi-search text-gray-400"></i>
                     </div>
                     <input type="text" name="search" id="search" value="{{ request('search') }}" 
-                        placeholder="Nº Proposta, Cliente ou Escopo..."
+                        placeholder="Nº Proposta, Cliente ou Demanda..."
                         class="w-full pl-10 px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-blue-500 focus:border-blue-500">
                 </div>
             </div>
@@ -73,7 +73,7 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nº Proposta</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valor</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Demanda</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
                     </tr>
@@ -96,7 +96,7 @@
                                 @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $orcamento->cliente->nome ?? 'N/A' }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">R$ {{ number_format($orcamento->valor, 2, ',', '.') }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $orcamento->escopo ? : 'Não definido'}}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm">
                                 <x-status-badge :status="$orcamento->status" />
                             </td>
@@ -122,7 +122,7 @@
                             <td colspan="6" class="px-6 py-4 bg-gray-50">
                                 <div class="flex flex-col md:flex-row gap-6 items-start">
                                     <div class="flex flex-col gap-2 md:w-1/3 text-gray-500">
-                                        <p><strong>Escopo:</strong><br>{{ $orcamento->escopo ? : 'Não definido'}} </p>
+                                        <p><strong>Valor: </strong>R$ {{ number_format($orcamento->valor, 2, ',', '.') }}</p>
                                         <p><strong>Data de Envio:</strong> {{ $orcamento->data_envio ? \Carbon\Carbon::parse($orcamento->data_envio)->format('d/m/Y') : 'Não definida' }}</p>
                                         <p><strong>Data de Aprovação:</strong> {{ $orcamento->data_aprovacao ? \Carbon\Carbon::parse($orcamento->data_aprovacao)->format('d/m/Y') : 'Não definida' }}</p>
                                         <p><strong>Revisão:</strong> {{ $orcamento->revisao }}</p>
