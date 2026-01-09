@@ -16,6 +16,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const submenuFinanceiro = document.getElementById("submenu-financeiro");
     const arrowFinanceiro = document.getElementById("arrow-financeiro");
 
+    const dropdownBtnRH = document.getElementById("dropdown-btn-rh");
+    const submenuRH = document.getElementById("submenu-rh");
+    const arrowRH = document.getElementById("arrow-rh");
+
     // Ajuste inicial dos links dos submenus
     const allSubLinks = document.querySelectorAll("#submenu-manutencao a, #submenu-financeiro a");
     allSubLinks.forEach((link) => {
@@ -54,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             setTimeout(() => {
                 sidebarTexts.forEach((text) => {
-                    if (!text.closest("#submenu-manutencao, #submenu-financeiro")) {
+                    if (!text.closest("#submenu-manutencao, #submenu-financeiro, #submenu-rh")) {
                         text.classList.remove("w-0", "opacity-0");
                         text.classList.add("w-full", "opacity-100");
                     }
@@ -154,6 +158,17 @@ document.addEventListener("DOMContentLoaded", function () {
                 setTimeout(() => toggleDropdown(submenuManutencao, arrowManutencao), 300);
             } else {
                 toggleDropdown(submenuManutencao, arrowManutencao);
+            }
+        });
+    }
+
+    if (dropdownBtnRH) {
+        dropdownBtnRH.addEventListener("click", () => {
+            if (!isExpanded) {
+                setExpanded(true);
+                setTimeout(() => toggleDropdown(submenuRH, arrowRH), 300);
+            } else {
+                toggleDropdown(submenuRH, arrowRH);
             }
         });
     }

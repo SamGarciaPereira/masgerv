@@ -11,6 +11,7 @@
     use App\Http\Controllers\AuthController;
     use App\Http\Controllers\anexo\AnexoController;
     use App\Http\Controllers\contrato\ContratoController;
+    use App\Http\Controllers\rh\FuncionarioController;
 
     //ROTAS DE AUTENTICAÇÃO
     Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -27,6 +28,10 @@
             Route::prefix('financeiro')->name('financeiro.')->group(function () {
                 Route::resource('contas-pagar', ContasPagarController::class);
                 Route::resource('contas-receber', ContasReceberController::class);
+            });
+            //ROTAS DO MÓDULO DE RH
+            Route::prefix('rh')->name('rh.')->group(function () {
+                Route::resource('funcionarios', FuncionarioController::class);
             });
         });
 
