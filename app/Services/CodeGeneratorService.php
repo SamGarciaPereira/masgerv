@@ -14,13 +14,13 @@ class CodeGeneratorService
 
     /**
      * Gera código para Manutenção (Preventiva ou Corretiva)
-     * Formato: EST-BASE-YYYYMM-T-CLI(3)-GER(3)-OCC(2)
      */
     public function gerarCodigoManutencao(Cliente $cliente, string $tipo)
     {
         $now = Carbon::now();
-        $anoMes = $now->format('my'); // Ex: 1125
-        $estado = $cliente->uf ?? 'PR'; // Padrão PR se não tiver UF
+        $anoMes = $now->format('my'); 
+        
+        $estado = !empty($cliente->estado) ? strtoupper($cliente->estado) : 'PR';
         
         $tipoLetra = ($tipo === 'Preventiva') ? 'P' : 'C';
 
@@ -36,55 +36,60 @@ class CodeGeneratorService
             ->count() + 1;
         $ocorrenciaStr = str_pad($countClienteMes, 2, '0', STR_PAD_LEFT);
 
-        // Resultado Ex: PR-01-1125-P-001-050-01
         return "{$estado}-{$this->base}-{$anoMes}-{$tipoLetra}-{$idClienteStr}-{$geralStr}-{$ocorrenciaStr}";
     }
 
     /**
-     * Formata a string do código (Centraliza a regra visual)
+     * Formata a string do código (Apenas visual)
      */
     public function formatarCodigoOrcamento(Cliente $cliente, Carbon $data, int $sequencial)
     {
         $anoMes = $data->format('my');
-        $estado = $cliente->uf ?? 'PR';
+        $estado = !empty($cliente->estado) ? strtoupper($cliente->estado) : 'PR';
         $sequenciaStr = str_pad($sequencial, 3, '0', STR_PAD_LEFT);
 
         return "{$estado}-{$this->base}-{$anoMes}-O-{$sequenciaStr}";
     }
 
     /**
-     * Gera o código (Automático ou Manual)
+     * Gera o código Sequencial Global por Ano
      */
     public function gerarCodigoOrcamento(Cliente $cliente = null, ?int $numeroManual = null, ?Carbon $dataReferencia = null)
     {
-        // Se dataReferencia (solicitação) for passada, usa ela. Senão, usa Now.
         $dataBase = $dataReferencia ?? Carbon::now();
-
-        $cliente = $cliente ?? new Cliente(['uf' => 'PR']);
+        
+        $cliente = $cliente ?? new Cliente(['estado' => 'PR']);
 
         if ($numeroManual !== null) {
             return $this->formatarCodigoOrcamento($cliente, $dataBase, $numeroManual);
         }
 
-        // Gera o prefixo com base na data correta (Ex: PR-01-1025-O-)
-        $prefixoBusca = $this->formatarCodigoOrcamento($cliente, $dataBase, 0);
-        $prefixoBusca = substr($prefixoBusca, 0, strrpos($prefixoBusca, '-') + 1);
+        $anoShort = $dataBase->format('y');
 
-        $ultimoOrcamento = Orcamento::where('numero_proposta', 'like', "{$prefixoBusca}%")
-            ->orderBy('id', 'desc')
-            ->first();
+        $padraoBusca = "%-{$this->base}-%{$anoShort}-O-%";
+        
+        $orcamentosDoAno = Orcamento::where('numero_proposta', 'LIKE', $padraoBusca)
+                                    ->pluck('numero_proposta');
 
-        if ($ultimoOrcamento) {
-            $partes = explode('-', $ultimoOrcamento->numero_proposta);
-            $ultimoNumero = (int) end($partes);
-            $proximoSequencial = $ultimoNumero + 1;
-        } else {
-            $proximoSequencial = 1;
+        $maxSequencial = 0;
+
+        foreach ($orcamentosDoAno as $codigo) {
+        
+            $partes = explode('-', $codigo);
+            $ultimoSegmento = end($partes);
+
+            if (is_numeric($ultimoSegmento)) {
+                $seq = (int) $ultimoSegmento;
+                if ($seq > $maxSequencial) {
+                    $maxSequencial = $seq;
+                }
+            }
         }
+
+        $proximoSequencial = $maxSequencial + 1;
 
         $codigoFinal = $this->formatarCodigoOrcamento($cliente, $dataBase, $proximoSequencial);
 
-        // Verifica colisão
         while (Orcamento::where('numero_proposta', $codigoFinal)->exists()) {
             $proximoSequencial++;
             $codigoFinal = $this->formatarCodigoOrcamento($cliente, $dataBase, $proximoSequencial);
@@ -93,15 +98,11 @@ class CodeGeneratorService
         return $codigoFinal;
     }
 
-    /**
-     * Gera código para Contrato
-     * Formato: EST-CLI(3)-CTGGG(3)-YYYY
-     */
     public function gerarCodigoContrato(Cliente $cliente)
     {
         $now = Carbon::now();
         $anoVigente = $now->format('Y');
-        $estado = $cliente->uf ?? 'PR';
+        $estado = !empty($cliente->estado) ? strtoupper($cliente->estado) : 'PR';
 
         $idClienteStr = str_pad($cliente->id, 3, '0', STR_PAD_LEFT);
 
