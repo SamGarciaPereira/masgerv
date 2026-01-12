@@ -166,7 +166,7 @@
                                                         @endif
 
                                                         <div class="min-w-0">
-                                                            <p class="text-sm font-medium text-gray-700 whitespace-normal break-words" title="{{ $anexo->nome_original }}">
+                                                            <p class="text-sm font-medium text-gray-700 max-w-[226px] truncate" title="{{ $anexo->nome_original }}">
                                                                 {{ $anexo->nome_original }}
                                                             </p>
                                                             <p class="text-xs text-gray-400">{{ $anexo->created_at->format('d/m/Y H:i') }}</p>
