@@ -47,6 +47,8 @@
                     <option value="recentes" {{ request('ordem') == 'recentes' ? 'selected' : '' }}>Recentes</option>
                     <option value="antigos" {{ request('ordem') == 'antigos' ? 'selected' : '' }}>Antigos</option>
                     <option value="maior_valor" {{ request('ordem') == 'maior_valor' ? 'selected' : '' }}>Maior Valor</option>
+                    <option value="menor_valor" {{ request('ordem') == 'menor_valor' ? 'selected' : '' }}>Menor Valor</option>
+                    <option value="envio" {{ request('ordem') == 'envio' ? 'selected' : '' }}>Data Envio</option>
                     <option value="aprovacao" {{ request('ordem') == 'aprovacao' ? 'selected' : '' }}>Data Aprovação</option>
                 </select>
             </div>

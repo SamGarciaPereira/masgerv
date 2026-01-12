@@ -42,7 +42,7 @@
                     <option value="recentes" {{ request('ordem') == 'recentes' ? 'selected' : '' }}>Recentes</option>
                     <option value="antigos" {{ request('ordem') == 'antigos' ? 'selected' : '' }}>Antigos</option>
                     <option value="maior_valor" {{ request('ordem') == 'maior_valor' ? 'selected' : '' }}>Maior Valor</option>
-                    <option value="faturamento" {{ request('ordem') == 'faturamento' ? 'selected' : '' }}>Data Faturamento</option>
+                    <option value="menor_valor" {{ request('ordem') == 'menor_valor' ? 'selected' : '' }}>Menor Valor</option>
                 </select>
             </div>
             <div class="md:col-span-1">

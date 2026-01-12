@@ -33,8 +33,11 @@ class OrcamentoController extends Controller
         }
 
         switch ($request->input('ordem')) {
+            case 'recentes':
+                $query->orderBy('data_solicitacao', 'desc');
+                break;
             case 'antigos':
-                $query->oldest();
+                $query->orderBy('data_solicitacao', 'asc');
                 break;
             case 'maior_valor':
                 $query->orderByDesc('valor');
@@ -42,11 +45,14 @@ class OrcamentoController extends Controller
             case 'menor_valor':
                 $query->orderBy('valor');
                 break;
+            case 'envio':
+                $query->orderByDesc('data_envio');
+                break;
             case 'aprovacao':
                 $query->orderByDesc('data_aprovacao');
                 break;
             default:
-                $query->latest();
+                $query->orderBy('data_solicitacao', 'desc');
                 break;
         }
 

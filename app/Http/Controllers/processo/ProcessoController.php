@@ -37,11 +37,17 @@ class ProcessoController extends Controller
         }
 
         switch ($request->input('ordem')) {
-            case 'antigos':
-                $query->oldest();
+            case 'recentes':
+                $query->orderBy('created_at', 'desc');
                 break;
-            case 'faturamento':
-                $query->orderByDesc('created_at');
+            case 'antigos':
+                $query->orderBy('created_at', 'asc');
+                break;
+            case 'maior_valor':
+                $query->orderByDesc('valor');
+                break;
+            case 'menor_valor':
+                $query->orderBy('valor');
                 break;
             default: 
                 $query->latest();
