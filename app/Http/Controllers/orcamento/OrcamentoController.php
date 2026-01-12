@@ -62,16 +62,27 @@ class OrcamentoController extends Controller
 
     public function store(Request $request)
     {
+
+        $request->merge([
+            'data_solicitacao' => $request->data_solicitacao ?: null,
+            'data_envio'       => $request->data_envio ?: null,
+            'data_aprovacao'   => $request->data_aprovacao ?: null,
+        ]);
+
         $validatedData = $request->validate([
             'cliente_id' => 'required|exists:clientes,id',
             'numero_manual' => 'nullable|integer|min:1',
-            'data_envio' => 'nullable|date',
             'valor' => 'nullable|numeric|min:0',
             'status' => 'required|string|in:Pendente,Em Andamento,Enviado,Aprovado',
             'revisao' => 'nullable|integer|min:0',
             'escopo' => 'nullable|string',
-            'data_aprovacao' => 'nullable|date',
-            'data_solicitacao' => 'nullable|date',
+            'data_solicitacao' => 'required_if:status,Pendente,Em Andamento|nullable|date',
+            'data_envio' => 'required_if:status,Enviado|nullable|date',
+            'data_aprovacao' => 'required_if:status,Aprovado|nullable|date',
+        ],[
+            'data_solicitacao.required_if' => 'A Data de Solicitação é obrigatória para status Pendente ou Em Andamento.',
+            'data_envio.required_if'       => 'A Data de Envio é obrigatória para status Enviado.',
+            'data_aprovacao.required_if'   => 'A Data de Aprovação é obrigatória para status Aprovado.',
         ]);
 
         if ($request->filled('numero_manual')) {
@@ -106,16 +117,28 @@ class OrcamentoController extends Controller
 
     public function update(Request $request, Orcamento $orcamento)
     {
+
+        $request->merge([
+            'data_solicitacao' => $request->data_solicitacao ?: null,
+            'data_envio'       => $request->data_envio ?: null,
+            'data_aprovacao'   => $request->data_aprovacao ?: null,
+        ]);
+
         $validatedData = $request->validate([
             'cliente_id' => 'required|exists:clientes,id',
             'numero_proposta_sufixo' => ['required', 'integer', 'min:0', 'max:999'],
-            'data_envio' => 'nullable|date',
+            
             'valor' => 'nullable|numeric|min:0',
             'status' => 'required|string|in:Pendente,Em Andamento,Enviado,Aprovado',
             'revisao' => 'nullable|integer|min:0',
             'escopo' => 'nullable|string',
-            'data_aprovacao' => 'nullable|date',
-            'data_solicitacao' => 'nullable|date',
+            'data_solicitacao' => 'required_if:status,Pendente,Em Andamento|nullable|date',
+            'data_envio' => 'required_if:status,Enviado|nullable|date',
+            'data_aprovacao' => 'required_if:status,Aprovado|nullable|date',
+        ],[
+            'data_solicitacao.required_if' => 'A Data de Solicitação é obrigatória para status Pendente ou Em Andamento.',
+            'data_envio.required_if'       => 'A Data de Envio é obrigatória para status Enviado.',
+            'data_aprovacao.required_if'   => 'A Data de Aprovação é obrigatória para status Aprovado.',
         ]);
 
         $prefixo = Str::beforeLast($orcamento->numero_proposta, '-');

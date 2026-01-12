@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::table('orcamentos', function (Blueprint $table) {
             $table->date('data_solicitacao')->nullable()->after('cliente_id');
         });
+
+        DB::statement("UPDATE orcamentos SET data_solicitacao = DATE(created_at) WHERE data_solicitacao IS NULL");
     }
 
     /**
