@@ -6,6 +6,7 @@ use App\Models\Activity;
 use App\Models\Orcamento;
 use App\Models\Processo;
 use App\Services\CodeGeneratorService;
+use Carbon\Carbon;
 
 
 class OrcamentoObserver
@@ -20,12 +21,14 @@ class OrcamentoObserver
         $generator = new CodeGeneratorService();
         $cliente = $orcamento->cliente ?? \App\Models\Cliente::find($orcamento->cliente_id);
 
-        $dataReferencia = $orcamento->data_envio ?? now();
+        $dataReferencia = $orcamento->data_solicitacao
+            ? Carbon::parse($orcamento->data_solicitacao)
+            : Carbon::now();
 
         $orcamento->numero_proposta = $generator->gerarCodigoOrcamento(
-            $cliente, 
+            $cliente,
             $orcamento->numero_manual,
-            $dataReferencia,
+            $dataReferencia
         );
 }
 

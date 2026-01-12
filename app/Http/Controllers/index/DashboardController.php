@@ -38,7 +38,31 @@ class DashboardController extends Controller
         };
 
         $processosStats = $getStats(Processo::whereMonth('created_at', $mes)->whereYear('created_at', $ano));
-        $orcamentosStats = $getStats(Orcamento::whereMonth('created_at', $mes)->whereYear('created_at', $ano));
+
+        $orcamentosStats = $getStats(Orcamento::where(function($query) use ($mes, $ano) {
+            $query->where(function($q) use ($mes, $ano) {
+                $q->where('status', 'Pendente')
+                  ->where(function($sq) use ($mes, $ano) {
+                      $sq->whereMonth('data_solicitacao', $mes)
+                         ->whereYear('data_solicitacao', $ano)
+                         ->orWhere(function($fq) use ($mes, $ano) {
+                             $fq->whereNull('data_solicitacao')
+                                ->whereMonth('created_at', $mes)
+                                ->whereYear('created_at', $ano);
+                         });
+                  });
+            })
+            ->orWhere(function($q) use ($mes, $ano) {
+                $q->where('status', 'Enviado')
+                  ->whereMonth('data_envio', $mes)
+                  ->whereYear('data_envio', $ano);
+            })
+            ->orWhere(function($q) use ($mes, $ano) {
+                $q->where('status', 'Aprovado')
+                  ->whereMonth('data_aprovacao', $mes)
+                  ->whereYear('data_aprovacao', $ano);
+            });
+        }));
         
         $prevStats = $getStats(Manutencao::where('tipo', 'Preventiva')
             ->where(function($query) use ($mes, $ano) {

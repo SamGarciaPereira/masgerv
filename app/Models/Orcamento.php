@@ -16,6 +16,7 @@ class Orcamento extends Model
 
     protected $fillable = [
         'cliente_id',
+        'data_solicitacao',
         'numero_proposta',
         'data_envio',
         'data_aprovacao',
@@ -27,6 +28,7 @@ class Orcamento extends Model
     ];
 
     protected $casts = [
+        'data_solicitacao' => 'date',
         'data_envio' => 'date',
         'data_aprovacao' => 'date',
         'valor' => 'decimal:2',

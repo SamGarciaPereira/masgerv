@@ -7,7 +7,6 @@ use App\Models\Contrato;
 use App\Models\Orcamento;
 use App\Models\Cliente;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 
 class CodeGeneratorService
 {
@@ -37,7 +36,7 @@ class CodeGeneratorService
             ->count() + 1;
         $ocorrenciaStr = str_pad($countClienteMes, 2, '0', STR_PAD_LEFT);
 
-        // Resultado Ex: PR-01-202511-P-001-050-01
+        // Resultado Ex: PR-01-1125-P-001-050-01
         return "{$estado}-{$this->base}-{$anoMes}-{$tipoLetra}-{$idClienteStr}-{$geralStr}-{$ocorrenciaStr}";
     }
 
@@ -58,6 +57,7 @@ class CodeGeneratorService
      */
     public function gerarCodigoOrcamento(Cliente $cliente = null, ?int $numeroManual = null, ?Carbon $dataReferencia = null)
     {
+        // Se dataReferencia (solicitação) for passada, usa ela. Senão, usa Now.
         $dataBase = $dataReferencia ?? Carbon::now();
 
         $cliente = $cliente ?? new Cliente(['uf' => 'PR']);
@@ -66,6 +66,7 @@ class CodeGeneratorService
             return $this->formatarCodigoOrcamento($cliente, $dataBase, $numeroManual);
         }
 
+        // Gera o prefixo com base na data correta (Ex: PR-01-1025-O-)
         $prefixoBusca = $this->formatarCodigoOrcamento($cliente, $dataBase, 0);
         $prefixoBusca = substr($prefixoBusca, 0, strrpos($prefixoBusca, '-') + 1);
 
@@ -83,6 +84,7 @@ class CodeGeneratorService
 
         $codigoFinal = $this->formatarCodigoOrcamento($cliente, $dataBase, $proximoSequencial);
 
+        // Verifica colisão
         while (Orcamento::where('numero_proposta', $codigoFinal)->exists()) {
             $proximoSequencial++;
             $codigoFinal = $this->formatarCodigoOrcamento($cliente, $dataBase, $proximoSequencial);

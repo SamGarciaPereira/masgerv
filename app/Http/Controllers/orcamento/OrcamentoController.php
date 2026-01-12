@@ -71,6 +71,7 @@ class OrcamentoController extends Controller
             'revisao' => 'nullable|integer|min:0',
             'escopo' => 'nullable|string',
             'data_aprovacao' => 'nullable|date',
+            'data_solicitacao' => 'nullable|date',
         ]);
 
         if ($request->filled('numero_manual')) {
@@ -114,6 +115,7 @@ class OrcamentoController extends Controller
             'revisao' => 'nullable|integer|min:0',
             'escopo' => 'nullable|string',
             'data_aprovacao' => 'nullable|date',
+            'data_solicitacao' => 'nullable|date',
         ]);
 
         $prefixo = Str::beforeLast($orcamento->numero_proposta, '-');
@@ -127,6 +129,7 @@ class OrcamentoController extends Controller
         $validatedData['numero_proposta'] = $novoNumero;
         $validatedData['data_envio'] = $validatedData['data_envio'] ?? null;
         $validatedData['data_aprovacao'] = $validatedData['data_aprovacao'] ?? null;
+        $validatedData['data_solicitacao'] = $validatedData['data_solicitacao'] ?? null;
 
         $orcamento->update($validatedData);
 

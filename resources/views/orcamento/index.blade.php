@@ -123,6 +123,7 @@
                                 <div class="flex flex-col md:flex-row gap-6 items-start">
                                     <div class="flex flex-col gap-2 md:w-1/3 text-gray-500">
                                         <p><strong>Valor: </strong>R$ {{ number_format($orcamento->valor, 2, ',', '.') }}</p>
+                                        <p><strong>Data de Solicitação:</strong> {{ $orcamento->data_solicitacao ? \Carbon\Carbon::parse($orcamento->data_solicitacao)->format('d/m/Y') : 'Não definida' }}</p>
                                         <p><strong>Data de Envio:</strong> {{ $orcamento->data_envio ? \Carbon\Carbon::parse($orcamento->data_envio)->format('d/m/Y') : 'Não definida' }}</p>
                                         <p><strong>Data de Aprovação:</strong> {{ $orcamento->data_aprovacao ? \Carbon\Carbon::parse($orcamento->data_aprovacao)->format('d/m/Y') : 'Não definida' }}</p>
                                         <p><strong>Revisão:</strong> {{ $orcamento->revisao }}</p>
