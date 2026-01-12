@@ -64,6 +64,7 @@
                         value="{{ old('data_solicitacao', optional($orcamento->data_solicitacao)->format('Y-m-d')) }}"
                         class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                     @error('data_solicitacao') <p class="text-red-500 text-xs mt-1">{{ $message }}</p> @enderror
+                </div>
 
                 <div>
                     <label for="data_envio" class="block text-sm font-medium text-gray-700 mb-2">Data de Envio</label>
