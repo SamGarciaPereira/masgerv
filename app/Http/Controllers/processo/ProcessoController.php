@@ -14,12 +14,14 @@ class ProcessoController extends Controller
      */
     public function index(Request $request)
     {
-       $query = Processo::with('orcamento.cliente', 'orcamento.anexos', 'anexos', 'contasReceber');
+       $query = Processo::with('orcamento.cliente', 'orcamento.anexos', 'anexos', 'contasReceber')
+            ->join('orcamentos', 'processos.orcamento_id', '=', 'orcamentos.id')
+            ->select('processos.*');
 
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function($q) use ($search) {
-                $q->where('nf', 'like', "%{$search}%")
+                $q->where('processos.nf', 'like', "%{$search}%")
                   ->orWhereHas('orcamento', function($q2) use ($search) {
                       $q2->where('numero_proposta', 'like', "%{$search}%")
                          ->orWhere('escopo', 'like', "%{$search}%")
@@ -33,24 +35,22 @@ class ProcessoController extends Controller
         }
 
         if ($request->filled('status')) {
-            $query->where('status', $request->input('status'));
+            $query->where('processos.status', $request->input('status'));
         }
 
         switch ($request->input('ordem')) {
-            case 'recentes':
-                $query->orderBy('created_at', 'desc');
-                break;
             case 'antigos':
-                $query->orderBy('created_at', 'asc');
+                $query->orderBy('processos.created_at', 'asc');
                 break;
             case 'maior_valor':
-                $query->orderByDesc('valor');
+                $query->orderByDesc('orcamentos.valor');
                 break;
             case 'menor_valor':
-                $query->orderBy('valor');
+                $query->orderBy('orcamentos.valor');
                 break;
-            default: 
-                $query->latest();
+            case 'recentes':
+            default:
+                $query->orderBy('processos.created_at', 'desc');
                 break;
         }
 
