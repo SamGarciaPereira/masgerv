@@ -133,11 +133,11 @@ class OrcamentoController extends Controller
         $validatedData = $request->validate([
             'cliente_id' => 'required|exists:clientes,id',
             'numero_proposta_sufixo' => ['required', 'integer', 'min:0', 'max:999'],
-            
             'valor' => 'nullable|numeric|min:0',
             'status' => 'required|string|in:Pendente,Em Andamento,Enviado,Aprovado',
             'revisao' => 'nullable|integer|min:0',
             'escopo' => 'nullable|string',
+            'checklist_data' => 'nullable|json',
             'data_solicitacao' => 'required_if:status,Pendente,Em Andamento|nullable|date',
             'data_envio' => 'required_if:status,Enviado|nullable|date',
             'data_aprovacao' => 'required_if:status,Aprovado|nullable|date',
@@ -159,6 +159,26 @@ class OrcamentoController extends Controller
         $validatedData['data_envio'] = $validatedData['data_envio'] ?? null;
         $validatedData['data_aprovacao'] = $validatedData['data_aprovacao'] ?? null;
         $validatedData['data_solicitacao'] = $validatedData['data_solicitacao'] ?? null;
+
+        if ($request->filled('checklist_data')) {
+            $validatedData['checklist'] = json_decode($request->checklist_data, true);
+        } else {
+            $validatedData['checklist'] = [];
+        }
+
+        unset($validatedData['checklist_data']);
+
+        $temPendencias = collect($validatedData['checklist'])->contains('completed', false);
+
+        $statusProibidos = ['Enviado', 'Aprovado'];
+
+        if ($temPendencias && in_array($validatedData['status'], $statusProibidos)) {
+            return back()
+                ->withInput() 
+                ->withErrors([
+                    'status' => 'Existem tarefas pendentes no checklist! Conclua todas as tarefas antes de alterar o status para Enviado ou Aprovado.'
+                ]);
+        }
 
         $orcamento->update($validatedData);
 

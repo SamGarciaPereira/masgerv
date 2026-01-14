@@ -5,6 +5,7 @@ import './components/modals';
 import './components/processo-edit'
 import './components/contas-pagar-create';
 import './components/contas-pagar-edit';
+import './components/checklist';
 
 import { initDashboard } from "./components/dashboard";
 window.initDashboard = initDashboard;

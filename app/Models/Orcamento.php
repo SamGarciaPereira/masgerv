@@ -21,6 +21,7 @@ class Orcamento extends Model
         'data_envio',
         'data_aprovacao',
         'escopo',
+        'checklist',
         'valor',
         'revisao',
         'status',
@@ -32,6 +33,7 @@ class Orcamento extends Model
         'data_envio' => 'date',
         'data_aprovacao' => 'date',
         'valor' => 'decimal:2',
+        'checklist' => 'array',
     ];
 
     public function cliente(): BelongsTo

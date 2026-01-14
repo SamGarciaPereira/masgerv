@@ -129,6 +129,20 @@
                                         <p><strong>Data de Envio:</strong> {{ $orcamento->data_envio ? \Carbon\Carbon::parse($orcamento->data_envio)->format('d/m/Y') : 'Não definida' }}</p>
                                         <p><strong>Data de Aprovação:</strong> {{ $orcamento->data_aprovacao ? \Carbon\Carbon::parse($orcamento->data_aprovacao)->format('d/m/Y') : 'Não definida' }}</p>
                                         <p><strong>Revisão:</strong> {{ $orcamento->revisao }}</p>
+                                        <p><strong>Checklist:</strong></p>
+                                        <ul>
+                                            @php
+                                                $tarefas = collect($orcamento->checklist ?? [])->where('completed', false);
+                                            @endphp
+
+                                            @forelse($tarefas as $tarefa)
+                                                <li class="text-blue-800 font-bold">- {{ $tarefa['text'] }}</li>
+                                            @empty
+                                                <li class="text-green-600 font-bold">
+                                                    <i class="bi bi-check-all"></i> Tudo em dia!
+                                                </li>
+                                            @endforelse
+                                        </ul>
                                     </div>
                                     <div class="flex flex-col gap-2 md:w-1/3">
                                         <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center">
