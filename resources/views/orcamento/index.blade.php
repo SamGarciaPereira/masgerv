@@ -129,6 +129,7 @@
                                         <p><strong>Data de Envio:</strong> {{ $orcamento->data_envio ? \Carbon\Carbon::parse($orcamento->data_envio)->format('d/m/Y') : 'Não definida' }}</p>
                                         <p><strong>Data de Aprovação:</strong> {{ $orcamento->data_aprovacao ? \Carbon\Carbon::parse($orcamento->data_aprovacao)->format('d/m/Y') : 'Não definida' }}</p>
                                         <p><strong>Revisão:</strong> {{ $orcamento->revisao }}</p>
+                                        @if($orcamento->status == 'Pendente' || $orcamento->status == 'Em andamento')
                                         <p><strong>Checklist:</strong></p>
                                         <ul>
                                             @php
@@ -143,6 +144,7 @@
                                                 </li>
                                             @endforelse
                                         </ul>
+                                        @endif
                                     </div>
                                     <div class="flex flex-col gap-2 md:w-1/3">
                                         <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2 flex items-center">
